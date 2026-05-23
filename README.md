@@ -1,4 +1,4 @@
-# PixelPlayer 🎵
+# Material Music 🎵
 
 <p align="center">
   <img src="assets/icon.png" alt="App Icon" width="128"/>
@@ -124,9 +124,8 @@
 
 1. **Clone the repository**
    ```sh
-   git clone https://github.com/theovilardo/PixelPlayer.git
+   git clone https://github.com/rebornloki-dev/MaterialMusic.git
    ```
-
 2. **Open in Android Studio**
    - Open Android Studio
    - Select "Open an Existing Project"
@@ -198,10 +197,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/theovilardo">theovilardo</a>
+  Made with ❤️ by <a href="https://github.com/rebornloki-dev">Jerry</a>
 </p>
