@@ -2,7 +2,7 @@
 accompanistDrawablepainter = "0.37.3"
 agp = "9.2.1"
 app = "1.7.0"
-googleGenai = "1.55.0"
+googleGenai = "1.56.0"
 googlePlayServicesCast = "22.3.1"
 animation = "1.11.2"
 appcompat = "1.7.1"
@@ -77,7 +77,7 @@ dagger = "2.59.2"
 javax-inject = "1"
 
 # Annotations procesing
-ksp = "2.3.8"
+ksp = "2.3.9"
 smoothCornerRectAndroidCompose = "v1.0.0"
 spleeterAndroidIos = "1.0.2"
 tensorflowLite = "2.17.0"
