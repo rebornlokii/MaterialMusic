@@ -29,7 +29,7 @@
 
 ## What It Is
 
-PixelPlayerOSS is an Android music player maintained by [@lostf1sh](https://github.com/lostf1sh). It focuses on local playback, self-hosted music libraries, expressive Material 3 UI, and user-controlled online lookups.
+Material Music is an Android music player maintained by [@lostf1sh](https://github.com/lostf1sh). It focuses on local playback, self-hosted music libraries, expressive Material 3 UI, and user-controlled online lookups.
 
 The app works offline by default. Optional online services are disabled until you enable them in setup or settings.
 
