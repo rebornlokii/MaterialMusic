@@ -57,7 +57,7 @@ Cloud playback is limited to self-hosted sources: Navidrome/Subsonic and Jellyfi
 
 ## Online Services
 
-PixelPlayerOSS separates offline playback from network lookups.
+MaterialMusic separates offline playback from network lookups.
 
 | Service | Purpose | Default |
 | --- | --- | --- |
