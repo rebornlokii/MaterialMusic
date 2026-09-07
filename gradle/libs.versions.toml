@@ -79,7 +79,7 @@ okhttp = "5.5.0"
 navigationRuntimeKtx = "2.10.0"
 uiautomator = "2.4.0"
 benchmarkMacroJunit4 = "1.4.1"
-baselineprofile = "1.5.0-rc01"
+baselineprofile = "1.5.0-rc02"
 profileinstaller = "1.4.1"
 
 
