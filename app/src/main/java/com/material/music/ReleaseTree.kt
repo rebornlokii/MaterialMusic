@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross
+package com.material.music
 
 import android.util.Log
 import timber.log.Timber

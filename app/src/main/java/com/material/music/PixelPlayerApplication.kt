@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross
+package com.material.music
 
 import android.app.Application
 import android.app.NotificationChannel
@@ -12,14 +12,14 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.repository.ArtistImageRepository
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.LibraryStateHolder
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.ThemeStateHolder
-import com.lostf1sh.pixelplayeross.utils.AlbumArtCacheManager
-import com.lostf1sh.pixelplayeross.utils.AlbumArtUtils
-import com.lostf1sh.pixelplayeross.utils.CrashHandler
-import com.lostf1sh.pixelplayeross.utils.MediaMetadataRetrieverPool
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.repository.ArtistImageRepository
+import com.material.music.presentation.viewmodel.LibraryStateHolder
+import com.material.music.presentation.viewmodel.ThemeStateHolder
+import com.material.music.utils.AlbumArtCacheManager
+import com.material.music.utils.AlbumArtUtils
+import com.material.music.utils.CrashHandler
+import com.material.music.utils.MediaMetadataRetrieverPool
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,13 +39,13 @@ class PixelPlayerApplication : Application(), ImageLoaderFactory, Configuration.
     lateinit var imageLoader: dagger.Lazy<ImageLoader>
 
     @Inject
-    lateinit var navidromeCoilFetcherFactory: dagger.Lazy<com.lostf1sh.pixelplayeross.data.image.NavidromeCoilFetcher.Factory>
+    lateinit var navidromeCoilFetcherFactory: dagger.Lazy<com.material.music.data.image.NavidromeCoilFetcher.Factory>
 
     @Inject
-    lateinit var jellyfinCoilFetcherFactory: dagger.Lazy<com.lostf1sh.pixelplayeross.data.image.JellyfinCoilFetcher.Factory>
+    lateinit var jellyfinCoilFetcherFactory: dagger.Lazy<com.material.music.data.image.JellyfinCoilFetcher.Factory>
 
     @Inject
-    lateinit var localArtworkCoilFetcherFactory: dagger.Lazy<com.lostf1sh.pixelplayeross.data.image.LocalArtworkCoilFetcher.Factory>
+    lateinit var localArtworkCoilFetcherFactory: dagger.Lazy<com.material.music.data.image.LocalArtworkCoilFetcher.Factory>
 
     @Inject
     lateinit var themeStateHolder: dagger.Lazy<ThemeStateHolder>
@@ -60,7 +60,7 @@ class PixelPlayerApplication : Application(), ImageLoaderFactory, Configuration.
     lateinit var userPreferencesRepository: dagger.Lazy<UserPreferencesRepository>
 
     @Inject
-    lateinit var syncManager: dagger.Lazy<com.lostf1sh.pixelplayeross.data.worker.SyncManager>
+    lateinit var syncManager: dagger.Lazy<com.material.music.data.worker.SyncManager>
 
     private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 

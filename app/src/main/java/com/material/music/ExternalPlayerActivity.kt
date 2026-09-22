@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross
+package com.material.music
 
 import android.content.Intent
 import android.net.Uri
@@ -13,13 +13,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.PlayerViewModel
-import com.lostf1sh.pixelplayeross.presentation.components.external.ExternalPlayerOverlay
-import com.lostf1sh.pixelplayeross.ui.theme.PixelPlayerTheme
+import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.components.external.ExternalPlayerOverlay
+import com.material.music.ui.theme.PixelPlayerTheme
 import android.content.Intent.EXTRA_STREAM
 import androidx.media3.common.util.UnstableApi
-import com.lostf1sh.pixelplayeross.data.preferences.AppThemeMode
-import com.lostf1sh.pixelplayeross.data.preferences.ThemePreferencesRepository
+import com.material.music.data.preferences.AppThemeMode
+import com.material.music.data.preferences.ThemePreferencesRepository
 import javax.inject.Inject
 
 @androidx.annotation.OptIn(UnstableApi::class)

@@ -1,13 +1,13 @@
-package com.lostf1sh.pixelplayeross
+package com.material.music
 
-import com.lostf1sh.pixelplayeross.presentation.navigation.navigateSafely
+import com.material.music.presentation.navigation.navigateSafely
 
 import android.Manifest
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.lostf1sh.pixelplayeross.utils.traceSection
+import com.material.music.utils.traceSection
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -85,7 +85,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTapGestures
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.PlayerSheetState
+import com.material.music.presentation.viewmodel.PlayerSheetState
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -101,36 +101,36 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import com.lostf1sh.pixelplayeross.data.preferences.AppThemeMode
-import com.lostf1sh.pixelplayeross.data.preferences.NavBarStyle
-import com.lostf1sh.pixelplayeross.data.preferences.sanitizeNavBarCornerRadius
-import com.lostf1sh.pixelplayeross.data.preferences.ThemePreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.service.MusicService
-import com.lostf1sh.pixelplayeross.data.worker.SyncManager
-import com.lostf1sh.pixelplayeross.data.worker.SyncProgress
-import com.lostf1sh.pixelplayeross.presentation.components.AllFilesAccessDialog
-import com.lostf1sh.pixelplayeross.presentation.components.AppSidebarDrawer
-import com.lostf1sh.pixelplayeross.presentation.components.CrashReportDialog
-import com.lostf1sh.pixelplayeross.presentation.components.DismissUndoBar
-import com.lostf1sh.pixelplayeross.presentation.components.DrawerDestination
-import com.lostf1sh.pixelplayeross.presentation.components.MiniPlayerBottomSpacer
-import com.lostf1sh.pixelplayeross.presentation.components.MiniPlayerHeight
-import com.lostf1sh.pixelplayeross.presentation.components.PlayerInternalNavigationBar
-import com.lostf1sh.pixelplayeross.presentation.components.PlayerNavigationRail
-import com.lostf1sh.pixelplayeross.presentation.components.UnifiedPlayerSheetV2
-import com.lostf1sh.pixelplayeross.presentation.components.calculatePlayerSheetCollapsedTargetY
-import com.lostf1sh.pixelplayeross.presentation.components.resolveNavBarOccupiedHeight
-import com.lostf1sh.pixelplayeross.presentation.components.resolveNavBarSurfaceHeight
-import com.lostf1sh.pixelplayeross.presentation.components.sanitizeNavigationBarBottomInset
-import com.lostf1sh.pixelplayeross.presentation.navigation.AppNavigation
-import com.lostf1sh.pixelplayeross.presentation.navigation.Screen
-import com.lostf1sh.pixelplayeross.presentation.screens.SetupScreen
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.MainViewModel
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.PlayerViewModel
-import com.lostf1sh.pixelplayeross.ui.theme.PixelPlayerTheme
-import com.lostf1sh.pixelplayeross.utils.CrashHandler
-import com.lostf1sh.pixelplayeross.utils.LogUtils
+import com.material.music.data.preferences.AppThemeMode
+import com.material.music.data.preferences.NavBarStyle
+import com.material.music.data.preferences.sanitizeNavBarCornerRadius
+import com.material.music.data.preferences.ThemePreferencesRepository
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.service.MusicService
+import com.material.music.data.worker.SyncManager
+import com.material.music.data.worker.SyncProgress
+import com.material.music.presentation.components.AllFilesAccessDialog
+import com.material.music.presentation.components.AppSidebarDrawer
+import com.material.music.presentation.components.CrashReportDialog
+import com.material.music.presentation.components.DismissUndoBar
+import com.material.music.presentation.components.DrawerDestination
+import com.material.music.presentation.components.MiniPlayerBottomSpacer
+import com.material.music.presentation.components.MiniPlayerHeight
+import com.material.music.presentation.components.PlayerInternalNavigationBar
+import com.material.music.presentation.components.PlayerNavigationRail
+import com.material.music.presentation.components.UnifiedPlayerSheetV2
+import com.material.music.presentation.components.calculatePlayerSheetCollapsedTargetY
+import com.material.music.presentation.components.resolveNavBarOccupiedHeight
+import com.material.music.presentation.components.resolveNavBarSurfaceHeight
+import com.material.music.presentation.components.sanitizeNavigationBarBottomInset
+import com.material.music.presentation.navigation.AppNavigation
+import com.material.music.presentation.navigation.Screen
+import com.material.music.presentation.screens.SetupScreen
+import com.material.music.presentation.viewmodel.MainViewModel
+import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.ui.theme.PixelPlayerTheme
+import com.material.music.utils.CrashHandler
+import com.material.music.utils.LogUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
@@ -139,10 +139,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
-import com.lostf1sh.pixelplayeross.presentation.utils.AppHapticsConfig
-import com.lostf1sh.pixelplayeross.presentation.utils.LocalAppHapticsConfig
-import com.lostf1sh.pixelplayeross.presentation.utils.NoOpHapticFeedback
-import com.lostf1sh.pixelplayeross.utils.CrashLogData
+import com.material.music.presentation.utils.AppHapticsConfig
+import com.material.music.presentation.utils.LocalAppHapticsConfig
+import com.material.music.presentation.utils.NoOpHapticFeedback
+import com.material.music.utils.CrashLogData
 import javax.annotation.concurrent.Immutable
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -362,14 +362,14 @@ class MainActivity : ComponentActivity() {
                 clearExternalIntentPayload(intent)
             }
             
-            intent.action == "com.lostf1sh.pixelplayeross.ACTION_PLAY_SONG" -> {
+            intent.action == "com.material.music.ACTION_PLAY_SONG" -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                     intent.getParcelableExtra("song", com.lostf1sh.pixelplayeross.data.model.Song::class.java)?.let { song ->
+                     intent.getParcelableExtra("song", com.material.music.data.model.Song::class.java)?.let { song ->
                          playerViewModel.playSong(song)
                      }
                 } else {
                      @Suppress("DEPRECATION")
-                     intent.getParcelableExtra<com.lostf1sh.pixelplayeross.data.model.Song>("song")?.let { song ->
+                     intent.getParcelableExtra<com.material.music.data.model.Song>("song")?.let { song ->
                          playerViewModel.playSong(song)
                      }
                 }
