@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.model
+package com.material.music.data.model
 
 /**
  * Preference for lyrics source priority order.

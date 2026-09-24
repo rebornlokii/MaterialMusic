@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.model
+package com.material.music.data.model
 
 enum class FolderSource(val storageKey: String, val displayName: String) {
     INTERNAL("internal", "Internal Storage"),

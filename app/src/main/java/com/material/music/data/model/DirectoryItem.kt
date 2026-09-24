@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.model
+package com.material.music.data.model
 
 import androidx.compose.runtime.Immutable
 import java.io.File
