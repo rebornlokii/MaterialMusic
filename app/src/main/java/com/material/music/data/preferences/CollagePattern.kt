@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.preferences
+package com.material.music.data.preferences
 
 enum class CollagePattern(
     val storageKey: String,

@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.preferences
+package com.material.music.data.preferences
 
 object LibraryNavigationMode {
     const val TAB_ROW = "tab_row"

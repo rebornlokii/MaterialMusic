@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.preferences
+package com.material.music.data.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -12,14 +12,14 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.media3.common.Player
-import com.lostf1sh.pixelplayeross.data.model.PlaybackQueueSnapshot
-import com.lostf1sh.pixelplayeross.data.model.Playlist
-import com.lostf1sh.pixelplayeross.data.model.SortOption
-import com.lostf1sh.pixelplayeross.data.model.FolderSource
-import com.lostf1sh.pixelplayeross.data.model.LyricsSourcePreference
-import com.lostf1sh.pixelplayeross.data.model.TransitionSettings
-import com.lostf1sh.pixelplayeross.data.equalizer.EqualizerPreset
-import com.lostf1sh.pixelplayeross.data.model.StorageFilter
+import com.material.music.data.model.PlaybackQueueSnapshot
+import com.material.music.data.model.Playlist
+import com.material.music.data.model.SortOption
+import com.material.music.data.model.FolderSource
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.data.model.TransitionSettings
+import com.material.music.data.equalizer.EqualizerPreset
+import com.material.music.data.model.StorageFilter
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.text.get

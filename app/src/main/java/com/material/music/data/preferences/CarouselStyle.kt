@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.preferences
+package com.material.music.data.preferences
 
 object CarouselStyle {
     const val NO_PEEK = "no_peek"

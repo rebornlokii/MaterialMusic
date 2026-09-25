@@ -1,11 +1,11 @@
-package com.lostf1sh.pixelplayeross.data.preferences
+package com.material.music.data.preferences
 
-import com.lostf1sh.pixelplayeross.data.database.LocalPlaylistDao
-import com.lostf1sh.pixelplayeross.data.model.Playlist
-import com.lostf1sh.pixelplayeross.data.database.toEntity
-import com.lostf1sh.pixelplayeross.data.database.toPlaylist
-import com.lostf1sh.pixelplayeross.data.model.isSmartPlaylist
-import com.lostf1sh.pixelplayeross.data.model.SortOption
+import com.material.music.data.database.LocalPlaylistDao
+import com.material.music.data.model.Playlist
+import com.material.music.data.database.toEntity
+import com.material.music.data.database.toPlaylist
+import com.material.music.data.model.isSmartPlaylist
+import com.material.music.data.model.SortOption
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
