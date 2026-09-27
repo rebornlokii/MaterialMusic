@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 
 
@@ -7,8 +7,8 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.repository.ArtistImageRepository
+import com.material.music.data.model.Song
+import com.material.music.data.repository.ArtistImageRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,35 +18,35 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
-import com.lostf1sh.pixelplayeross.data.database.FavoritesDao
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.SearchHistoryDao
-import com.lostf1sh.pixelplayeross.data.database.SearchHistoryEntity
-import com.lostf1sh.pixelplayeross.data.database.toAlbum
-import com.lostf1sh.pixelplayeross.data.database.toArtist
-import com.lostf1sh.pixelplayeross.data.database.toSearchHistoryItem
-import com.lostf1sh.pixelplayeross.data.database.toSong
-import com.lostf1sh.pixelplayeross.data.model.Album
-import com.lostf1sh.pixelplayeross.data.model.Artist
-import com.lostf1sh.pixelplayeross.data.model.Genre
-import com.lostf1sh.pixelplayeross.data.model.Lyrics
-import com.lostf1sh.pixelplayeross.data.model.LyricsSourcePreference
-import com.lostf1sh.pixelplayeross.data.model.MusicFolder
-import com.lostf1sh.pixelplayeross.data.model.Playlist
-import com.lostf1sh.pixelplayeross.data.model.SearchFilterType
-import com.lostf1sh.pixelplayeross.data.model.SearchHistoryItem
-import com.lostf1sh.pixelplayeross.data.model.SearchResultItem
-import com.lostf1sh.pixelplayeross.data.model.SortOption
-import com.lostf1sh.pixelplayeross.data.model.FolderSource
-import com.lostf1sh.pixelplayeross.data.model.StorageFilter
-import com.lostf1sh.pixelplayeross.data.preferences.PlaylistPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.ui.theme.GenreThemeUtils
-import com.lostf1sh.pixelplayeross.utils.DirectoryFilterUtils
-import com.lostf1sh.pixelplayeross.utils.LogUtils
-import com.lostf1sh.pixelplayeross.utils.StorageType
-import com.lostf1sh.pixelplayeross.utils.StorageUtils
-import com.lostf1sh.pixelplayeross.utils.toHexString
+import com.material.music.data.database.FavoritesDao
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SearchHistoryDao
+import com.material.music.data.database.SearchHistoryEntity
+import com.material.music.data.database.toAlbum
+import com.material.music.data.database.toArtist
+import com.material.music.data.database.toSearchHistoryItem
+import com.material.music.data.database.toSong
+import com.material.music.data.model.Album
+import com.material.music.data.model.Artist
+import com.material.music.data.model.Genre
+import com.material.music.data.model.Lyrics
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.data.model.MusicFolder
+import com.material.music.data.model.Playlist
+import com.material.music.data.model.SearchFilterType
+import com.material.music.data.model.SearchHistoryItem
+import com.material.music.data.model.SearchResultItem
+import com.material.music.data.model.SortOption
+import com.material.music.data.model.FolderSource
+import com.material.music.data.model.StorageFilter
+import com.material.music.data.preferences.PlaylistPreferencesRepository
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.ui.theme.GenreThemeUtils
+import com.material.music.utils.DirectoryFilterUtils
+import com.material.music.utils.LogUtils
+import com.material.music.utils.StorageType
+import com.material.music.utils.StorageUtils
+import com.material.music.utils.toHexString
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -159,7 +159,7 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getPaginatedSongs(sortOption: SortOption, storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter): Flow<PagingData<Song>> {
+    override fun getPaginatedSongs(sortOption: SortOption, storageFilter: com.material.music.data.model.StorageFilter): Flow<PagingData<Song>> {
         return songRepository.getPaginatedSongs(sortOption, storageFilter)
     }
 
@@ -737,7 +737,7 @@ class MusicRepositoryImpl @Inject constructor(
         val id = songId.toLongOrNull() ?: return@withContext
         if (isFavorite) {
             favoritesDao.setFavorite(
-                com.lostf1sh.pixelplayeross.data.database.FavoritesEntity(
+                com.material.music.data.database.FavoritesEntity(
                     songId = id,
                     isFavorite = true
                 )
@@ -933,7 +933,7 @@ class MusicRepositoryImpl @Inject constructor(
 
     override suspend fun getSongIdsSorted(
         sortOption: SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        storageFilter: com.material.music.data.model.StorageFilter
     ): List<Long> = withContext(Dispatchers.IO) {
         val filter = cachedDirFilter.value
         musicDao.getSongIdsSorted(
@@ -946,7 +946,7 @@ class MusicRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoriteSongIdsSorted(
         sortOption: SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        storageFilter: com.material.music.data.model.StorageFilter
     ): List<Long> = withContext(Dispatchers.IO) {
         val filter = cachedDirFilter.value
         musicDao.getFavoriteSongIdsSorted(

@@ -1,8 +1,8 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
-import com.lostf1sh.pixelplayeross.data.model.Lyrics
-import com.lostf1sh.pixelplayeross.data.model.LyricsSourcePreference
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.model.Lyrics
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.data.model.Song
 
 interface LyricsRepository {
     /**

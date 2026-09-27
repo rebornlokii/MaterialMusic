@@ -1,12 +1,12 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
-import com.lostf1sh.pixelplayeross.data.database.TransitionDao
-import com.lostf1sh.pixelplayeross.data.database.TransitionRuleEntity
-import com.lostf1sh.pixelplayeross.data.model.TransitionResolution
-import com.lostf1sh.pixelplayeross.data.model.TransitionRule
-import com.lostf1sh.pixelplayeross.data.model.TransitionSettings
-import com.lostf1sh.pixelplayeross.data.model.TransitionSource
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
+import com.material.music.data.database.TransitionDao
+import com.material.music.data.database.TransitionRuleEntity
+import com.material.music.data.model.TransitionResolution
+import com.material.music.data.model.TransitionRule
+import com.material.music.data.model.TransitionSettings
+import com.material.music.data.model.TransitionSource
+import com.material.music.data.preferences.UserPreferencesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest

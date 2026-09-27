@@ -1,7 +1,7 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import com.google.common.truth.Truth.assertThat
-import com.lostf1sh.pixelplayeross.data.database.FolderSongRow
+import com.material.music.data.database.FolderSongRow
 import org.junit.jupiter.api.Test
 
 class FolderTreeBuilderTest {

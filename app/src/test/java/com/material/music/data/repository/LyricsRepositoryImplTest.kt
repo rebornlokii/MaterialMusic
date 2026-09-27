@@ -1,14 +1,14 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import com.lostf1sh.pixelplayeross.data.database.LyricsEntity
-import com.lostf1sh.pixelplayeross.data.database.LyricsDao
-import com.lostf1sh.pixelplayeross.data.model.LyricsSourcePreference
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.network.lyrics.LrcLibApiService
-import com.lostf1sh.pixelplayeross.data.network.lyrics.LrcLibResponse
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
+import com.material.music.data.database.LyricsEntity
+import com.material.music.data.database.LyricsDao
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.data.model.Song
+import com.material.music.data.network.lyrics.LrcLibApiService
+import com.material.music.data.network.lyrics.LrcLibResponse
+import com.material.music.data.preferences.UserPreferencesRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

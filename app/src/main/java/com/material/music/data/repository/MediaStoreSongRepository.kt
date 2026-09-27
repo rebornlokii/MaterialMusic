@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.content.ContentUris
 import android.content.Context
@@ -7,22 +7,22 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.FavoritesDao
-import com.lostf1sh.pixelplayeross.data.database.toSong
-import com.lostf1sh.pixelplayeross.data.model.ArtistRef
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.observer.MediaStoreObserver
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.utils.AlbumArtUtils
-import com.lostf1sh.pixelplayeross.utils.DirectoryRuleResolver
-import com.lostf1sh.pixelplayeross.utils.DirectoryFilterUtils
-import com.lostf1sh.pixelplayeross.utils.LogUtils
-import com.lostf1sh.pixelplayeross.utils.buildLocalAudioSelection
-import com.lostf1sh.pixelplayeross.utils.normalizeMetadataText
-import com.lostf1sh.pixelplayeross.utils.normalizeMetadataTextOrEmpty
-import com.lostf1sh.pixelplayeross.utils.extractArtistsFromTitle
-import com.lostf1sh.pixelplayeross.utils.splitArtistsByDelimiters
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.FavoritesDao
+import com.material.music.data.database.toSong
+import com.material.music.data.model.ArtistRef
+import com.material.music.data.model.Song
+import com.material.music.data.observer.MediaStoreObserver
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.utils.AlbumArtUtils
+import com.material.music.utils.DirectoryRuleResolver
+import com.material.music.utils.DirectoryFilterUtils
+import com.material.music.utils.LogUtils
+import com.material.music.utils.buildLocalAudioSelection
+import com.material.music.utils.normalizeMetadataText
+import com.material.music.utils.normalizeMetadataTextOrEmpty
+import com.material.music.utils.extractArtistsFromTitle
+import com.material.music.utils.splitArtistsByDelimiters
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -380,7 +380,7 @@ class MediaStoreSongRepository @Inject constructor(
                     initialLoadSize = 50
                 ),
                 pagingSourceFactory = {
-                    com.lostf1sh.pixelplayeross.data.paging.MediaStorePagingSource(context, musicIds, genreMap)
+                    com.material.music.data.paging.MediaStorePagingSource(context, musicIds, genreMap)
                 }
             ).flow
         }.flowOn(Dispatchers.IO)
@@ -450,7 +450,7 @@ class MediaStoreSongRepository @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getPaginatedSongs(sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption, storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter): Flow<PagingData<Song>> {
+    override fun getPaginatedSongs(sortOption: com.material.music.data.model.SortOption, storageFilter: com.material.music.data.model.StorageFilter): Flow<PagingData<Song>> {
         return combine(
             userPreferencesRepository.allowedDirectoriesFlow,
             userPreferencesRepository.blockedDirectoriesFlow
@@ -481,8 +481,8 @@ class MediaStoreSongRepository @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getPaginatedFavoriteSongs(
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        sortOption: com.material.music.data.model.SortOption,
+        storageFilter: com.material.music.data.model.StorageFilter
     ): Flow<PagingData<Song>> {
         return combine(
             userPreferencesRepository.allowedDirectoriesFlow,
@@ -513,7 +513,7 @@ class MediaStoreSongRepository @Inject constructor(
     }
 
     override suspend fun getFavoriteSongsOnce(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        storageFilter: com.material.music.data.model.StorageFilter
     ): List<Song> = withContext(Dispatchers.IO) {
         val allowedDirs = userPreferencesRepository.allowedDirectoriesFlow.first()
         val blockedDirs = userPreferencesRepository.blockedDirectoriesFlow.first()
@@ -529,7 +529,7 @@ class MediaStoreSongRepository @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getFavoriteSongCountFlow(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        storageFilter: com.material.music.data.model.StorageFilter
     ): Flow<Int> {
         return combine(
             userPreferencesRepository.allowedDirectoriesFlow,

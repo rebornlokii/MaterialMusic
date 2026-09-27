@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.content.Context
 import android.net.Uri
@@ -9,20 +9,20 @@ import android.util.LruCache
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.kyant.taglib.TagLib
-import com.lostf1sh.pixelplayeross.R
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.model.Lyrics
-import com.lostf1sh.pixelplayeross.data.model.SyncedLine
-import com.lostf1sh.pixelplayeross.data.model.LyricsSourcePreference
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.network.lyrics.LrcLibApiService
-import com.lostf1sh.pixelplayeross.data.network.lyrics.LrcLibResponse
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.utils.LyricsImportSecurity
-import com.lostf1sh.pixelplayeross.utils.LyricsImportValidationResult
-import com.lostf1sh.pixelplayeross.utils.LogUtils
-import com.lostf1sh.pixelplayeross.utils.LyricsUtils
-import com.lostf1sh.pixelplayeross.utils.NetworkRetryUtils
+import com.material.music.R
+import com.material.music.data.database.MusicDao
+import com.material.music.data.model.Lyrics
+import com.material.music.data.model.SyncedLine
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.data.model.Song
+import com.material.music.data.network.lyrics.LrcLibApiService
+import com.material.music.data.network.lyrics.LrcLibResponse
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.utils.LyricsImportSecurity
+import com.material.music.utils.LyricsImportValidationResult
+import com.material.music.utils.LogUtils
+import com.material.music.utils.LyricsUtils
+import com.material.music.utils.NetworkRetryUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,7 +95,7 @@ private data class RemoteLyricsMatch(
 class LyricsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val lrcLibApiService: LrcLibApiService,
-    private val lyricsDao: com.lostf1sh.pixelplayeross.data.database.LyricsDao,
+    private val lyricsDao: com.material.music.data.database.LyricsDao,
     private val okHttpClient: OkHttpClient,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : LyricsRepository {
@@ -470,7 +470,7 @@ class LyricsRepositoryImpl @Inject constructor(
                         
                         try {
                             lyricsDao.insert(
-                                com.lostf1sh.pixelplayeross.data.database.LyricsEntity(
+                                com.material.music.data.database.LyricsEntity(
                                     songId = song.id.toLong(),
                                     content = rawLyrics,
                                     isSynced = !bestMatch.syncedLyrics.isNullOrBlank(),
@@ -805,7 +805,7 @@ class LyricsRepositoryImpl @Inject constructor(
         return@withContext null
     }
 
-    private fun readValidatedLocalLyrics(file: File): com.lostf1sh.pixelplayeross.utils.ValidatedLyricsImport? {
+    private fun readValidatedLocalLyrics(file: File): com.material.music.utils.ValidatedLyricsImport? {
         return when (val validation = LyricsImportSecurity.validateLocalLyricsFile(file)) {
             is LyricsImportValidationResult.Valid -> validation.value
             is LyricsImportValidationResult.Invalid -> null
@@ -1066,7 +1066,7 @@ class LyricsRepositoryImpl @Inject constructor(
 
                     try {
                         lyricsDao.insert(
-                             com.lostf1sh.pixelplayeross.data.database.LyricsEntity(
+                             com.material.music.data.database.LyricsEntity(
                                  songId = song.id.toLong(),
                                  content = rawLyricsToSave,
                                  isSynced = !best.lyrics.synced.isNullOrEmpty(),
@@ -1108,7 +1108,7 @@ class LyricsRepositoryImpl @Inject constructor(
 
                 try {
                     lyricsDao.insert(
-                        com.lostf1sh.pixelplayeross.data.database.LyricsEntity(
+                        com.material.music.data.database.LyricsEntity(
                             songId = song.id.toLong(),
                             content = rawLyricsToSave,
                             isSynced = !parsedLyrics.synced.isNullOrEmpty(),
@@ -1284,7 +1284,7 @@ class LyricsRepositoryImpl @Inject constructor(
         }
 
         lyricsDao.insert(
-             com.lostf1sh.pixelplayeross.data.database.LyricsEntity(
+             com.material.music.data.database.LyricsEntity(
                  songId = songId,
                  content = lyricsContent,
                  isSynced = parsedLyrics.synced?.isNotEmpty() == true,
@@ -1398,7 +1398,7 @@ class LyricsRepositoryImpl @Inject constructor(
                                     if (validated != null) {
                                         try {
                                             lyricsDao.insert(
-                                                 com.lostf1sh.pixelplayeross.data.database.LyricsEntity(
+                                                 com.material.music.data.database.LyricsEntity(
                                                      songId = song.id.toLong(),
                                                      content = validated.sanitizedContent,
                                                      isSynced = validated.parsedLyrics.synced?.isNotEmpty() == true,

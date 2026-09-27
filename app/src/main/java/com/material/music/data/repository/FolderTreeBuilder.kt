@@ -1,15 +1,15 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.content.Context
 import android.os.Environment
-import com.lostf1sh.pixelplayeross.data.database.FolderSongRow
-import com.lostf1sh.pixelplayeross.data.model.FolderSource
-import com.lostf1sh.pixelplayeross.data.model.MusicFolder
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.utils.DirectoryRuleResolver
-import com.lostf1sh.pixelplayeross.utils.LocalArtworkUri
-import com.lostf1sh.pixelplayeross.utils.StorageType
-import com.lostf1sh.pixelplayeross.utils.StorageUtils
+import com.material.music.data.database.FolderSongRow
+import com.material.music.data.model.FolderSource
+import com.material.music.data.model.MusicFolder
+import com.material.music.data.model.Song
+import com.material.music.utils.DirectoryRuleResolver
+import com.material.music.utils.LocalArtworkUri
+import com.material.music.utils.StorageType
+import com.material.music.utils.StorageUtils
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 import javax.inject.Singleton

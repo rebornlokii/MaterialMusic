@@ -1,16 +1,16 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.net.Uri
 import androidx.paging.PagingData
-import com.lostf1sh.pixelplayeross.data.model.Album
-import com.lostf1sh.pixelplayeross.data.model.Artist
-import com.lostf1sh.pixelplayeross.data.model.Lyrics
-import com.lostf1sh.pixelplayeross.data.model.LyricsSourcePreference
-import com.lostf1sh.pixelplayeross.data.model.Playlist
-import com.lostf1sh.pixelplayeross.data.model.SearchFilterType
-import com.lostf1sh.pixelplayeross.data.model.SearchHistoryItem
-import com.lostf1sh.pixelplayeross.data.model.SearchResultItem
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.model.Album
+import com.material.music.data.model.Artist
+import com.material.music.data.model.Lyrics
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.data.model.Playlist
+import com.material.music.data.model.SearchFilterType
+import com.material.music.data.model.SearchHistoryItem
+import com.material.music.data.model.SearchResultItem
+import com.material.music.data.model.Song
 import kotlinx.coroutines.flow.Flow
 
 interface MusicRepository {
@@ -24,14 +24,14 @@ interface MusicRepository {
      * Returns paginated songs for efficient display of large libraries.
      * @return Flow of PagingData<Song> for use with LazyPagingItems.
      */
-    fun getPaginatedSongs(sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption, storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter): Flow<PagingData<Song>>
+    fun getPaginatedSongs(sortOption: com.material.music.data.model.SortOption, storageFilter: com.material.music.data.model.StorageFilter): Flow<PagingData<Song>>
 
     /**
      * Returns paginated albums for efficient display in library tabs.
      */
     fun getPaginatedAlbums(
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL,
+        sortOption: com.material.music.data.model.SortOption,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL,
         minTracks: Int = 1
     ): Flow<PagingData<Album>>
 
@@ -39,8 +39,8 @@ interface MusicRepository {
      * Returns paginated artists for efficient display in library tabs.
      */
     fun getPaginatedArtists(
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        sortOption: com.material.music.data.model.SortOption,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): Flow<PagingData<Artist>>
 
     /**
@@ -48,15 +48,15 @@ interface MusicRepository {
      * @return Flow of PagingData<Song> for use with LazyPagingItems.
      */
     fun getPaginatedFavoriteSongs(
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        sortOption: com.material.music.data.model.SortOption,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): Flow<PagingData<Song>>
 
     /**
      * Returns all favorite songs as a list (for playback queue on shuffle).
      */
     suspend fun getFavoriteSongsOnce(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): List<Song>
 
     /**
@@ -65,15 +65,15 @@ interface MusicRepository {
     suspend fun getFavoriteSongsPage(
         limit: Int,
         offset: Int,
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption = com.lostf1sh.pixelplayeross.data.model.SortOption.LikedSongTitleAZ,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        sortOption: com.material.music.data.model.SortOption = com.material.music.data.model.SortOption.LikedSongTitleAZ,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): List<Song>
 
     /**
      * Returns the count of favorite songs (reactive).
      */
     fun getFavoriteSongCountFlow(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): Flow<Int>
 
     /**
@@ -101,8 +101,8 @@ interface MusicRepository {
     suspend fun getSongsPage(
         limit: Int,
         offset: Int,
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption = com.lostf1sh.pixelplayeross.data.model.SortOption.SongDefaultOrder,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        sortOption: com.material.music.data.model.SortOption = com.material.music.data.model.SortOption.SongDefaultOrder,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): List<Song>
 
     /**
@@ -111,8 +111,8 @@ interface MusicRepository {
     suspend fun getAlbumsPage(
         limit: Int,
         offset: Int,
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption = com.lostf1sh.pixelplayeross.data.model.SortOption.AlbumTitleAZ,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL,
+        sortOption: com.material.music.data.model.SortOption = com.material.music.data.model.SortOption.AlbumTitleAZ,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL,
         minTracks: Int = 1
     ): List<Album>
 
@@ -122,8 +122,8 @@ interface MusicRepository {
     suspend fun getArtistsPage(
         limit: Int,
         offset: Int,
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption = com.lostf1sh.pixelplayeross.data.model.SortOption.ArtistNameAZ,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        sortOption: com.material.music.data.model.SortOption = com.material.music.data.model.SortOption.ArtistNameAZ,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): List<Artist>
 
     /**
@@ -137,7 +137,7 @@ interface MusicRepository {
      * @return Flow that emits a complete list of Album objects.
      */
     fun getAlbums(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL,
         minTracks: Int = 1
     ): Flow<List<Album>>
 
@@ -146,7 +146,7 @@ interface MusicRepository {
      * @return Flow that emits a complete list of Artist objects.
      */
     fun getArtists(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
     ): Flow<List<Artist>>
 
     /**
@@ -171,7 +171,7 @@ interface MusicRepository {
      * @return List of Album objects.
      */
     suspend fun getAllAlbumsOnce(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL,
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL,
         minTracks: Int = 1
     ): List<Album>
 
@@ -289,7 +289,7 @@ interface MusicRepository {
      * Returns the list of genres, either mocked or read from metadata.
      * @return Flow that emits a list of Genre objects.
      */
-    fun getGenres(): Flow<List<com.lostf1sh.pixelplayeross.data.model.Genre>>
+    fun getGenres(): Flow<List<com.material.music.data.model.Genre>>
 
     suspend fun getLyrics(
         song: Song,
@@ -322,19 +322,19 @@ interface MusicRepository {
     suspend fun resetAllLyrics()
 
     fun getMusicFolders(
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter = com.lostf1sh.pixelplayeross.data.model.StorageFilter.ALL
-    ): Flow<List<com.lostf1sh.pixelplayeross.data.model.MusicFolder>>
+        storageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL
+    ): Flow<List<com.material.music.data.model.MusicFolder>>
 
     suspend fun deleteById(id: Long)
 
     suspend fun getSongIdsSorted(
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        sortOption: com.material.music.data.model.SortOption,
+        storageFilter: com.material.music.data.model.StorageFilter
     ): List<Long>
 
     suspend fun getFavoriteSongIdsSorted(
-        sortOption: com.lostf1sh.pixelplayeross.data.model.SortOption,
-        storageFilter: com.lostf1sh.pixelplayeross.data.model.StorageFilter
+        sortOption: com.material.music.data.model.SortOption,
+        storageFilter: com.material.music.data.model.StorageFilter
     ): List<Long>
 
     /**

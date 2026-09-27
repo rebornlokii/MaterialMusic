@@ -1,8 +1,8 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
-import com.lostf1sh.pixelplayeross.data.model.TransitionResolution
-import com.lostf1sh.pixelplayeross.data.model.TransitionRule
-import com.lostf1sh.pixelplayeross.data.model.TransitionSettings
+import com.material.music.data.model.TransitionResolution
+import com.material.music.data.model.TransitionRule
+import com.material.music.data.model.TransitionSettings
 import kotlinx.coroutines.flow.Flow
 
 /**

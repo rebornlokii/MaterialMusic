@@ -1,15 +1,15 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.LruCache
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.network.deezer.DeezerApiService
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.utils.NetworkRetryUtils
-import com.lostf1sh.pixelplayeross.utils.isRetryableNetworkError
+import com.material.music.data.database.MusicDao
+import com.material.music.data.network.deezer.DeezerApiService
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.utils.NetworkRetryUtils
+import com.material.music.utils.isRetryableNetworkError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async

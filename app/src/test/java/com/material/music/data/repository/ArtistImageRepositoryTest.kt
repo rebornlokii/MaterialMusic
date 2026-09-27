@@ -1,10 +1,10 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.network.deezer.DeezerApiService
-import com.lostf1sh.pixelplayeross.data.network.deezer.DeezerArtist
-import com.lostf1sh.pixelplayeross.data.network.deezer.DeezerSearchResponse
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
+import com.material.music.data.database.MusicDao
+import com.material.music.data.network.deezer.DeezerApiService
+import com.material.music.data.network.deezer.DeezerArtist
+import com.material.music.data.network.deezer.DeezerSearchResponse
+import com.material.music.data.preferences.UserPreferencesRepository
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify

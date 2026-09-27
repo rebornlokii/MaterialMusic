@@ -1,15 +1,15 @@
-package com.lostf1sh.pixelplayeross.data.repository
+package com.material.music.data.repository
 
 import android.content.Context
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.SearchHistoryDao
-import com.lostf1sh.pixelplayeross.data.database.SongEntity
-import com.lostf1sh.pixelplayeross.data.database.AlbumEntity
-import com.lostf1sh.pixelplayeross.data.database.ArtistEntity
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.preferences.PlaylistPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.database.FavoritesDao
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SearchHistoryDao
+import com.material.music.data.database.SongEntity
+import com.material.music.data.database.AlbumEntity
+import com.material.music.data.database.ArtistEntity
+import com.material.music.data.model.Song
+import com.material.music.data.preferences.PlaylistPreferencesRepository
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.database.FavoritesDao
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
