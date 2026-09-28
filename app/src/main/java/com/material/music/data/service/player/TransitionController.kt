@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service.player
+package com.material.music.data.service.player
 
 import androidx.annotation.OptIn
 import androidx.media3.common.C
@@ -6,11 +6,11 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
-import com.lostf1sh.pixelplayeross.data.model.TransitionMode
-import com.lostf1sh.pixelplayeross.data.model.TransitionResolution
-import com.lostf1sh.pixelplayeross.data.model.TransitionSource
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.repository.TransitionRepository
+import com.material.music.data.model.TransitionMode
+import com.material.music.data.model.TransitionResolution
+import com.material.music.data.model.TransitionSource
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.repository.TransitionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

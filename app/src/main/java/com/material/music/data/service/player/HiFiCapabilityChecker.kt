@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service.player
+package com.material.music.data.service.player
 
 import android.media.AudioFormat
 import android.media.AudioTrack

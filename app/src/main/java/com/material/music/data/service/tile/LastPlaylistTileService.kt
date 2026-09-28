@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service.tile
+package com.material.music.data.service.tile
 
 import android.content.Intent
 import android.net.Uri
@@ -7,13 +7,13 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.lostf1sh.pixelplayeross.MainActivity
-import com.lostf1sh.pixelplayeross.MainActivityIntentContract
-import com.lostf1sh.pixelplayeross.R
-import com.lostf1sh.pixelplayeross.data.model.MusicFolder
-import com.lostf1sh.pixelplayeross.data.preferences.PlaylistPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.repository.MusicRepository
+import com.material.music.MainActivity
+import com.material.music.MainActivityIntentContract
+import com.material.music.R
+import com.material.music.data.model.MusicFolder
+import com.material.music.data.preferences.PlaylistPreferencesRepository
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.repository.MusicRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors

@@ -1,5 +1,5 @@
 @file:Suppress("DEPRECATION")
-package com.lostf1sh.pixelplayeross.data.service
+package com.material.music.data.service
 
 import android.content.Context
 import android.content.Intent

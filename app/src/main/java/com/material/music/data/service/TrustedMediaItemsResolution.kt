@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service
+package com.material.music.data.service
 
 import androidx.media3.common.MediaItem
 

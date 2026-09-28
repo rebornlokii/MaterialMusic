@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service
+package com.material.music.data.service
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test

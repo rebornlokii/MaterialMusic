@@ -1,12 +1,12 @@
-package com.lostf1sh.pixelplayeross.data.service.tile
+package com.material.music.data.service.tile
 
 import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
-import com.lostf1sh.pixelplayeross.MainActivity
-import com.lostf1sh.pixelplayeross.MainActivityIntentContract
+import com.material.music.MainActivity
+import com.material.music.MainActivityIntentContract
 
 /**
  * Quick Settings tile that shuffles and plays all songs.

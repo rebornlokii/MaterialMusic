@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service.tile
+package com.material.music.data.service.tile
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent

@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service
+package com.material.music.data.service
 
 import android.app.AlarmManager
 import android.app.PendingIntent

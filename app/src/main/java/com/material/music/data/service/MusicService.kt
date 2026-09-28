@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service
+package com.material.music.data.service
 
 import android.app.BackgroundServiceStartNotAllowedException
 import android.app.ForegroundServiceStartNotAllowedException
@@ -39,23 +39,23 @@ import androidx.media3.session.SessionResult
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import com.lostf1sh.pixelplayeross.PixelPlayerApplication
-import com.lostf1sh.pixelplayeross.MainActivity
-import com.lostf1sh.pixelplayeross.R
-import com.lostf1sh.pixelplayeross.data.model.PlayerInfo
-import com.lostf1sh.pixelplayeross.data.model.PlaybackQueueItemSnapshot
-import com.lostf1sh.pixelplayeross.data.model.PlaybackQueueSnapshot
-import com.lostf1sh.pixelplayeross.data.preferences.EqualizerPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.ThemePreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.repository.MusicRepository
-import com.lostf1sh.pixelplayeross.data.service.player.DualPlayerEngine
-import com.lostf1sh.pixelplayeross.data.service.player.TransitionController
-import com.lostf1sh.pixelplayeross.ui.glancewidget.ControlWidget4x2
-import com.lostf1sh.pixelplayeross.ui.glancewidget.PixelPlayerGlanceWidget
-import com.lostf1sh.pixelplayeross.ui.glancewidget.PlayerActions
-import com.lostf1sh.pixelplayeross.ui.glancewidget.PlayerInfoStateDefinition
-import com.lostf1sh.pixelplayeross.utils.AlbumArtUtils
+import com.material.music.PixelPlayerApplication
+import com.material.music.MainActivity
+import com.material.music.R
+import com.material.music.data.model.PlayerInfo
+import com.material.music.data.model.PlaybackQueueItemSnapshot
+import com.material.music.data.model.PlaybackQueueSnapshot
+import com.material.music.data.preferences.EqualizerPreferencesRepository
+import com.material.music.data.preferences.ThemePreferencesRepository
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.repository.MusicRepository
+import com.material.music.data.service.player.DualPlayerEngine
+import com.material.music.data.service.player.TransitionController
+import com.material.music.ui.glancewidget.ControlWidget4x2
+import com.material.music.ui.glancewidget.PixelPlayerGlanceWidget
+import com.material.music.ui.glancewidget.PlayerActions
+import com.material.music.ui.glancewidget.PlayerInfoStateDefinition
+import com.material.music.utils.AlbumArtUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,24 +67,24 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import com.lostf1sh.pixelplayeross.data.equalizer.EqualizerManager
-import com.lostf1sh.pixelplayeross.data.equalizer.ExternalAudioEffectSession
-import com.lostf1sh.pixelplayeross.data.model.WidgetThemeColors
-import com.lostf1sh.pixelplayeross.data.preferences.AlbumArtColorAccuracy
-import com.lostf1sh.pixelplayeross.data.preferences.AlbumArtPaletteStyle
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.ColorSchemeProcessor
+import com.material.music.data.equalizer.EqualizerManager
+import com.material.music.data.equalizer.ExternalAudioEffectSession
+import com.material.music.data.model.WidgetThemeColors
+import com.material.music.data.preferences.AlbumArtColorAccuracy
+import com.material.music.data.preferences.AlbumArtPaletteStyle
+import com.material.music.presentation.viewmodel.ColorSchemeProcessor
 import androidx.compose.ui.graphics.toArgb
-import com.lostf1sh.pixelplayeross.ui.glancewidget.BarWidget4x1
-import com.lostf1sh.pixelplayeross.ui.glancewidget.GridWidget2x2
+import com.material.music.ui.glancewidget.BarWidget4x1
+import com.material.music.ui.glancewidget.GridWidget2x2
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import com.lostf1sh.pixelplayeross.data.preferences.ThemePreference
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.ColorSchemePair
-import com.lostf1sh.pixelplayeross.utils.ArtworkTransportSanitizer
-import com.lostf1sh.pixelplayeross.utils.MediaItemBuilder
-import com.lostf1sh.pixelplayeross.data.navidrome.NavidromeRepository
-import com.lostf1sh.pixelplayeross.di.AppScope
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.ListeningStatsTracker
+import com.material.music.data.preferences.ThemePreference
+import com.material.music.presentation.viewmodel.ColorSchemePair
+import com.material.music.utils.ArtworkTransportSanitizer
+import com.material.music.utils.MediaItemBuilder
+import com.material.music.data.navidrome.NavidromeRepository
+import com.material.music.di.AppScope
+import com.material.music.presentation.viewmodel.ListeningStatsTracker
 import kotlin.math.abs
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
@@ -170,7 +170,7 @@ class MusicService : MediaLibraryService() {
     @Inject
     lateinit var colorSchemeProcessor: ColorSchemeProcessor
     @Inject
-    lateinit var replayGainManager: com.lostf1sh.pixelplayeross.data.media.ReplayGainManager
+    lateinit var replayGainManager: com.material.music.data.media.ReplayGainManager
     @Inject
     lateinit var navidromeRepository: NavidromeRepository
     @Inject
@@ -220,9 +220,9 @@ class MusicService : MediaLibraryService() {
     companion object {
         private const val TAG = "MusicService_PixelPlayer"
         const val NOTIFICATION_ID = 101
-        const val ACTION_SLEEP_TIMER_EXPIRED = "com.lostf1sh.pixelplayeross.ACTION_SLEEP_TIMER_EXPIRED"
+        const val ACTION_SLEEP_TIMER_EXPIRED = "com.material.music.ACTION_SLEEP_TIMER_EXPIRED"
         const val EXTRA_FORCE_FOREGROUND_ON_START =
-            "com.lostf1sh.pixelplayeross.extra.FORCE_FOREGROUND_ON_START"
+            "com.material.music.extra.FORCE_FOREGROUND_ON_START"
         private const val PLAYBACK_SNAPSHOT_DEBOUNCE_MS = 1500L
         private const val FORCED_WIDGET_STATE_DEBOUNCE_MS = 250L
         private const val MEDIA_SESSION_BUTTON_DEBOUNCE_MS = 250L
@@ -230,7 +230,7 @@ class MusicService : MediaLibraryService() {
         private const val PAUSED_RESTORE_PREPARE_QUEUE_LIMIT = 50
         private val pendingMediaButtonForegroundStarts = AtomicInteger(0)
 
-        private const val APP_PACKAGE_PREFIX = "com.lostf1sh.pixelplayeross"
+        private const val APP_PACKAGE_PREFIX = "com.material.music"
         private const val LOCAL_LIBRARY_ROOT_ID = "pixelplayer_root"
         private const val DEFAULT_STREAM_BUFFER_SIZE = 8 * 1024
         private const val WIDGET_ART_FAILURE_RETRY_MS = 30_000L
@@ -1707,7 +1707,7 @@ class MusicService : MediaLibraryService() {
     private fun getOpenAppPendingIntent(): PendingIntent {
         val intent = Intent(this, MainActivity::class.java).apply {
             setPackage(packageName)
-            action = "com.lostf1sh.pixelplayeross.action.OPEN_PLAYER"
+            action = "com.material.music.action.OPEN_PLAYER"
             addCategory(Intent.CATEGORY_DEFAULT)
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("ACTION_SHOW_PLAYER", true)
@@ -1872,7 +1872,7 @@ class MusicService : MediaLibraryService() {
             )
         }
         val isFavorite = isSongFavorite(mediaId)
-        val queueItems = mutableListOf<com.lostf1sh.pixelplayeross.data.model.QueueItem>()
+        val queueItems = mutableListOf<com.material.music.data.model.QueueItem>()
         if (!snapshotTimeline.isEmpty) {
             val window = Timeline.Window()
 
@@ -1894,7 +1894,7 @@ class MusicService : MediaLibraryService() {
                         else -> initialQueueArtworkUri
                     }
                     queueItems.add(
-                        com.lostf1sh.pixelplayeross.data.model.QueueItem(
+                        com.material.music.data.model.QueueItem(
                             id = songId,
                             albumArtUri = queueArtworkUri?.toString()
                         )
@@ -2092,7 +2092,7 @@ class MusicService : MediaLibraryService() {
     public suspend fun loadArtworkBytesForWidget(uri: Uri): ByteArray? {
         val uriString = uri.toString()
         val scheme = uri.scheme?.lowercase()
-        val isLocalArtworkUri = com.lostf1sh.pixelplayeross.utils.LocalArtworkUri.isLocalArtworkUri(uriString)
+        val isLocalArtworkUri = com.material.music.utils.LocalArtworkUri.isLocalArtworkUri(uriString)
         return when {
             isLocalArtworkUri || scheme == "content" || scheme == "file" || scheme == "android.resource" -> {
                 runCatching {
