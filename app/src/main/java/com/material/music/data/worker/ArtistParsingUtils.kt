@@ -1,7 +1,7 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
-import com.lostf1sh.pixelplayeross.utils.extractArtistsFromTitle
-import com.lostf1sh.pixelplayeross.utils.splitArtistsByDelimiters
+import com.material.music.utils.extractArtistsFromTitle
+import com.material.music.utils.splitArtistsByDelimiters
 
 internal fun collectArtistNames(
     rawArtistName: String,

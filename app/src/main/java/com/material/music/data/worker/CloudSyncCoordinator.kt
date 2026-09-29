@@ -1,7 +1,7 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
-import com.lostf1sh.pixelplayeross.data.jellyfin.JellyfinRepository
-import com.lostf1sh.pixelplayeross.data.navidrome.NavidromeRepository
+import com.material.music.data.jellyfin.JellyfinRepository
+import com.material.music.data.navidrome.NavidromeRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import timber.log.Timber

@@ -1,7 +1,7 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
 import com.google.common.truth.Truth.assertThat
-import com.lostf1sh.pixelplayeross.data.database.SongEntity
+import com.material.music.data.database.SongEntity
 import org.junit.Test
 
 class AlbumGroupingUtilsTest {
@@ -76,7 +76,7 @@ class AlbumGroupingUtilsTest {
 
     @Test
     fun `buildAlbumGroupingKeys keeps media fallback even when artwork exists`() {
-        val album = com.lostf1sh.pixelplayeross.data.database.AlbumEntity(
+        val album = com.material.music.data.database.AlbumEntity(
             id = 77L,
             title = "Unknown Album",
             artistName = "",

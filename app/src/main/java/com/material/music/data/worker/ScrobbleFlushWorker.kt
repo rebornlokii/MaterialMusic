@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
@@ -9,10 +9,10 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzDao
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzPendingListenEntity
-import com.lostf1sh.pixelplayeross.data.listenbrainz.ListenBrainzRepository
-import com.lostf1sh.pixelplayeross.data.listenbrainz.ListenBrainzSubmitResult
+import com.material.music.data.database.ListenBrainzDao
+import com.material.music.data.database.ListenBrainzPendingListenEntity
+import com.material.music.data.listenbrainz.ListenBrainzRepository
+import com.material.music.data.listenbrainz.ListenBrainzSubmitResult
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import timber.log.Timber

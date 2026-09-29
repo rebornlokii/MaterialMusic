@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -14,28 +14,28 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.lostf1sh.pixelplayeross.data.database.AlbumEntity
-import com.lostf1sh.pixelplayeross.data.database.ArtistEntity
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.SongArtistCrossRef
-import com.lostf1sh.pixelplayeross.data.database.SongEntity
-import com.lostf1sh.pixelplayeross.data.database.SourceType
-import com.lostf1sh.pixelplayeross.data.database.serializeArtistRefs
-import com.lostf1sh.pixelplayeross.data.model.ArtistRef
-import com.lostf1sh.pixelplayeross.data.media.AudioMetadataReader
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.repository.LyricsRepository
-import com.lostf1sh.pixelplayeross.data.service.PlaybackActivityTracker
-import com.lostf1sh.pixelplayeross.utils.AlbumArtCacheManager
-import com.lostf1sh.pixelplayeross.utils.AlbumArtUtils
-import com.lostf1sh.pixelplayeross.utils.AudioMetaUtils.getAudioMetadata
-import com.lostf1sh.pixelplayeross.utils.DirectoryRuleResolver
-import com.lostf1sh.pixelplayeross.utils.LocalArtworkUri
-import com.lostf1sh.pixelplayeross.utils.buildLocalAudioSelection
-import com.lostf1sh.pixelplayeross.utils.normalizeMetadataTextOrEmpty
-import com.lostf1sh.pixelplayeross.utils.splitArtistsByDelimiters
-import com.lostf1sh.pixelplayeross.utils.traceAsyncSection
+import com.material.music.data.database.AlbumEntity
+import com.material.music.data.database.ArtistEntity
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SongArtistCrossRef
+import com.material.music.data.database.SongEntity
+import com.material.music.data.database.SourceType
+import com.material.music.data.database.serializeArtistRefs
+import com.material.music.data.model.ArtistRef
+import com.material.music.data.media.AudioMetadataReader
+import com.material.music.data.model.Song
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.repository.LyricsRepository
+import com.material.music.data.service.PlaybackActivityTracker
+import com.material.music.utils.AlbumArtCacheManager
+import com.material.music.utils.AlbumArtUtils
+import com.material.music.utils.AudioMetaUtils.getAudioMetadata
+import com.material.music.utils.DirectoryRuleResolver
+import com.material.music.utils.LocalArtworkUri
+import com.material.music.utils.buildLocalAudioSelection
+import com.material.music.utils.normalizeMetadataTextOrEmpty
+import com.material.music.utils.splitArtistsByDelimiters
+import com.material.music.utils.traceAsyncSection
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.io.File
@@ -1103,9 +1103,9 @@ constructor(
     }
 
     companion object {
-        const val WORK_NAME = "com.lostf1sh.pixelplayeross.data.worker.SyncWorker"
+        const val WORK_NAME = "com.material.music.data.worker.SyncWorker"
         const val PERIODIC_MAINTENANCE_WORK_NAME =
-            "com.lostf1sh.pixelplayeross.data.worker.SyncWorker.PeriodicMaintenance"
+            "com.material.music.data.worker.SyncWorker.PeriodicMaintenance"
         private const val TAG = "SyncWorker"
         const val INPUT_FORCE_METADATA = "input_force_metadata"
         const val INPUT_RUN_MAINTENANCE = "input_run_maintenance"

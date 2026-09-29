@@ -1,11 +1,11 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
-import com.lostf1sh.pixelplayeross.data.database.AlbumEntity
-import com.lostf1sh.pixelplayeross.data.database.SongEntity
-import com.lostf1sh.pixelplayeross.utils.LocalArtworkUri
-import com.lostf1sh.pixelplayeross.utils.normalizeMetadataText
-import com.lostf1sh.pixelplayeross.utils.normalizeMetadataTextOrEmpty
-import com.lostf1sh.pixelplayeross.utils.splitArtistsByDelimiters
+import com.material.music.data.database.AlbumEntity
+import com.material.music.data.database.SongEntity
+import com.material.music.utils.LocalArtworkUri
+import com.material.music.utils.normalizeMetadataText
+import com.material.music.utils.normalizeMetadataTextOrEmpty
+import com.material.music.utils.splitArtistsByDelimiters
 
 internal data class AlbumGroupingKey(
     val normalizedTitle: String,
