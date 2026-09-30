@@ -1,10 +1,10 @@
-package com.lostf1sh.pixelplayeross.data.network.navidrome
+package com.material.music.data.network.navidrome
 
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeAlbum
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeArtist
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeMusicFolder
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromePlaylist
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeSong
+import com.material.music.data.navidrome.model.NavidromeAlbum
+import com.material.music.data.navidrome.model.NavidromeArtist
+import com.material.music.data.navidrome.model.NavidromeMusicFolder
+import com.material.music.data.navidrome.model.NavidromePlaylist
+import com.material.music.data.navidrome.model.NavidromeSong
 import org.json.JSONObject
 import timber.log.Timber
 

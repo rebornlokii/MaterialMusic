@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.media
+package com.material.music.data.media
 
 import android.content.ContentUris
 import android.content.ContentValues
@@ -13,15 +13,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
-import com.lostf1sh.pixelplayeross.data.database.ArtistEntity
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.SongArtistCrossRef
-import com.lostf1sh.pixelplayeross.data.database.serializeArtistRefs
-import com.lostf1sh.pixelplayeross.data.model.ArtistRef
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.worker.collectArtistNames
-import com.lostf1sh.pixelplayeross.utils.AlbumArtUtils
-import com.lostf1sh.pixelplayeross.utils.LocalArtworkUri
+import com.material.music.data.database.ArtistEntity
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SongArtistCrossRef
+import com.material.music.data.database.serializeArtistRefs
+import com.material.music.data.model.ArtistRef
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.worker.collectArtistNames
+import com.material.music.utils.AlbumArtUtils
+import com.material.music.utils.LocalArtworkUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext

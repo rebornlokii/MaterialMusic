@@ -1,10 +1,10 @@
-package com.lostf1sh.pixelplayeross.data.media
+package com.material.music.data.media
 
 import android.content.Context
 import androidx.media3.common.MediaItem
-import com.lostf1sh.pixelplayeross.R
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.utils.MediaItemBuilder
+import com.material.music.R
+import com.material.music.data.model.Song
+import com.material.music.utils.MediaItemBuilder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

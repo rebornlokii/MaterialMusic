@@ -1,6 +1,6 @@
-package com.lostf1sh.pixelplayeross.data.network.jellyfin
+package com.material.music.data.network.jellyfin
 
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinCredentials
+import com.material.music.data.jellyfin.model.JellyfinCredentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl

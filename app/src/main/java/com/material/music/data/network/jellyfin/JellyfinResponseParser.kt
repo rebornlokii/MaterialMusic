@@ -1,10 +1,10 @@
-package com.lostf1sh.pixelplayeross.data.network.jellyfin
+package com.material.music.data.network.jellyfin
 
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinAlbum
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinArtist
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinLibrary
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinPlaylist
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinSong
+import com.material.music.data.jellyfin.model.JellyfinAlbum
+import com.material.music.data.jellyfin.model.JellyfinArtist
+import com.material.music.data.jellyfin.model.JellyfinLibrary
+import com.material.music.data.jellyfin.model.JellyfinPlaylist
+import com.material.music.data.jellyfin.model.JellyfinSong
 import org.json.JSONObject
 import timber.log.Timber
 

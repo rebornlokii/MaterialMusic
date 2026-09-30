@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.network.deezer
+package com.material.music.data.network.deezer
 
 import retrofit2.http.GET
 import retrofit2.http.Query

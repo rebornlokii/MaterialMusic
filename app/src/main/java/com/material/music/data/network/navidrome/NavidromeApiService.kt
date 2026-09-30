@@ -1,7 +1,7 @@
-package com.lostf1sh.pixelplayeross.data.network.navidrome
+package com.material.music.data.network.navidrome
 
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeAuthMethod
-import com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeCredentials
+import com.material.music.data.navidrome.model.NavidromeAuthMethod
+import com.material.music.data.navidrome.model.NavidromeCredentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
