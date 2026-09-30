@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d contrib.</string>
-    <string name="about_link_fdroid_subtitle">Disponibile nel catalogo F-Droid</string>
+    <string name="about_link_github_subtitle">Disponibile nel catalogo github</string>
     <string name="about_licenses_title">Licenze e attribuzioni</string>
     <string name="about_licenses_subtitle">Librerie open source, font e dati inclusi</string>
     <string name="about_licenses_sheet_subtitle">Software di terze parti, font e dati inclusi in questa app.</string>
@@ -19,7 +19,7 @@
     <string name="licenses_toast_copied">Testo della licenza copiato negli appunti</string>
     <string name="licenses_cd_close">Chiudi</string>
     <string name="licenses_cd_copy">Copia testo della licenza</string>
-    <string name="about_link_fdroid_title">F-Droid</string>
+    <string name="about_link_github_title">github</string>
     <string name="about_link_source_title">Codice sorgente</string>
     <string name="about_maintainer_subtitle">Manutenzione della versione FOSS e di quella originale/non FOSS.</string>
     <string name="about_maintainer_title">Manutentori</string>
@@ -228,7 +228,7 @@
     <string name="setup_navbar_footer">Puoi cambiarlo in seguito in Impostazioni &gt; Aspetto &gt; Stile barra navigazione.</string>
     <string name="setup_permission_alarms_title">Allarmi e promemoria</string>
     <string name="setup_battery_optimization_title">Ottimizzazione batteria</string>
-    <string name="setup_battery_optimization_description">Alcuni dispositivi Android chiudono aggressivamente le app in background. Disabilita l\'ottimizzazione batteria per PixelPlayerOSS per prevenire interruzioni di riproduzione impreviste.</string>
+    <string name="setup_battery_optimization_description">Alcuni dispositivi Android chiudono aggressivamente le app in background. Disabilita l\'ottimizzazione batteria per MaterialMusic per prevenire interruzioni di riproduzione impreviste.</string>
     <string name="setup_disable_battery_optimization">Disabilita ottimizzazione</string>
     <string name="setup_permission_granted">Permesso concesso</string>
     <string name="setup_permission_media_title">Permesso media</string>
@@ -276,13 +276,13 @@
     <string name="word_delimiter_toast_invalid">Esiste già o non è valido</string>
     <string name="word_delimiter_toast_reset">Delimitatori parola reimpostati ai predefiniti</string>
     <string name="word_delimiters_screen_title">Delimitatori parola</string>
-    <string name="easter_egg_thank_you">Grazie per aver scelto PixelPlayerOSS!</string>
-    <string name="setup_external_services_subtitle">PixelPlayerOSS funziona offline per impostazione predefinita. Attiva solo le ricerche che vuoi.</string>
-    <string name="setup_permission_media_description">PixelPlayerOSS ha bisogno di accedere ai tuoi file audio per creare la tua libreria musicale.</string>
-    <string name="setup_permission_alarms_description">Facoltativo, ma consigliato se usi il timer di spegnimento e vuoi che PixelPlayerOSS interrompa la riproduzione esattamente all\'ora impostata.</string>
-    <string name="setup_backup_have_description">Se hai già un backup di PixelPlayerOSS, ripristinalo ora e salta gran parte della configurazione rimanente su questo dispositivo.</string>
-    <string name="setup_theme_dark_description">L\'aspetto scuro Material 3 predefinito per PixelPlayerOSS.</string>
-    <string name="home_empty_placeholder_subtitle">Il tuo mix apparirà qui quando PixelPlayerOSS troverà dei brani o sincronizzerà una sorgente.</string>
-    <string name="crash_report_share_subject">Report crash di PixelPlayerOSS</string>
-    <string name="about_support_title">Sostieni PixelPlayerOSS</string>
+    <string name="easter_egg_thank_you">Grazie per aver scelto MaterialMusic!</string>
+    <string name="setup_external_services_subtitle">MaterialMusic funziona offline per impostazione predefinita. Attiva solo le ricerche che vuoi.</string>
+    <string name="setup_permission_media_description">MaterialMusic ha bisogno di accedere ai tuoi file audio per creare la tua libreria musicale.</string>
+    <string name="setup_permission_alarms_description">Facoltativo, ma consigliato se usi il timer di spegnimento e vuoi che MaterialMusic interrompa la riproduzione esattamente all\'ora impostata.</string>
+    <string name="setup_backup_have_description">Se hai già un backup di MaterialMusic, ripristinalo ora e salta gran parte della configurazione rimanente su questo dispositivo.</string>
+    <string name="setup_theme_dark_description">L\'aspetto scuro Material 3 predefinito per MaterialMusic.</string>
+    <string name="home_empty_placeholder_subtitle">Il tuo mix apparirà qui quando MaterialMusic troverà dei brani o sincronizzerà una sorgente.</string>
+    <string name="crash_report_share_subject">Report crash di MaterialMusic</string>
+    <string name="about_support_title">Sostieni MaterialMusic</string>
 </resources>

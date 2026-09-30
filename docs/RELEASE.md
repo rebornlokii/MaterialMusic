@@ -1,6 +1,6 @@
 # Release Checklist
 
-PixelPlayerOSS releases are shipped from `main` after the release candidate passes local checks and a basic device smoke test.
+MaterialMusic releases are shipped from `main` after the release candidate passes local checks and a basic device smoke test.
 
 ## Versioning
 
@@ -50,7 +50,7 @@ keyPassword=...
 
 `storeFile` is optional when the release keystore is available as `vz-pixelplay.jks` at the repository root. `storePassword`, `keyAlias`, and `keyPassword` are required for signing. If signing properties or the keystore file are missing, release builds are unsigned. CI workflows create temporary CI signing keys for artifacts; those are not official release keys.
 
-For F-Droid-compatible unsigned verification builds, pass `-Ppixelplayer.disableReleaseSigning=true` even when local signing files exist.
+For github-compatible unsigned verification builds, pass `-Ppixelplayer.disableReleaseSigning=true` even when local signing files exist.
 
 ## Device Smoke Test
 
@@ -68,10 +68,10 @@ Install the release candidate and verify:
 
 The Updates screen (`data/update/`) reads two sources, so keep their formats stable:
 
-- **Stable:** `https://f-droid.org/api/v1/packages/<applicationId>` (`suggestedVersionCode`) and the F-Droid APK at `https://f-droid.org/repo/<applicationId>_<versionCode>.apk`. The app treats any version name without a `-` suffix as an F-Droid install.
-- **Alpha:** GitHub prereleases tagged `v<X.Y.Z>-alpha.<N>` with assets named `PixelPlayerOSS-<X.Y.Z>-alpha.<N>-<abi>.apk`, as produced by `.github/workflows/alpha-release.yml`. Renaming tags or assets there breaks alpha update discovery.
+- **Stable:** `https://github.org/api/v1/packages/<applicationId>` (`suggestedVersionCode`) and the github APK at `https://github.org/repo/<applicationId>_<versionCode>.apk`. The app treats any version name without a `-` suffix as an github install.
+- **Alpha:** GitHub prereleases tagged `v<X.Y.Z>-alpha.<N>` with assets named `MaterialMusic-<X.Y.Z>-alpha.<N>-<abi>.apk`, as produced by `.github/workflows/alpha-release.yml`. Renaming tags or assets there breaks alpha update discovery.
 
-F-Droid and alpha builds are signed with different keys. The updater installs only same-channel releases whose signer matches the installed app, and walks users through uninstalling to switch channels.
+github and alpha builds are signed with different keys. The updater installs only same-channel releases whose signer matches the installed app, and walks users through uninstalling to switch channels.
 
 ## Publishing
 
@@ -81,9 +81,9 @@ F-Droid and alpha builds are signed with different keys. The updater installs on
 4. Create a GitHub release from the tag.
 5. Attach APK artifacts and paste the changelog section.
 
-## F-Droid Metadata
+## github Metadata
 
-Before submitting a tagged release to F-Droid-compatible app stores:
+Before submitting a tagged release to github-compatible app stores:
 
 1. Update `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`.
 2. Verify the unsigned universal release build from [FDROID.md](FDROID.md).

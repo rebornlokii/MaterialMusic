@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d Beiträge</string>
-    <string name="about_link_fdroid_subtitle">Im F-Droid-Katalog verfügbar</string>
+    <string name="about_link_github_subtitle">Im github-Katalog verfügbar</string>
     <string name="about_licenses_title">Lizenzen &amp; Namensnennung</string>
     <string name="about_licenses_subtitle">Open-Source-Bibliotheken, Schriftarten und mitgelieferte Daten</string>
     <string name="about_licenses_sheet_subtitle">Software, Schriftarten und Daten von Drittanbietern, die in dieser App enthalten sind.</string>
@@ -19,7 +19,7 @@
     <string name="licenses_toast_copied">Lizenztext in die Zwischenablage kopiert</string>
     <string name="licenses_cd_close">Schließen</string>
     <string name="licenses_cd_copy">Lizenztext kopieren</string>
-    <string name="about_link_fdroid_title">F-Droid</string>
+    <string name="about_link_github_title">github</string>
     <string name="about_link_source_title">Quellcode</string>
     <string name="about_maintainer_subtitle">Betreuung der FOSS- und der ursprünglichen/nicht-FOSS-Version.</string>
     <string name="about_maintainer_title">Maintainer</string>
@@ -228,7 +228,7 @@
     <string name="setup_navbar_footer">Änderbar unter Einstellungen &gt; Darstellung &gt; NavBar-Stil.</string>
     <string name="setup_permission_alarms_title">Alarme &amp; Erinnerungen</string>
     <string name="setup_battery_optimization_title">Akku-Optimierung</string>
-    <string name="setup_battery_optimization_description">Manche Geräte beenden Apps im Hintergrund aggressiv. Akku-Optimierung für PixelPlayerOSS deaktivieren, damit die Wiedergabe nicht unterbrochen wird.</string>
+    <string name="setup_battery_optimization_description">Manche Geräte beenden Apps im Hintergrund aggressiv. Akku-Optimierung für MaterialMusic deaktivieren, damit die Wiedergabe nicht unterbrochen wird.</string>
     <string name="setup_disable_battery_optimization">Optimierung deaktivieren</string>
     <string name="setup_permission_granted">Berechtigung erteilt</string>
     <string name="setup_permission_media_title">Medienberechtigung</string>
@@ -276,13 +276,13 @@
     <string name="word_delimiter_toast_invalid">Bereits vorhanden oder ungültig</string>
     <string name="word_delimiter_toast_reset">Wort-Trennzeichen zurückgesetzt</string>
     <string name="word_delimiters_screen_title">Wort-Trennzeichen</string>
-    <string name="easter_egg_thank_you">Danke, dass du PixelPlayerOSS verwendest!</string>
-    <string name="setup_external_services_subtitle">PixelPlayerOSS funktioniert standardmäßig offline. Aktiviere nur die Abfragen, die du möchtest.</string>
-    <string name="setup_permission_media_description">PixelPlayerOSS benötigt Zugriff auf deine Audiodateien, um deine Musikbibliothek aufzubauen.</string>
-    <string name="setup_permission_alarms_description">Optional, aber empfehlenswert, wenn du den Sleep Timer nutzt und möchtest, dass PixelPlayerOSS die Wiedergabe auf die Minute genau beendet.</string>
-    <string name="setup_backup_have_description">Wenn du bereits ein PixelPlayerOSS-Backup hast, stelle es jetzt wieder her und überspringe den Großteil der restlichen Einrichtung auf diesem Gerät.</string>
-    <string name="setup_theme_dark_description">Das standardmäßige dunkle Material-3-Design für PixelPlayerOSS.</string>
-    <string name="home_empty_placeholder_subtitle">Dein Mix erscheint hier, sobald PixelPlayerOSS Songs findet oder eine Quelle synchronisiert.</string>
-    <string name="crash_report_share_subject">PixelPlayerOSS-Absturzbericht</string>
-    <string name="about_support_title">PixelPlayerOSS unterstützen</string>
+    <string name="easter_egg_thank_you">Danke, dass du MaterialMusic verwendest!</string>
+    <string name="setup_external_services_subtitle">MaterialMusic funktioniert standardmäßig offline. Aktiviere nur die Abfragen, die du möchtest.</string>
+    <string name="setup_permission_media_description">MaterialMusic benötigt Zugriff auf deine Audiodateien, um deine Musikbibliothek aufzubauen.</string>
+    <string name="setup_permission_alarms_description">Optional, aber empfehlenswert, wenn du den Sleep Timer nutzt und möchtest, dass MaterialMusic die Wiedergabe auf die Minute genau beendet.</string>
+    <string name="setup_backup_have_description">Wenn du bereits ein MaterialMusic-Backup hast, stelle es jetzt wieder her und überspringe den Großteil der restlichen Einrichtung auf diesem Gerät.</string>
+    <string name="setup_theme_dark_description">Das standardmäßige dunkle Material-3-Design für MaterialMusic.</string>
+    <string name="home_empty_placeholder_subtitle">Dein Mix erscheint hier, sobald MaterialMusic Songs findet oder eine Quelle synchronisiert.</string>
+    <string name="crash_report_share_subject">MaterialMusic-Absturzbericht</string>
+    <string name="about_support_title">MaterialMusic unterstützen</string>
 </resources>
