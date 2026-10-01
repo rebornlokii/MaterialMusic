@@ -1,8 +1,8 @@
-package com.lostf1sh.pixelplayeross.data.jellyfin
+package com.material.music.data.jellyfin
 
 import com.google.common.truth.Truth.assertThat
-import com.lostf1sh.pixelplayeross.data.jellyfin.model.JellyfinLibrary
-import com.lostf1sh.pixelplayeross.data.network.jellyfin.JellyfinResponseParser
+import com.material.music.data.jellyfin.model.JellyfinLibrary
+import com.material.music.data.network.jellyfin.JellyfinResponseParser
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
 
