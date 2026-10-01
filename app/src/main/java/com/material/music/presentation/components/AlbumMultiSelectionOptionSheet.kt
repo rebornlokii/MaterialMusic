@@ -87,13 +87,13 @@ fun AlbumMultiSelectionOptionSheet(
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.presentation_batch_g_album_sel_count, selectedAlbums.size),
+                        text = stringResource(R.string.album_sel_count, selectedAlbums.size),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         fontFamily = RoundedSans
                     )
                     Text(
-                        text = stringResource(R.string.presentation_batch_g_album_sel_selected),
+                        text = stringResource(R.string.album_sel_selected),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontFamily = RoundedSans
@@ -104,12 +104,12 @@ fun AlbumMultiSelectionOptionSheet(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = stringResource(R.string.presentation_batch_g_album_sel_queue_hint),
+                text = stringResource(R.string.multi_selection_albums_queue_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = stringResource(R.string.presentation_batch_g_album_sel_limit, maxSelection),
+                text = stringResource(R.string.album_sel_limit, maxSelection),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
