@@ -155,12 +155,12 @@ fun PlaylistContainer(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        stringResource(R.string.presentation_batch_e_no_playlist_created),
+                        stringResource(R.string.playlist_container_no_playlist_created),
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        stringResource(R.string.presentation_batch_e_new_playlist_hint),
+                        stringResource(R.string.playlist_container_new_playlist_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -482,7 +482,7 @@ fun PlaylistItem(
                     } else {
                         Icon(
                             imageVector = Icons.Rounded.CheckCircle,
-                            contentDescription = stringResource(R.string.presentation_batch_g_cd_selected),
+                            contentDescription = stringResource(R.string.cd_selected),
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(16.dp)
                         )

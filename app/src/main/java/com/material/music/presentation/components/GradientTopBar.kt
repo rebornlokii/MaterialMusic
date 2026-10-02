@@ -137,8 +137,8 @@ fun HomeGradientTopBar(
                 ) {
                     Text(
                         text = when (BuildConfig.BUILD_TYPE) {
-                            "release" -> stringResource(R.string.presentation_batch_g_topbar_build_stable)
-                            "debug" -> stringResource(R.string.presentation_batch_g_topbar_build_debug)
+                            "release" -> stringResource(R.string.topbar_build_stable)
+                            "debug" -> stringResource(R.string.topbar_build_debug)
                             else -> BuildConfig.BUILD_TYPE.replaceFirstChar { it.uppercase() }
                         },
                         style = MaterialTheme.typography.titleSmall,
@@ -161,7 +161,7 @@ fun HomeGradientTopBar(
                 ) {
                     Icon(
                           imageVector = Icons.Rounded.Cloud,
-                          contentDescription = stringResource(R.string.presentation_batch_g_streaming_title)
+                          contentDescription = stringResource(R.string.topbar_cloud_streaming_title)
                     )
                 }
                 FilledIconButton(
@@ -173,7 +173,7 @@ fun HomeGradientTopBar(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.round_newspaper_24),
-                        contentDescription = stringResource(R.string.presentation_batch_g_topbar_cd_changelog)
+                        contentDescription = stringResource(R.string.topbar_cd_changelog)
                     )
                 }
                 FilledIconButton(
