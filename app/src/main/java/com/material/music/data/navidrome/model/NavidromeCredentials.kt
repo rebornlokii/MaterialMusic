@@ -1,6 +1,6 @@
-package com.lostf1sh.pixelplayeross.data.navidrome.model
+package com.material.music.data.navidrome.model
 
-import com.lostf1sh.pixelplayeross.data.stream.CloudStreamSecurity
+import com.material.music.data.stream.CloudStreamSecurity
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
@@ -12,7 +12,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
  * 2. Password in URL (p=enc:xxx) - used only when the server rejects tokens
  *
  * Which one is in play is tracked by the API client, not here; see
- * [com.lostf1sh.pixelplayeross.data.navidrome.model.NavidromeAuthMethod].
+ * [com.material.music.data.navidrome.model.NavidromeAuthMethod].
  *
  * @property serverUrl The base URL of the Navidrome server (e.g., "https://music.example.com")
  * @property username The username for authentication

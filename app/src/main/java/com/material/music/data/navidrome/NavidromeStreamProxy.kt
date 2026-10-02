@@ -1,8 +1,8 @@
-package com.lostf1sh.pixelplayeross.data.navidrome
+package com.material.music.data.navidrome
 
 import android.net.Uri
-import com.lostf1sh.pixelplayeross.data.stream.CloudStreamProxy
-import com.lostf1sh.pixelplayeross.data.stream.CloudStreamSecurity
+import com.material.music.data.stream.CloudStreamProxy
+import com.material.music.data.stream.CloudStreamSecurity
 import kotlinx.coroutines.CancellationException
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
