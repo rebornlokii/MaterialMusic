@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.listenbrainz
+package com.material.music.data.listenbrainz
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,9 +7,9 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzDao
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzPendingListenEntity
-import com.lostf1sh.pixelplayeross.data.worker.ScrobbleFlushWorker
+import com.material.music.data.database.ListenBrainzDao
+import com.material.music.data.database.ListenBrainzPendingListenEntity
+import com.material.music.data.worker.ScrobbleFlushWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

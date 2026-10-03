@@ -1,13 +1,13 @@
-package com.lostf1sh.pixelplayeross.data.listenbrainz
+package com.material.music.data.listenbrainz
 
 import android.os.SystemClock
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzDao
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzPendingListenEntity
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzSource
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.SongEntity
-import com.lostf1sh.pixelplayeross.data.preferences.ListenBrainzPreferencesRepository
-import com.lostf1sh.pixelplayeross.di.AppScope
+import com.material.music.data.database.ListenBrainzDao
+import com.material.music.data.database.ListenBrainzPendingListenEntity
+import com.material.music.data.database.ListenBrainzSource
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SongEntity
+import com.material.music.data.preferences.ListenBrainzPreferencesRepository
+import com.material.music.di.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 /**
  * Bridges finalized listening sessions to the ListenBrainz submission queue.
  *
- * Fed by [com.lostf1sh.pixelplayeross.presentation.viewmodel.ListeningStatsTracker]: the listen
+ * Fed by [com.material.music.presentation.viewmodel.ListeningStatsTracker]: the listen
  * threshold is evaluated synchronously (cheap math, safe inside the tracker's synchronized
  * finalize), everything else — song resolution, toggle check, queue insert — runs on [scope].
  *

@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.listenbrainz
+package com.material.music.data.listenbrainz
 
 import com.google.gson.annotations.SerializedName
 

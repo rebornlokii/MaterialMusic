@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.listenbrainz
+package com.material.music.data.listenbrainz
 
 import retrofit2.Response
 import retrofit2.http.Body
