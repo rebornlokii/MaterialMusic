@@ -95,8 +95,8 @@ fun ReorderPresetsSheet(
     if (showResetDialog) {
         AlertDialog(
             onDismissRequest = { showResetDialog = false },
-            title = { Text(stringResource(R.string.presentation_batch_e_reset_presets_title)) },
-            text = { Text(stringResource(R.string.presentation_batch_e_reset_presets_message)) },
+            title = { Text(stringResource(R.string.equalizer_reset_presets_title)) },
+            text = { Text(stringResource(R.string.equalizer_reset_presets_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -177,7 +177,7 @@ fun ReorderPresetsSheet(
                             ),
                             title = {
                                 Text(
-                                    text = stringResource(R.string.presentation_batch_e_manage_presets_title),
+                                    text = stringResource(R.string.equalizer_manage_presets_title),
                                     fontFamily = RoundedSans,
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontSize = 22.sp,
@@ -212,7 +212,7 @@ fun ReorderPresetsSheet(
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.outline_restart_alt_24),
-                                        contentDescription = stringResource(R.string.presentation_batch_e_cd_reset_presets_default)
+                                        contentDescription = stringResource(R.string.equalizer_cd_reset_presets_default)
                                     )
                                 }
                             }
@@ -252,7 +252,7 @@ fun ReorderPresetsSheet(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.presentation_batch_e_presets_drag_hint),
+                                text = stringResource(R.string.equalizer_presets_drag_hint),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(horizontal = 18.dp)
@@ -328,7 +328,7 @@ fun ReorderPresetsSheet(
                                                 ) {
                                                     Icon(
                                                         imageVector = Icons.Rounded.DragIndicator,
-                                                        contentDescription = stringResource(R.string.presentation_batch_b_reorder),
+                                                        contentDescription = stringResource(R.string.reorder),
                                                         modifier = if (item.isPinned) Modifier.draggableHandle() else Modifier,
                                                         tint = if (item.isPinned)
                                                             MaterialTheme.colorScheme.onSurfaceVariant
@@ -356,9 +356,9 @@ fun ReorderPresetsSheet(
                                                         else
                                                             Icons.Rounded.VisibilityOff,
                                                         contentDescription = if (item.isPinned) {
-                                                            stringResource(R.string.presentation_batch_e_cd_visible)
+                                                            stringResource(R.string.equalizer_cd_visible)
                                                         } else {
-                                                            stringResource(R.string.presentation_batch_e_cd_hidden)
+                                                            stringResource(R.string.equalizer_cd_hidden)
                                                         },
                                                         tint = if (item.isPinned)
                                                             MaterialTheme.colorScheme.primary
