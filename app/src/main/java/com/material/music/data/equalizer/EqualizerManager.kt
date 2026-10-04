@@ -1,5 +1,5 @@
 @file:Suppress("DEPRECATION")
-package com.lostf1sh.pixelplayeross.data.equalizer
+package com.material.music.data.equalizer
 
 import android.media.audiofx.Equalizer
 import android.media.audiofx.BassBoost

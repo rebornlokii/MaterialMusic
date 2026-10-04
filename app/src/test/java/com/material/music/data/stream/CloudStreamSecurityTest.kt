@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.stream
+package com.material.music.data.stream
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

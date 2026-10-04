@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.equalizer
+package com.material.music.data.equalizer
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable

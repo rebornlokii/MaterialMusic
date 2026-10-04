@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.equalizer
+package com.material.music.data.equalizer
 
 import android.content.Context
 import android.content.Intent
@@ -16,7 +16,7 @@ class ExternalAudioEffectSessionTest {
     @BeforeEach
     fun setUp() {
         context = mockk(relaxed = true)
-        every { context.packageName } returns "com.lostf1sh.pixelplayeross"
+        every { context.packageName } returns "com.material.music"
         session = ExternalAudioEffectSession(context)
     }
 

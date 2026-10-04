@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.stream
+package com.material.music.data.stream
 
 import io.ktor.http.HttpStatusCode
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
