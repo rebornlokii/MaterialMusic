@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data
+package com.material.music.data
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

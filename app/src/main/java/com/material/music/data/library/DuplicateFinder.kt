@@ -1,6 +1,6 @@
-package com.lostf1sh.pixelplayeross.data.library
+package com.material.music.data.library
 
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.model.Song
 
 /**
  * Pure, side-effect-free duplicate-track detection.

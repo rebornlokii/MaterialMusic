@@ -1,8 +1,8 @@
-package com.lostf1sh.pixelplayeross.data.stats
+package com.material.music.data.stats
 
 import com.google.common.truth.Truth.assertThat
-import com.lostf1sh.pixelplayeross.data.model.ArtistRef
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.model.ArtistRef
+import com.material.music.data.model.Song
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

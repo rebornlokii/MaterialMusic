@@ -1,8 +1,8 @@
-package com.lostf1sh.pixelplayeross.data.playlist
+package com.material.music.data.playlist
 
-import com.lostf1sh.pixelplayeross.data.DailyMixManager
-import com.lostf1sh.pixelplayeross.data.model.SmartPlaylistRule
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.DailyMixManager
+import com.material.music.data.model.SmartPlaylistRule
+import com.material.music.data.model.Song
 import java.util.concurrent.TimeUnit
 
 /**

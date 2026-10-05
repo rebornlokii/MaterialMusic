@@ -1,13 +1,13 @@
-package com.lostf1sh.pixelplayeross.data
+package com.material.music.data
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.lostf1sh.pixelplayeross.data.database.EngagementDao
-import com.lostf1sh.pixelplayeross.data.database.SongEngagementEntity
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.database.EngagementDao
+import com.material.music.data.database.SongEngagementEntity
+import com.material.music.data.model.Song
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

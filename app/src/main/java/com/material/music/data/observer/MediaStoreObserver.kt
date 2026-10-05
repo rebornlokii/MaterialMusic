@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.observer
+package com.material.music.data.observer
 
 import android.content.Context
 import android.database.ContentObserver

@@ -1,10 +1,10 @@
-package com.lostf1sh.pixelplayeross.data.playlist
+package com.material.music.data.playlist
 
 import android.content.Context
 import android.net.Uri
-import com.lostf1sh.pixelplayeross.data.model.Playlist
-import com.lostf1sh.pixelplayeross.data.model.Song
-import com.lostf1sh.pixelplayeross.data.repository.MusicRepository
+import com.material.music.data.model.Playlist
+import com.material.music.data.model.Song
+import com.material.music.data.repository.MusicRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.BufferedReader
 import java.io.InputStreamReader

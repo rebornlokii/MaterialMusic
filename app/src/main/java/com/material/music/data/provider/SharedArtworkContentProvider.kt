@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.provider
+package com.material.music.data.provider
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -7,7 +7,7 @@ import android.content.res.AssetFileDescriptor
 import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import com.lostf1sh.pixelplayeross.utils.AlbumArtUtils
+import com.material.music.utils.AlbumArtUtils
 import java.io.File
 import java.io.FileNotFoundException
 

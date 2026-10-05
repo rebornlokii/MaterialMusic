@@ -1,6 +1,6 @@
-package com.lostf1sh.pixelplayeross.data.library
+package com.material.music.data.library
 
-import com.lostf1sh.pixelplayeross.data.model.Song
+import com.material.music.data.model.Song
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
