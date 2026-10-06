@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.di
+package com.material.music.di
 
 import android.content.Context
 import androidx.annotation.OptIn
@@ -15,36 +15,36 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
-import com.lostf1sh.pixelplayeross.BuildConfig
-import com.lostf1sh.pixelplayeross.PixelPlayerApplication
-import com.lostf1sh.pixelplayeross.data.database.AlbumArtThemeDao
-import com.lostf1sh.pixelplayeross.data.database.EngagementDao
-import com.lostf1sh.pixelplayeross.data.database.FavoritesDao
-import com.lostf1sh.pixelplayeross.data.database.LyricsDao
-import com.lostf1sh.pixelplayeross.data.database.LocalPlaylistDao
-import com.lostf1sh.pixelplayeross.data.database.ListenBrainzDao
-import com.lostf1sh.pixelplayeross.data.database.MIGRATION_1_2
-import com.lostf1sh.pixelplayeross.data.database.MIGRATION_2_3
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.PixelPlayerDatabase
-import com.lostf1sh.pixelplayeross.data.database.SearchHistoryDao
-import com.lostf1sh.pixelplayeross.data.database.TransitionDao
-import com.lostf1sh.pixelplayeross.data.preferences.UserPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.PlaylistPreferencesRepository
-import com.lostf1sh.pixelplayeross.data.preferences.dataStore
-import com.lostf1sh.pixelplayeross.data.media.SongMetadataEditor
-import com.lostf1sh.pixelplayeross.data.network.deezer.DeezerApiService
-import com.lostf1sh.pixelplayeross.data.network.lyrics.LrcLibApiService
-import com.lostf1sh.pixelplayeross.data.repository.ArtistImageRepository
-import com.lostf1sh.pixelplayeross.data.repository.LyricsRepository
-import com.lostf1sh.pixelplayeross.data.repository.LyricsRepositoryImpl
-import com.lostf1sh.pixelplayeross.data.repository.MediaStoreSongRepository
-import com.lostf1sh.pixelplayeross.data.repository.MusicRepository
-import com.lostf1sh.pixelplayeross.data.repository.MusicRepositoryImpl
-import com.lostf1sh.pixelplayeross.data.repository.SongRepository
-import com.lostf1sh.pixelplayeross.data.repository.TransitionRepository
-import com.lostf1sh.pixelplayeross.data.repository.TransitionRepositoryImpl
-import com.lostf1sh.pixelplayeross.data.repository.FolderTreeBuilder
+import com.material.music.BuildConfig
+import com.material.music.PixelPlayerApplication
+import com.material.music.data.database.AlbumArtThemeDao
+import com.material.music.data.database.EngagementDao
+import com.material.music.data.database.FavoritesDao
+import com.material.music.data.database.LyricsDao
+import com.material.music.data.database.LocalPlaylistDao
+import com.material.music.data.database.ListenBrainzDao
+import com.material.music.data.database.MIGRATION_1_2
+import com.material.music.data.database.MIGRATION_2_3
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.PixelPlayerDatabase
+import com.material.music.data.database.SearchHistoryDao
+import com.material.music.data.database.TransitionDao
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.preferences.PlaylistPreferencesRepository
+import com.material.music.data.preferences.dataStore
+import com.material.music.data.media.SongMetadataEditor
+import com.material.music.data.network.deezer.DeezerApiService
+import com.material.music.data.network.lyrics.LrcLibApiService
+import com.material.music.data.repository.ArtistImageRepository
+import com.material.music.data.repository.LyricsRepository
+import com.material.music.data.repository.LyricsRepositoryImpl
+import com.material.music.data.repository.MediaStoreSongRepository
+import com.material.music.data.repository.MusicRepository
+import com.material.music.data.repository.MusicRepositoryImpl
+import com.material.music.data.repository.SongRepository
+import com.material.music.data.repository.TransitionRepository
+import com.material.music.data.repository.TransitionRepositoryImpl
+import com.material.music.data.repository.FolderTreeBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -84,7 +84,7 @@ object AppModule {
     fun provideSessionToken(@ApplicationContext context: Context): androidx.media3.session.SessionToken {
         return androidx.media3.session.SessionToken(
             context,
-            android.content.ComponentName(context, com.lostf1sh.pixelplayeross.data.service.MusicService::class.java)
+            android.content.ComponentName(context, com.material.music.data.service.MusicService::class.java)
         )
     }
 
@@ -186,13 +186,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNavidromeDao(database: PixelPlayerDatabase): com.lostf1sh.pixelplayeross.data.database.NavidromeDao {
+    fun provideNavidromeDao(database: PixelPlayerDatabase): com.material.music.data.database.NavidromeDao {
         return database.navidromeDao()
     }
     
     @Singleton
     @Provides
-    fun provideJellyfinDao(database: PixelPlayerDatabase): com.lostf1sh.pixelplayeross.data.database.JellyfinDao {
+    fun provideJellyfinDao(database: PixelPlayerDatabase): com.material.music.data.database.JellyfinDao {
         return database.jellyfinDao()
     }
 
@@ -249,7 +249,7 @@ object AppModule {
     @Singleton
     fun provideSongRepository(
         @ApplicationContext context: Context,
-        mediaStoreObserver: com.lostf1sh.pixelplayeross.data.observer.MediaStoreObserver,
+        mediaStoreObserver: com.material.music.data.observer.MediaStoreObserver,
         favoritesDao: FavoritesDao,
         userPreferencesRepository: UserPreferencesRepository,
         musicDao: MusicDao

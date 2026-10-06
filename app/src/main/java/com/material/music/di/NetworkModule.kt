@@ -1,7 +1,7 @@
-package com.lostf1sh.pixelplayeross.di
+package com.material.music.di
 
-import com.lostf1sh.pixelplayeross.data.listenbrainz.ListenBrainzApiService
-import com.lostf1sh.pixelplayeross.data.listenbrainz.ListenBrainzEndpoint
+import com.material.music.data.listenbrainz.ListenBrainzApiService
+import com.material.music.data.listenbrainz.ListenBrainzEndpoint
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

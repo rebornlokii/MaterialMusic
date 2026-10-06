@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.di
+package com.material.music.di
 
 import javax.inject.Qualifier
 
