@@ -465,8 +465,8 @@ private fun PlaybackPathCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             InfoTile(
-                label = stringResource(R.string.presentation_batch_g_device_label_sample_rate),
-                value = stringResource(R.string.presentation_batch_g_device_value_hz, audioCapabilities.outputSampleRate),
+                label = stringResource(R.string.device_label_sample_rate),
+                value = stringResource(R.string.device_value_hz, audioCapabilities.outputSampleRate),
                 supporting = stringResource(
                     R.string.device_capabilities_buffer_frames,
                     audioCapabilities.outputFramesPerBuffer
@@ -486,9 +486,9 @@ private fun PlaybackPathCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             InfoTile(
-                label = stringResource(R.string.presentation_batch_g_device_label_low_latency),
+                label = stringResource(R.string.device_label_low_latency),
                 value = yesNo(audioCapabilities.isLowLatencySupported),
-                supporting = stringResource(R.string.presentation_batch_g_device_label_pro_audio) +
+                supporting = stringResource(R.string.device_label_pro_audio) +
                     ": " + yesNo(audioCapabilities.isProAudioSupported),
                 modifier = Modifier.weight(1f)
             )
@@ -531,7 +531,7 @@ private fun PlaybackPathCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 InfoTile(
-                    label = stringResource(R.string.presentation_batch_g_device_section_exoplayer),
+                    label = stringResource(R.string.device_section_exoplayer),
                     value = exo.version,
                     supporting = stringResource(R.string.device_capabilities_renderers_count, exo.renderers),
                     icon = Icons.Rounded.Memory,
@@ -684,7 +684,7 @@ private fun DeviceInfoPanel(
     val localized = localizedDeviceInfoEntries(orderedEntries)
 
     CapabilityCard(
-        title = stringResource(R.string.presentation_batch_g_device_info_title),
+        title = stringResource(R.string.settings_devcaps_device_info_title),
         icon = Icons.Rounded.Info,
         verticalSpacing = 0.dp,
         enableTopSpacer = true,
@@ -1208,9 +1208,9 @@ private fun SectionLabel(text: String) {
 @Composable
 private fun yesNo(value: Boolean): String {
     return if (value) {
-        stringResource(R.string.presentation_batch_g_yes)
+        stringResource(R.string.yes)
     } else {
-        stringResource(R.string.presentation_batch_g_no)
+        stringResource(R.string.no)
     }
 }
 
@@ -1228,13 +1228,13 @@ private fun audioOutputCategoryLabel(category: AudioOutputCategory): String {
 
 @Composable
 private fun localizedDeviceInfoEntries(entries: List<Pair<String, String>>): List<Pair<String, String>> {
-    val lManufacturer = stringResource(R.string.presentation_batch_g_device_key_manufacturer)
-    val lModel = stringResource(R.string.presentation_batch_g_device_key_model)
-    val lBrand = stringResource(R.string.presentation_batch_g_device_key_brand)
-    val lDevice = stringResource(R.string.presentation_batch_g_device_key_device)
-    val lAndroid = stringResource(R.string.presentation_batch_g_device_key_android_version)
-    val lSdk = stringResource(R.string.presentation_batch_g_device_key_sdk_version)
-    val lHardware = stringResource(R.string.presentation_batch_g_device_key_hardware)
+    val lManufacturer = stringResource(R.string.settings_devcaps_device_info_manufacturer)
+    val lModel = stringResource(R.string.device_key_model)
+    val lBrand = stringResource(R.string.device_key_brand)
+    val lDevice = stringResource(R.string.device_key_device)
+    val lAndroid = stringResource(R.string.settings_devcaps_device_info_android_version)
+    val lSdk = stringResource(R.string.settings_devcaps_device_info_sdk_version)
+    val lHardware = stringResource(R.string.device_key_hardware)
 
     return entries.map { (key, value) ->
         val label = when (key) {

@@ -100,8 +100,8 @@ fun DailyMixScreen(
     playerViewModel: PlayerViewModel,
     navController: NavController,
 ) = traceSection("DailyMixScreen.Composition") {
-    val dailyMixTitle = stringResource(R.string.presentation_batch_b_daily_mix_title)
-    val playItLabel = stringResource(R.string.presentation_batch_b_play_it)
+    val dailyMixTitle = stringResource(R.string.daily_mix_title)
+    val playItLabel = stringResource(R.string.play_it)
     val shuffleLabel = stringResource(R.string.shortcut_shuffle_short)
     val dailyMixSongs: ImmutableList<Song> by playerViewModel.dailyMixSongs.collectAsStateWithLifecycle()
     val currentSongId by remember { playerViewModel.stablePlayerState.map { it.currentSong?.id }.distinctUntilChanged() }.collectAsStateWithLifecycle(initialValue = null)
@@ -375,7 +375,7 @@ private fun ExpressiveDailyMixHeader(
     songs: ImmutableList<Song>,
     scrollState: LazyListState
 ) = traceSection("ExpressiveDailyMixHeader.Composition") {
-    val dailyMixHeaderTitle = stringResource(R.string.presentation_batch_b_daily_mix_title)
+    val dailyMixHeaderTitle = stringResource(R.string.daily_mix_title)
     val albumArts = remember(songs) { songs.map { it.albumArtUriString }.distinct().take(3) }
     val totalDuration = remember(songs) { songs.sumOf { it.duration } }
 
@@ -502,7 +502,7 @@ private fun ExpressiveDailyMixHeader(
                 Text(
                     modifier = Modifier.padding(start = 3.dp),
                     text = pluralStringResource(
-                        R.plurals.presentation_batch_b_songs_dot_duration,
+                        R.plurals.daily_mix_songs_dot_duration,
                         songs.size,
                         songs.size,
                         formatDuration(totalDuration)

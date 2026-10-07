@@ -179,10 +179,10 @@ data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val 
 private fun smartPlaylistRuleTitle(rule: SmartPlaylistRule): String =
     stringResource(
         when (rule) {
-            SmartPlaylistRule.TOP_PLAYED -> R.string.presentation_batch_f_smart_rule_top_played_title
-            SmartPlaylistRule.RECENTLY_PLAYED -> R.string.presentation_batch_f_smart_rule_recently_played_title
-            SmartPlaylistRule.FORGOTTEN_FAVORITES -> R.string.presentation_batch_f_smart_rule_forgotten_favorites_title
-            SmartPlaylistRule.NEW_GEMS -> R.string.presentation_batch_f_smart_rule_new_gems_title
+            SmartPlaylistRule.TOP_PLAYED -> R.string.playlist_creation_rule_top_played_title
+            SmartPlaylistRule.RECENTLY_PLAYED -> R.string.playlist_creation_rule_recently_played_title
+            SmartPlaylistRule.FORGOTTEN_FAVORITES -> R.string.playlist_creation_rule_forgotten_title
+            SmartPlaylistRule.NEW_GEMS -> R.string.playlist_creation_rule_new_gems_title
         }
     )
 
@@ -190,10 +190,10 @@ private fun smartPlaylistRuleTitle(rule: SmartPlaylistRule): String =
 private fun smartPlaylistRuleSubtitle(rule: SmartPlaylistRule): String =
     stringResource(
         when (rule) {
-            SmartPlaylistRule.TOP_PLAYED -> R.string.presentation_batch_f_smart_rule_top_played_subtitle
-            SmartPlaylistRule.RECENTLY_PLAYED -> R.string.presentation_batch_f_smart_rule_recently_played_subtitle
-            SmartPlaylistRule.FORGOTTEN_FAVORITES -> R.string.presentation_batch_f_smart_rule_forgotten_favorites_subtitle
-            SmartPlaylistRule.NEW_GEMS -> R.string.presentation_batch_f_smart_rule_new_gems_subtitle
+            SmartPlaylistRule.TOP_PLAYED -> R.string.playlist_creation_rule_top_played_sub
+            SmartPlaylistRule.RECENTLY_PLAYED -> R.string.playlist_creation_rule_recently_played_sub
+            SmartPlaylistRule.FORGOTTEN_FAVORITES -> R.string.smart_rule_forgotten_favorites_subtitle
+            SmartPlaylistRule.NEW_GEMS -> R.string.playlist_creation_rule_new_gems_sub
         }
     )
 
@@ -368,15 +368,15 @@ private fun CreatePlaylistContent(
                     AnimatedContent(targetState = if (showCropUi) 2 else currentStep, label = "Title Animation") { displayStep ->
                         Text(
                             when (displayStep) {
-                                2 -> stringResource(R.string.presentation_batch_f_edit_cover_title)
+                                2 -> stringResource(R.string.edit_cover_title)
                                 0 -> {
                                     if (creationMode == PlaylistCreationMode.SMART) {
-                                        stringResource(R.string.presentation_batch_f_new_smart_playlist)
+                                        stringResource(R.string.new_smart_playlist)
                                     } else {
-                                        stringResource(R.string.presentation_batch_f_new_playlist)
+                                        stringResource(R.string.new_playlist)
                                     }
                                 }
-                                else -> stringResource(R.string.presentation_batch_f_add_songs)
+                                else -> stringResource(R.string.playlist_cd_add_songs)
                             },
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontSize = 24.sp,
@@ -408,7 +408,7 @@ private fun CreatePlaylistContent(
                             } else {
                                 Icons.Rounded.Close
                             },
-                            contentDescription = stringResource(R.string.presentation_batch_f_cd_back_or_cancel)
+                            contentDescription = stringResource(R.string.playlist_creation_cd_back_or_cancel)
                         )
                     }
                 },
@@ -423,9 +423,9 @@ private fun CreatePlaylistContent(
                     text = {
                         Text(
                             if (currentStep == 0 && creationMode == PlaylistCreationMode.MANUAL) {
-                                stringResource(R.string.presentation_batch_f_next)
+                                stringResource(R.string.next)
                             } else {
-                                stringResource(R.string.presentation_batch_f_create)
+                                stringResource(R.string.create)
                             }
                         )
                     },
@@ -627,7 +627,7 @@ private fun CreatePlaylistContent(
                     ) {
                         Icon(
                             Icons.Rounded.Check,
-                            contentDescription = stringResource(R.string.presentation_batch_f_create),
+                            contentDescription = stringResource(R.string.create),
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -794,7 +794,7 @@ fun EditPlaylistContent(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        stringResource(R.string.presentation_batch_f_edit_playlist),
+                        stringResource(R.string.playlist_action_edit_playlist),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontSize = 24.sp,
                             textGeometricTransform = TextGeometricTransform(scaleX = 1.2f),
@@ -816,7 +816,7 @@ fun EditPlaylistContent(
                     ) {
                         Icon(
                             if (showCropUi) Icons.AutoMirrored.Rounded.ArrowBack else Icons.Rounded.Close,
-                            contentDescription = stringResource(if (showCropUi) R.string.presentation_batch_f_cd_back_or_cancel else R.string.presentation_batch_f_cd_close)
+                            contentDescription = stringResource(if (showCropUi) R.string.playlist_creation_cd_back_or_cancel else R.string.brick_cd_close)
                         )
                     }
                 },
@@ -828,7 +828,7 @@ fun EditPlaylistContent(
         floatingActionButton = {
             if (!showCropUi) {
                 MediumExtendedFloatingActionButton(
-                    text = { Text(stringResource(R.string.presentation_batch_f_save)) },
+                    text = { Text(stringResource(R.string.save)) },
                     icon = { Icon(Icons.Rounded.Check, contentDescription = null) },
                     onClick = {
                         val imageUriString = if(selectedTab == 1) selectedImageUri?.toString() else null
@@ -973,14 +973,14 @@ private fun PlaylistFormContent(
                  ) {
                      Spacer(Modifier.height(32.dp))
                      Text(
-                         text = stringResource(R.string.presentation_batch_f_adjust_cover_title),
+                         text = stringResource(R.string.playlist_creation_adjust_cover_title),
                          style = MaterialTheme.typography.headlineSmall,
                          textAlign = TextAlign.Center,
                          modifier = Modifier.padding(horizontal = 24.dp)
                      )
                      Spacer(Modifier.height(8.dp))
                      Text(
-                         text = stringResource(R.string.presentation_batch_f_adjust_cover_hint),
+                         text = stringResource(R.string.playlist_creation_adjust_cover_hint),
                          style = MaterialTheme.typography.bodySmall,
                          color = MaterialTheme.colorScheme.onSurfaceVariant,
                          textAlign = TextAlign.Center,
@@ -1017,7 +1017,7 @@ private fun PlaylistFormContent(
                     ) {
                         Icon(Icons.Rounded.Check, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.presentation_batch_f_done))
+                        Text(stringResource(R.string.done))
                     }
                  }
              } else {
@@ -1066,7 +1066,7 @@ private fun PlaylistFormContent(
                             }
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                stringResource(R.string.presentation_batch_f_auto_generated_collage),
+                                stringResource(R.string.auto_generated_collage),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -1102,7 +1102,7 @@ private fun PlaylistFormContent(
                                      ) {
                                          Icon(Icons.Rounded.AddPhotoAlternate, contentDescription = null, modifier = Modifier.size(18.dp))
                                          Spacer(Modifier.width(8.dp))
-                                         Text(stringResource(R.string.presentation_batch_f_change), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                         Text(stringResource(R.string.change), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                      }
                                      Button(
                                          onClick = { onImageUriChange(null) },
@@ -1115,7 +1115,7 @@ private fun PlaylistFormContent(
                                      ) {
                                          Icon(Icons.Rounded.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
                                          Spacer(Modifier.width(8.dp))
-                                         Text(stringResource(R.string.presentation_batch_f_remove), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                         Text(stringResource(R.string.remove), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                      }
                                  }
                              }
@@ -1131,12 +1131,12 @@ private fun PlaylistFormContent(
                                  Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                      Icon(
                                          Icons.Rounded.AddPhotoAlternate,
-                                         contentDescription = stringResource(R.string.presentation_batch_f_cd_add_photo),
+                                         contentDescription = stringResource(R.string.cd_add_photo),
                                          modifier = Modifier.size(56.dp),
                                          tint = MaterialTheme.colorScheme.primary
                                      )
                                      Spacer(Modifier.height(12.dp))
-                                     Text(stringResource(R.string.presentation_batch_f_pick_image), style = MaterialTheme.typography.titleSmall)
+                                     Text(stringResource(R.string.pick_image), style = MaterialTheme.typography.titleSmall)
                                  }
                              }
                          }
@@ -1223,8 +1223,8 @@ private fun PlaylistFormContent(
             OutlinedTextField(
                 value = playlistName,
                 onValueChange = onNameChange,
-                label = { Text(stringResource(R.string.presentation_batch_f_playlist_name_label)) },
-                placeholder = { Text(stringResource(R.string.presentation_batch_f_playlist_name_placeholder)) },
+                label = { Text(stringResource(R.string.playlist_creation_name_label)) },
+                placeholder = { Text(stringResource(R.string.playlist_creation_name_placeholder)) },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1252,14 +1252,14 @@ private fun PlaylistFormContent(
                         onClick = { onCreationModeChange(PlaylistCreationMode.MANUAL) },
                         shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
                     ) {
-                        Text(stringResource(R.string.presentation_batch_f_creation_mode_manual))
+                        Text(stringResource(R.string.playlist_creation_mode_manual))
                     }
                     SegmentedButton(
                         selected = creationMode == PlaylistCreationMode.SMART,
                         onClick = { onCreationModeChange(PlaylistCreationMode.SMART) },
                         shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
                     ) {
-                        Text(stringResource(R.string.presentation_batch_f_creation_mode_smart))
+                        Text(stringResource(R.string.playlist_creation_mode_smart))
                     }
                 }
             }
@@ -1272,7 +1272,7 @@ private fun PlaylistFormContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.presentation_batch_f_smart_rule),
+                        text = stringResource(R.string.smart_rule),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -1300,9 +1300,9 @@ private fun PlaylistFormContent(
             }
 
             val tabs = persistentListOf(
-                stringResource(R.string.presentation_batch_f_tab_default),
-                stringResource(R.string.presentation_batch_f_tab_image),
-                stringResource(R.string.presentation_batch_f_tab_icon)
+                stringResource(R.string.tab_default),
+                stringResource(R.string.tab_image),
+                stringResource(R.string.tab_icon)
             )
             ExpressiveButtonGroup(
                 items = tabs,
@@ -1320,7 +1320,7 @@ private fun PlaylistFormContent(
                  ) {
                      Text(
                          modifier = Modifier.padding(start = 22.dp),
-                         text = stringResource(R.string.presentation_batch_f_background_color),
+                         text = stringResource(R.string.background_color),
                          style = MaterialTheme.typography.titleSmall,
                          color = MaterialTheme.colorScheme.onSurfaceVariant
                      )
@@ -1376,7 +1376,7 @@ private fun PlaylistFormContent(
 
                      Text(
                          modifier = Modifier.padding(start = 22.dp),
-                         text = stringResource(R.string.presentation_batch_f_icon_symbol),
+                         text = stringResource(R.string.icon_symbol),
                          style = MaterialTheme.typography.titleSmall,
                          color = MaterialTheme.colorScheme.onSurfaceVariant
                      )
@@ -1417,7 +1417,7 @@ private fun PlaylistFormContent(
 
                      Text(
                          modifier = Modifier.padding(start = 22.dp),
-                         text = stringResource(R.string.presentation_batch_f_shape_style),
+                         text = stringResource(R.string.shape_style),
                          style = MaterialTheme.typography.titleSmall,
                          color = MaterialTheme.colorScheme.onSurfaceVariant
                      )
@@ -1476,9 +1476,9 @@ private fun PlaylistFormContent(
                              modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 8.dp),
                              verticalArrangement = Arrangement.spacedBy(16.dp)
                          ) {
-                             Text(stringResource(R.string.presentation_batch_f_shape_parameters), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                             ShapeParameterCard(stringResource(R.string.presentation_batch_f_corner_radius), smoothRectCornerRadius, 0f..50f, onSmoothRectCornerRadiusChange, { it.toInt().toString() })
-                             ShapeParameterCard(stringResource(R.string.presentation_batch_f_smoothness), smoothRectSmoothness, 0f..100f, onSmoothRectSmoothnessChange, { "${it.toInt()}%" })
+                             Text(stringResource(R.string.shape_parameters), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                             ShapeParameterCard(stringResource(R.string.navbar_corner_radius_label), smoothRectCornerRadius, 0f..50f, onSmoothRectCornerRadiusChange, { it.toInt().toString() })
+                             ShapeParameterCard(stringResource(R.string.smoothness), smoothRectSmoothness, 0f..100f, onSmoothRectSmoothnessChange, { "${it.toInt()}%" })
                          }
                      }
                      
@@ -1487,11 +1487,11 @@ private fun PlaylistFormContent(
                              modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 8.dp),
                              verticalArrangement = Arrangement.spacedBy(16.dp)
                          ) {
-                             Text(stringResource(R.string.presentation_batch_f_shape_parameters), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                             ShapeParameterCard(stringResource(R.string.presentation_batch_f_sides), starSides.toFloat(), 3f..20f, { onStarSidesChange(it.toInt()) }, { it.toInt().toString() }, steps = 17)
-                             ShapeParameterCard(stringResource(R.string.presentation_batch_f_curve), starCurve.toFloat(), 0f..0.5f, { onStarCurveChange(it.toDouble()) }, { String.format(Locale.US, "%.2f", it) })
-                             ShapeParameterCard(stringResource(R.string.presentation_batch_f_rotation), starRotation, 0f..360f, onStarRotationChange, { "${it.toInt()}°" })
-                             ShapeParameterCard(stringResource(R.string.presentation_batch_f_scale), starScale, 0.5f..1.5f, onStarScaleChange, { String.format(Locale.US, "%.1fx", it) })
+                             Text(stringResource(R.string.shape_parameters), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                             ShapeParameterCard(stringResource(R.string.sides), starSides.toFloat(), 3f..20f, { onStarSidesChange(it.toInt()) }, { it.toInt().toString() }, steps = 17)
+                             ShapeParameterCard(stringResource(R.string.curve), starCurve.toFloat(), 0f..0.5f, { onStarCurveChange(it.toDouble()) }, { String.format(Locale.US, "%.2f", it) })
+                             ShapeParameterCard(stringResource(R.string.rotation), starRotation, 0f..360f, onStarRotationChange, { "${it.toInt()}°" })
+                             ShapeParameterCard(stringResource(R.string.scale), starScale, 0.5f..1.5f, onStarScaleChange, { String.format(Locale.US, "%.1fx", it) })
                          }
                      }
                  }

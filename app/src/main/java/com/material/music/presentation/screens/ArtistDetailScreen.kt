@@ -634,14 +634,14 @@ private fun CollapsibleAlbumSectionHeader(
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             ) {
-                Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.presentation_batch_d_cd_play_title, section.title))
+                Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.artist_cd_play_title, section.title))
             }
             Icon(
                 imageVector = Icons.Rounded.ExpandMore,
                 contentDescription = if (isExpanded) {
-                    stringResource(R.string.presentation_batch_d_cd_collapse_title, section.title)
+                    stringResource(R.string.artist_cd_collapse_title, section.title)
                 } else {
-                    stringResource(R.string.presentation_batch_d_cd_expand_title, section.title)
+                    stringResource(R.string.artist_cd_expand_title, section.title)
                 },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.graphicsLayer {
@@ -847,7 +847,7 @@ private fun SharedArtistTopBarProbe(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,
-                            contentDescription = stringResource(R.string.presentation_batch_d_edit_artist_image_cd)
+                            contentDescription = stringResource(R.string.artist_cd_edit_image)
                         )
                     }
 
@@ -856,7 +856,7 @@ private fun SharedArtistTopBarProbe(
                         onDismissRequest = { showImageMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.presentation_batch_d_change_photo)) },
+                            text = { Text(stringResource(R.string.artist_action_change_photo)) },
                             leadingIcon = {
                                 Icon(Icons.Rounded.AddAPhoto, contentDescription = null)
                             },
@@ -867,7 +867,7 @@ private fun SharedArtistTopBarProbe(
                         )
                         if (hasCustomImage) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.presentation_batch_d_reset_to_default)) },
+                                text = { Text(stringResource(R.string.artist_action_reset_to_default)) },
                                 leadingIcon = {
                                     Icon(Icons.Rounded.Delete, contentDescription = null)
                                 },
@@ -895,7 +895,7 @@ private fun SharedArtistTopBarProbe(
                     alpha = expandedContentAlpha
                 }
         ) {
-            Icon(Icons.Rounded.Shuffle, contentDescription = stringResource(R.string.presentation_batch_d_cd_shuffle_play_artist))
+            Icon(Icons.Rounded.Shuffle, contentDescription = stringResource(R.string.artist_cd_shuffle_play))
         }
     }
 }
@@ -1032,14 +1032,14 @@ private fun CustomCollapsingTopBar(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                             contentColor = MaterialTheme.colorScheme.onSurface
                         ) {
-                            Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.presentation_batch_d_edit_artist_image_cd))
+                            Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.artist_cd_edit_image))
                         }
                         DropdownMenu(
                             expanded = showImageMenu,
                             onDismissRequest = { showImageMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.presentation_batch_d_change_photo)) },
+                                text = { Text(stringResource(R.string.artist_action_change_photo)) },
                                 leadingIcon = { Icon(Icons.Rounded.AddAPhoto, contentDescription = null) },
                                 onClick = {
                                     showImageMenu = false
@@ -1048,7 +1048,7 @@ private fun CustomCollapsingTopBar(
                             )
                             if (hasCustomImage) {
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.presentation_batch_d_reset_to_default)) },
+                                    text = { Text(stringResource(R.string.artist_action_reset_to_default)) },
                                     leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
                                     onClick = {
                                         showImageMenu = false
