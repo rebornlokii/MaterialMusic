@@ -686,7 +686,7 @@ fun FullPlayerContent(
                                     if (currentSong != null && currentSong.contentUriString.startsWith("http")) {
                                         Icon(
                                             imageVector = androidx.compose.material.icons.Icons.Rounded.Cloud,
-                                            contentDescription = stringResource(R.string.presentation_batch_g_player_cd_cloud_stream),
+                                            contentDescription = stringResource(R.string.player_cd_cloud_stream),
                                             tint = LocalMaterialTheme.current.onPrimaryContainer.copy(alpha = 0.6f),
                                             modifier = Modifier.padding(start = 8.dp).size(16.dp)
                                         )
@@ -712,7 +712,7 @@ fun FullPlayerContent(
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.rounded_keyboard_arrow_down_24),
-                                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_collapse),
+                                    contentDescription = stringResource(R.string.player_cd_collapse),
                                     tint = playerAccentColor
                                 )
                             }
@@ -738,7 +738,7 @@ fun FullPlayerContent(
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.rounded_queue_music_24),
-                                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
+                                    contentDescription = stringResource(R.string.player_cd_queue),
                                     tint = playerAccentColor
                                 )
                             }
@@ -1404,7 +1404,7 @@ private fun SongMetadataDisplaySection(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.rounded_lyrics_24),
-                        contentDescription = stringResource(R.string.presentation_batch_g_player_cd_lyrics),
+                        contentDescription = stringResource(R.string.player_cd_lyrics),
                         tint = chipContentColor
                     )
                 }
@@ -1425,7 +1425,7 @@ private fun SongMetadataDisplaySection(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.rounded_queue_music_24),
-                        contentDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
+                        contentDescription = stringResource(R.string.player_cd_queue),
                         tint = chipContentColor
                     )
                 }
@@ -1442,7 +1442,7 @@ private fun SongMetadataDisplaySection(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.rounded_lyrics_24),
-                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_lyrics)
+                    contentDescription = stringResource(R.string.player_cd_lyrics)
                 )
             }
         }

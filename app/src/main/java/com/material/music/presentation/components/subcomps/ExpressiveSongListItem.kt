@@ -56,7 +56,7 @@ fun ExpressiveSongListItem(
         ) {
             SmartImage(
                 model = song.albumArtUriString,
-                contentDescription = stringResource(R.string.presentation_batch_g_list_cd_album_art_for, song.title),
+                contentDescription = stringResource(R.string.common_album_art_for_title, song.title),
                 targetSize = SmartImageListTargetSize,
                 modifier = Modifier
                     .size(56.dp)
@@ -80,7 +80,7 @@ fun ExpressiveSongListItem(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = stringResource(
-                        R.string.presentation_batch_g_list_song_artist_album,
+                        R.string.lyrics_artist_album_line,
                         song.displayArtist,
                         song.album
                     ),
@@ -96,7 +96,7 @@ fun ExpressiveSongListItem(
             if (isPlaying) {
                 Icon(
                     imageVector = Icons.Rounded.GraphicEq,
-                    contentDescription = stringResource(R.string.presentation_batch_g_list_cd_playing),
+                    contentDescription = stringResource(R.string.list_cd_playing),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )

@@ -324,7 +324,7 @@ fun EnhancedSongListItem(
                                 } else {
                                     Icon(
                                         imageVector = Icons.Rounded.CheckCircle,
-                                        contentDescription = stringResource(R.string.presentation_batch_g_list_cd_selected),
+                                        contentDescription = stringResource(R.string.list_cd_selected),
                                         tint = selectionOverlayContentColor,
                                         modifier = Modifier.size(28.dp)
                                     )
@@ -398,7 +398,7 @@ fun EnhancedSongListItem(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.MoreVert,
-                            contentDescription = stringResource(R.string.presentation_batch_g_list_cd_more_for_title, song.title),
+                            contentDescription = stringResource(R.string.list_cd_more_for_title, song.title),
                             modifier = Modifier.size(24.dp)
                         )
                     }

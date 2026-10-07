@@ -126,7 +126,7 @@ fun SelectionActionRow(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = stringResource(R.string.presentation_batch_g_selection_all),
+                    text = stringResource(R.string.library_selection_all),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Medium,
                     fontFamily = RoundedSans
@@ -150,7 +150,7 @@ fun SelectionActionRow(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = stringResource(R.string.presentation_batch_g_selection_deselect),
+                    text = stringResource(R.string.library_selection_deselect),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Medium,
                     fontFamily = RoundedSans
@@ -170,7 +170,7 @@ fun SelectionActionRow(
         ) {
             Icon(
                 imageVector = Icons.Rounded.MoreVert,
-                contentDescription = stringResource(R.string.presentation_batch_g_selection_cd_more),
+                contentDescription = stringResource(R.string.selection_cd_more),
                 modifier = Modifier.size(20.dp)
             )
         }

@@ -116,7 +116,7 @@ fun SelectionHeader(
                     )
                 }
                 Text(
-                    text = if (selectedSongs.size == 1) stringResource(R.string.presentation_batch_g_selection_one_song) else stringResource(R.string.presentation_batch_g_selection_n_songs),
+                    text = if (selectedSongs.size == 1) stringResource(R.string.selection_one_song) else stringResource(R.string.selection_n_songs),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = RoundedSans
@@ -138,7 +138,7 @@ fun SelectionHeader(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Share,
-                    contentDescription = stringResource(R.string.presentation_batch_g_selection_cd_share),
+                    contentDescription = stringResource(R.string.selection_cd_share),
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -153,7 +153,7 @@ fun SelectionHeader(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Favorite,
-                    contentDescription = stringResource(R.string.presentation_batch_g_selection_cd_like),
+                    contentDescription = stringResource(R.string.selection_cd_like),
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -171,7 +171,7 @@ fun SelectionHeader(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = stringResource(R.string.presentation_batch_g_selection_play),
+                    text = stringResource(R.string.selection_play),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = RoundedSans
@@ -243,7 +243,7 @@ private fun StackedCoverArts(
             ) {
                 Text(
                     text = stringResource(
-                        R.string.presentation_batch_g_selection_overflow_count,
+                        R.string.selection_overflow_count,
                         totalCount - songs.size
                     ),
                     style = MaterialTheme.typography.labelLarge,
