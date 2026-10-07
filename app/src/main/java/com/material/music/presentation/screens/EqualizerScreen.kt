@@ -388,7 +388,7 @@ fun EqualizerScreen(
                             EqualizerViewMode.GRAPH -> Icons.AutoMirrored.Rounded.ShowChart
                             EqualizerViewMode.HYBRID -> Icons.AutoMirrored.Rounded.ViewQuilt
                         },
-                        contentDescription = stringResource(R.string.presentation_batch_d_eq_change_view_mode_cd)
+                        contentDescription = stringResource(R.string.equalizer_change_view_mode_cd)
                     )
                 }
 
@@ -414,9 +414,9 @@ fun EqualizerScreen(
                     Icon(
                         imageVector = Icons.Rounded.PowerSettingsNew,
                         contentDescription = if (isEnabled) {
-                            stringResource(R.string.presentation_batch_d_eq_disable_cd)
+                            stringResource(R.string.equalizer_disable_cd)
                         } else {
-                            stringResource(R.string.presentation_batch_d_eq_enable_cd)
+                            stringResource(R.string.equalizer_enable_cd)
                         }
                     )
                 }
@@ -482,7 +482,7 @@ private fun PresetTabsRow(
                         Spacer(modifier = Modifier.width(4.dp))
                         Icon(
                             imageVector = Icons.Filled.Star,
-                            contentDescription = stringResource(R.string.presentation_batch_d_eq_custom_preset_cd),
+                            contentDescription = stringResource(R.string.equalizer_custom_preset_cd),
                             modifier = Modifier.size(10.dp),
                             tint = if (selectedIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary 
                         )
@@ -493,14 +493,14 @@ private fun PresetTabsRow(
         
         TabAnimation(
             index = -1,
-            title = stringResource(R.string.presentation_batch_d_eq_edit_tab_title),
+            title = stringResource(R.string.equalizer_edit_tab_title),
             unselectedColor = MaterialTheme.colorScheme.surfaceContainerLowest,
             selectedIndex = selectedIndex,
             onClick = onEditClick 
         ) {
              Icon(
                 Icons.Rounded.Edit,
-                contentDescription = stringResource(R.string.presentation_batch_d_eq_edit_presets_cd),
+                contentDescription = stringResource(R.string.equalizer_edit_presets_cd),
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -568,7 +568,7 @@ private fun BandSlidersSection(
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
                                 imageVector = Icons.Rounded.ExpandMore,
-                                contentDescription = stringResource(R.string.presentation_batch_d_eq_presets_cd),
+                                contentDescription = stringResource(R.string.equalizer_presets_cd),
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         }
@@ -619,7 +619,7 @@ private fun BandSlidersSection(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = stringResource(R.string.presentation_batch_d_action_update),
+                                text = stringResource(R.string.equalizer_action_update),
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold
                             )
@@ -1144,7 +1144,7 @@ private fun EffectControlsSection(
     ) {
         if (isBassBoostSupported) {
             EffectCard(
-                title = stringResource(R.string.presentation_batch_d_eq_bass_boost),
+                title = stringResource(R.string.equalizer_bass_boost),
                 value = bassBoostStrength,
                 valueRange = 0f..1000f,
                 isEnabled = bassBoostEnabled,
@@ -1153,14 +1153,14 @@ private fun EffectControlsSection(
             )
         } else if (!isBassBoostDismissed) {
              UnsupportedEffectCard(
-                title = stringResource(R.string.presentation_batch_d_eq_bass_boost),
+                title = stringResource(R.string.equalizer_bass_boost),
                 onDismiss = onDismissBassBoost
             )
         }
         
         if (isVirtualizerSupported) {
             EffectCard(
-                title = stringResource(R.string.presentation_batch_d_eq_virtualizer),
+                title = stringResource(R.string.eq_virtualizer),
                 value = virtualizerStrength,
                 valueRange = 0f..1000f,
                 isEnabled = virtualizerEnabled,
@@ -1169,14 +1169,14 @@ private fun EffectControlsSection(
             )
         } else if (!isVirtualizerDismissed) {
              UnsupportedEffectCard(
-                title = stringResource(R.string.presentation_batch_d_eq_virtualizer),
+                title = stringResource(R.string.eq_virtualizer),
                 onDismiss = onDismissVirtualizer
             )
         }
 
         if (isLoudnessEnhancerSupported) {
             EffectCard(
-                title = stringResource(R.string.presentation_batch_d_eq_loudness),
+                title = stringResource(R.string.eq_loudness),
                 value = loudnessStrength,
                 valueRange = 0f..1000f,
                 isEnabled = loudnessEnabled,
@@ -1185,7 +1185,7 @@ private fun EffectControlsSection(
             )
         } else if (!isLoudnessDismissed) {
              UnsupportedEffectCard(
-                title = stringResource(R.string.presentation_batch_d_eq_loudness),
+                title = stringResource(R.string.eq_loudness),
                 onDismiss = onDismissLoudness
             )
         }
@@ -1305,7 +1305,7 @@ private fun UnsupportedEffectCard(
                     color = MaterialTheme.colorScheme.onErrorContainer
                 )
                 Text(
-                    text = stringResource(R.string.presentation_batch_d_eq_effect_not_supported),
+                    text = stringResource(R.string.equalizer_effect_not_supported),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -1331,7 +1331,7 @@ private fun UnsupportedEffectRow(
         val resolvedMessage = if (message.isNotEmpty()) {
             message
         } else {
-            stringResource(R.string.presentation_batch_d_eq_effect_not_supported_device)
+            stringResource(R.string.equalizer_effect_not_supported_device)
         }
         Row(
             modifier = Modifier
@@ -1456,7 +1456,7 @@ private fun VolumeControlCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(R.string.presentation_batch_d_eq_volume),
+                text = stringResource(R.string.eq_volume),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -1517,12 +1517,12 @@ private fun HybridBandSliders(
     onBandLevelChanged: (Int, Int) -> Unit
 ) {
     val context = LocalContext.current
-    val bandBass = stringResource(R.string.presentation_batch_d_eq_band_bass)
-    val bandLowMids = stringResource(R.string.presentation_batch_d_eq_band_low_mids)
-    val bandHighMids = stringResource(R.string.presentation_batch_d_eq_band_high_mids)
-    val bandTreble = stringResource(R.string.presentation_batch_d_eq_band_treble)
-    val bandBassLow = stringResource(R.string.presentation_batch_d_eq_band_bass_low)
-    val bandMidHigh = stringResource(R.string.presentation_batch_d_eq_band_mid_high)
+    val bandBass = stringResource(R.string.equalizer_band_bass)
+    val bandLowMids = stringResource(R.string.equalizer_band_low_mids)
+    val bandHighMids = stringResource(R.string.equalizer_band_high_mids)
+    val bandTreble = stringResource(R.string.equalizer_band_treble)
+    val bandBassLow = stringResource(R.string.equalizer_band_bass_low)
+    val bandMidHigh = stringResource(R.string.equalizer_band_mid_high)
     Column(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
@@ -1534,7 +1534,7 @@ private fun HybridBandSliders(
                 .padding(16.dp)
         ) {
              Text(
-                text = stringResource(R.string.presentation_batch_d_eq_frequency_response),
+                text = stringResource(R.string.equalizer_frequency_response),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.align(Alignment.TopStart).padding(bottom = 8.dp)
@@ -1569,7 +1569,7 @@ private fun HybridBandSliders(
         } else if (pageCount == 2) {
             listOf(bandBassLow, bandMidHigh)
         } else {
-            (1..pageCount).map { context.getString(R.string.presentation_batch_d_eq_page_n, it) }
+            (1..pageCount).map { context.getString(R.string.equalizer_page_n, it) }
         }
 
         val pagerState = rememberPagerState(pageCount = { pageCount })
@@ -1677,7 +1677,7 @@ private fun HybridHorizontalSlider(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = stringResource(R.string.presentation_batch_d_eq_unit_hz),
+                text = stringResource(R.string.equalizer_unit_hz),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

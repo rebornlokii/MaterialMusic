@@ -180,7 +180,7 @@ fun NavBarCornerRadiusContent(
                 Spacer(modifier = Modifier.height(24.dp))
                 
                 Text(
-                    text = stringResource(R.string.presentation_batch_b_navbar_adjust_title),
+                    text = stringResource(R.string.navbar_adjust_title),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -191,7 +191,7 @@ fun NavBarCornerRadiusContent(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = stringResource(R.string.presentation_batch_b_navbar_adjust_subtitle),
+                    text = stringResource(R.string.navbar_adjust_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -225,7 +225,7 @@ fun NavBarCornerRadiusContent(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = stringResource(R.string.presentation_batch_b_corner_radius_label),
+                                text = stringResource(R.string.navbar_corner_radius_label),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -298,7 +298,7 @@ fun NavBarCornerRadiusContent(
                             Text(
                                 modifier = Modifier.width(46.dp),
                                 text = stringResource(
-                                    R.string.presentation_batch_b_corner_dp_format,
+                                    R.string.navbar_corner_dp_format,
                                     sliderValue.toInt()
                                 ),
                                 textAlign = TextAlign.Center,
