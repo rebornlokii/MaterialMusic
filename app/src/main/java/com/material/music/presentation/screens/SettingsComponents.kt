@@ -340,7 +340,7 @@ fun ThemeSelectorItem(
                                 if (isSelected) {
                                     Icon(
                                         imageVector = Icons.Rounded.Check,
-                                        contentDescription = stringResource(R.string.presentation_batch_f_cd_selected),
+                                        contentDescription = stringResource(R.string.cd_selected),
                                         tint = contentColor
                                     )
                                 }
@@ -447,12 +447,12 @@ fun RefreshLibraryItem(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                            text = stringResource(R.string.presentation_batch_f_refresh_library_title),
+                            text = stringResource(R.string.settings_refresh_library_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                            text = stringResource(R.string.presentation_batch_f_refresh_library_subtitle),
+                            text = stringResource(R.string.settings_refresh_library_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -477,7 +477,7 @@ fun RefreshLibraryItem(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.presentation_batch_f_full_rescan))
+                    Text(stringResource(R.string.full_rescan))
                 }
             }
              
@@ -503,7 +503,7 @@ fun RefreshLibraryItem(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.presentation_batch_f_rebuild_database))
+                    Text(stringResource(R.string.settings_action_rebuild_database))
                 }
             }
 
@@ -518,7 +518,7 @@ fun RefreshLibraryItem(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                             text = stringResource(
-                                R.string.presentation_batch_f_sync_progress_detailed,
+                                R.string.settings_sync_progress_detailed,
                                 phaseLabel,
                                 (syncProgress.progress * 100).toInt(),
                                 syncProgress.currentCount,
@@ -532,7 +532,7 @@ fun RefreshLibraryItem(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                             text = stringResource(
-                                R.string.presentation_batch_f_sync_progress_indeterminate,
+                                R.string.settings_sync_progres_indeterminate,
                                 phaseLabel
                             ),
                             style = MaterialTheme.typography.labelMedium,
@@ -548,19 +548,19 @@ fun RefreshLibraryItem(
 private fun syncPhaseLabel(phase: SyncProgress.SyncPhase): String =
         stringResource(
                 when (phase) {
-                    SyncProgress.SyncPhase.IDLE -> R.string.presentation_batch_f_sync_phase_preparing
+                    SyncProgress.SyncPhase.IDLE -> R.string.settings_sync_phase_preparing
                     SyncProgress.SyncPhase.FETCHING_MEDIASTORE ->
-                            R.string.presentation_batch_f_sync_phase_reading_mediastore
+                            R.string.settings_sync_phase_reading_mediastore
                     SyncProgress.SyncPhase.PROCESSING_FILES ->
-                            R.string.presentation_batch_f_sync_phase_processing_tracks
+                            R.string.settings_sync_phase_reading_processing_tracks
                     SyncProgress.SyncPhase.SAVING_TO_DATABASE ->
-                            R.string.presentation_batch_f_sync_phase_saving_db
-                    SyncProgress.SyncPhase.SCANNING_LRC -> R.string.presentation_batch_f_sync_phase_scanning_lrc
+                            R.string.settings_sync_phase_saving_db
+                    SyncProgress.SyncPhase.SCANNING_LRC -> R.string.settings_sync_phase_scanning_lrc
                     SyncProgress.SyncPhase.CLEANING_CACHE ->
-                            R.string.presentation_batch_f_sync_phase_cleaning_cache
+                            R.string.settings_sync_phase_cleaning_cache
                     SyncProgress.SyncPhase.SYNCING_CLOUD ->
-                            R.string.presentation_batch_f_sync_phase_syncing_cloud
-                    SyncProgress.SyncPhase.COMPLETING -> R.string.presentation_batch_f_sync_phase_completing
+                            R.string.settings_sync_phase_syncing_cloud
+                    SyncProgress.SyncPhase.COMPLETING -> R.string.settings_sync_phase_completing
                 }
         )
 
@@ -596,12 +596,12 @@ fun RefreshLyricsItem(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                            text = stringResource(R.string.presentation_batch_f_refresh_lyrics_title),
+                            text = stringResource(R.string.refresh_lyrics_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                            text = stringResource(R.string.presentation_batch_f_refresh_lyrics_subtitle),
+                            text = stringResource(R.string.refresh_lyrics_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -617,7 +617,7 @@ fun RefreshLyricsItem(
                 ) {
                     Icon(
                             imageVector = Icons.Outlined.Sync,
-                            contentDescription = stringResource(R.string.presentation_batch_f_cd_refresh_lyrics),
+                            contentDescription = stringResource(R.string.cd_refresh_lyrics),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
@@ -632,7 +632,7 @@ fun RefreshLyricsItem(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                         text = stringResource(
-                            R.string.presentation_batch_f_refresh_lyrics_processing,
+                            R.string.refresh_lyrics_processing,
                             progress.currentCount,
                             progress.totalSongs
                         ),

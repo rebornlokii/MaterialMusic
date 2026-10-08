@@ -335,7 +335,7 @@ fun SearchScreen(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.rounded_settings_24),
-                        contentDescription = stringResource(R.string.presentation_batch_d_open_settings_cd)
+                        contentDescription = stringResource(R.string.library_cd_open_settings)
                     )
                 }
             }
@@ -1158,7 +1158,7 @@ fun SearchFilterChip(
         if (selected) {
             Icon(
                 painter = painterResource(R.drawable.rounded_check_circle_24),
-                contentDescription = stringResource(R.string.presentation_batch_g_cd_selected),
+                contentDescription = stringResource(R.string.cd_selected),
                 modifier = Modifier.size(FilterChipDefaults.IconSize)
             )
             Spacer(Modifier.width(8.dp))

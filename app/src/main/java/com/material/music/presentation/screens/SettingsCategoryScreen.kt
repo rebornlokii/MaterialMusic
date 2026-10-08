@@ -1905,7 +1905,7 @@ private fun BackupTransferProgressDialog(progress: BackupTransferProgressUpdate)
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = stringResource(R.string.presentation_batch_f_percent, progressPercent),
+                        text = stringResource(R.string.percent, progressPercent),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontSize = MaterialTheme.typography.labelLarge.fontSize * 1.4f
                         ),
@@ -1933,7 +1933,7 @@ private fun BackupTransferProgressDialog(progress: BackupTransferProgressUpdate)
                 )
 
                 Text(
-                    text = stringResource(R.string.presentation_batch_f_status_bullet_step, statusText, stepText),
+                    text = stringResource(R.string.watch_transfer_bullet_step, statusText, stepText),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -2194,7 +2194,7 @@ private fun BackupHistoryCard(
     onSelect: () -> Unit,
     onRemove: () -> Unit
 ) {
-    val unknownShort = stringResource(R.string.presentation_batch_f_unknown_short)
+    val unknownShort = stringResource(R.string.unknown_short)
     val dateText = remember(entry.createdAt) {
         val sdf = java.text.SimpleDateFormat("MMM d, yyyy 'at' h:mm a", java.util.Locale.getDefault())
         sdf.format(java.util.Date(entry.createdAt))
@@ -2253,7 +2253,7 @@ private fun BackupHistoryCard(
                     Text(
                         text = dateText +
                             if (sizeText.isNotEmpty()) {
-                                stringResource(R.string.presentation_batch_f_dot_space_suffix, sizeText)
+                                stringResource(R.string.dot_space_suffix, sizeText)
                             } else {
                                 ""
                             },
