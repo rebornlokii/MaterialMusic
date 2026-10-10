@@ -196,13 +196,6 @@ fun AboutScreen(
             onClick = { openUrl(context, SourceRepoUrl) },
         ),
         ProjectLink(
-            id = "github",
-            title = stringResource(R.string.about_link_github_title),
-            subtitle = stringResource(R.string.about_link_github_subtitle),
-            icon = painterResource(R.drawable.github),
-            onClick = { openUrl(context, FDroidUrl) },
-        ),
-        ProjectLink(
             id = "licenses",
             title = stringResource(R.string.about_licenses_title),
             subtitle = stringResource(R.string.about_licenses_subtitle),
