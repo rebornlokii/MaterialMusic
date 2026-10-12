@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.theme
+package com.material.music.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.lostf1sh.pixelplayeross.R
+import com.material.music.R
 
 
 @OptIn(ExperimentalTextApi::class)

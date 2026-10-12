@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.theme
+package com.material.music.ui.theme
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes

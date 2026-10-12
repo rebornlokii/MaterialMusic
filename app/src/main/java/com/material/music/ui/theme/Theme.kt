@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.theme
+package com.material.music.ui.theme
 
 import android.app.Activity
 import android.content.Context
@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.ColorSchemePair
+import com.material.music.presentation.viewmodel.ColorSchemePair
 import androidx.core.graphics.ColorUtils
 
 val LocalPixelPlayerDarkTheme = staticCompositionLocalOf { false }

@@ -1,6 +1,6 @@
 @file:android.annotation.SuppressLint("RestrictedApi")
 
-package com.lostf1sh.pixelplayeross.ui.theme
+package com.material.music.ui.theme
 
 import android.graphics.Bitmap
 import android.util.LruCache
@@ -8,7 +8,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
-import com.lostf1sh.pixelplayeross.presentation.viewmodel.ColorSchemePair
+import com.material.music.presentation.viewmodel.ColorSchemePair
 import com.google.android.material.color.utilities.DynamicScheme
 import com.google.android.material.color.utilities.Hct
 import com.google.android.material.color.utilities.MathUtils
@@ -18,8 +18,8 @@ import com.google.android.material.color.utilities.SchemeFruitSalad
 import com.google.android.material.color.utilities.SchemeMonochrome
 import com.google.android.material.color.utilities.SchemeTonalSpot
 import com.google.android.material.color.utilities.SchemeVibrant
-import com.lostf1sh.pixelplayeross.data.preferences.AlbumArtColorAccuracy
-import com.lostf1sh.pixelplayeross.data.preferences.AlbumArtPaletteStyle
+import com.material.music.data.preferences.AlbumArtColorAccuracy
+import com.material.music.data.preferences.AlbumArtPaletteStyle
 import androidx.core.graphics.scale
 import kotlin.math.abs
 import kotlin.math.floor
