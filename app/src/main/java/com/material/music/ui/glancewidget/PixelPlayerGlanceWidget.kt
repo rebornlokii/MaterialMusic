@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.glancewidget
+package com.material.music.ui.glancewidget
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -42,13 +42,13 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.lostf1sh.pixelplayeross.MainActivity
-import com.lostf1sh.pixelplayeross.data.model.PlayerInfo
-import com.lostf1sh.pixelplayeross.R
+import com.material.music.MainActivity
+import com.material.music.data.model.PlayerInfo
+import com.material.music.R
 import androidx.core.graphics.scale
 import androidx.glance.unit.ColorProvider
-import com.lostf1sh.pixelplayeross.data.model.QueueItem
-import com.lostf1sh.pixelplayeross.utils.createScalableBackgroundBitmap
+import com.material.music.data.model.QueueItem
+import com.material.music.utils.createScalableBackgroundBitmap
 import java.util.Locale
 import timber.log.Timber
 

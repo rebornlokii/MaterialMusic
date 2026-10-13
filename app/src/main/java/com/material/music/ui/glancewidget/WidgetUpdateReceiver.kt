@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.glancewidget
+package com.material.music.ui.glancewidget
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,7 +14,7 @@ import timber.log.Timber
 class WidgetUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != "com.lostf1sh.pixelplayeross.ACTION_WIDGET_UPDATE_PLAYBACK_STATE") return
+        if (intent.action != "com.material.music.ACTION_WIDGET_UPDATE_PLAYBACK_STATE") return
 
         val pendingResult = goAsync()
         val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())

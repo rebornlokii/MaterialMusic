@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.glancewidget
+package com.material.music.ui.glancewidget
 
 import android.graphics.Bitmap
 import android.util.LruCache
@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.glance.GlanceTheme
 import androidx.glance.color.ColorProvider
 import androidx.glance.unit.ColorProvider
-import com.lostf1sh.pixelplayeross.data.model.PlayerInfo
+import com.material.music.data.model.PlayerInfo
 
 object AlbumArtBitmapCache {
     private const val CACHE_SIZE_BYTES = 4 * 1024 * 1024

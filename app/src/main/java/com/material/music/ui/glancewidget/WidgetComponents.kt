@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.ui.glancewidget
+package com.material.music.ui.glancewidget
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -24,7 +24,7 @@ import androidx.glance.layout.ContentScale
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.size
 import androidx.glance.unit.ColorProvider
-import com.lostf1sh.pixelplayeross.R
+import com.material.music.R
 import timber.log.Timber
 
 @Composable
