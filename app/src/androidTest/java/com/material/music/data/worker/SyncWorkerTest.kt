@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.worker
+package com.material.music.data.worker
 
 import android.content.Context
 import android.database.MatrixCursor
@@ -13,8 +13,8 @@ import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import com.google.common.truth.Truth.assertThat
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.PixelPlayerDatabase
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.PixelPlayerDatabase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first

@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.benchmark
+package com.material.music.benchmark
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Ignore

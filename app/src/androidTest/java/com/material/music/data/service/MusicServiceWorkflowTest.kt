@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.data.service
+package com.material.music.data.service
 
 import android.content.ComponentName
 import android.content.Context
@@ -14,10 +14,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import com.lostf1sh.pixelplayeross.data.database.AlbumEntity
-import com.lostf1sh.pixelplayeross.data.database.ArtistEntity
-import com.lostf1sh.pixelplayeross.data.database.MusicDao
-import com.lostf1sh.pixelplayeross.data.database.SongEntity
+import com.material.music.data.database.AlbumEntity
+import com.material.music.data.database.ArtistEntity
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SongEntity
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors

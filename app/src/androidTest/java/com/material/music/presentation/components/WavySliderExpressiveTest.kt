@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.presentation.components
+package com.material.music.presentation.components
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
