@@ -11,12 +11,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCOPE = [
-    ROOT / "app/src/main/java/com/lostf1sh/pixelplayeross/presentation",
-    ROOT / "app/src/main/java/com/lostf1sh/pixelplayeross/ui/glancewidget",
+    ROOT / "app/src/main/java/com/material/music/presentation",
+    ROOT / "app/src/main/java/com/material/music/ui/glancewidget",
 ]
 
 STRING_IMPORT = "import androidx.compose.ui.res.stringResource"
-R_IMPORT = "import com.lostf1sh.pixelplayeross.R"
+R_IMPORT = "import com.material.music.R"
 
 # (pattern, replacement) regex or (literal_old, literal_new) — order matters (longer first)
 REPLACEMENTS: list[tuple[str, str]] = [

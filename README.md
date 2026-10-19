@@ -7,8 +7,8 @@
   <a href="https://github.com/lostf1sh/PixelPlayerOSS/releases/latest">
     <img src="https://img.shields.io/github/v/release/lostf1sh/PixelPlayerOSS?include_prereleases&logo=github&style=for-the-badge&label=Latest%20Release" alt="Latest release">
   </a>
-  <a href="https://f-droid.org/packages/com.lostf1sh.pixelplayeross/">
-    <img src="https://img.shields.io/f-droid/v/com.lostf1sh.pixelplayeross?logo=fdroid&style=for-the-badge&label=F-Droid" alt="F-Droid version">
+  <a href="https://f-droid.org/packages/com.material.music/">
+    <img src="https://img.shields.io/f-droid/v/com.material.music?logo=fdroid&style=for-the-badge&label=F-Droid" alt="F-Droid version">
   </a>
   <a href="https://github.com/lostf1sh/PixelPlayerOSS/releases">
     <img src="https://img.shields.io/github/downloads/lostf1sh/PixelPlayerOSS/total?logo=github&style=for-the-badge" alt="Total downloads">
@@ -31,7 +31,7 @@ Material Music is an Android music player maintained by [@lostf1sh](https://gith
 
 The app works offline by default. Optional online services are disabled until you enable them in setup or settings.
 
-Package name: `com.lostf1sh.pixelplayeross`
+Package name: `com.material.music`
 
 ## Why This Exists
 
@@ -117,7 +117,7 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :baselineprofile:generateBaseli
 
 PixelPlayerOSS is available on F-Droid:
 
-<a href="https://f-droid.org/packages/com.lostf1sh.pixelplayeross/">
+<a href="https://f-droid.org/packages/com.material.music/">
   <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
 </a>
 
@@ -130,7 +130,7 @@ https://github.com/lostf1sh/PixelPlayerOSS/releases
 Obtainium app id:
 
 ```text
-com.lostf1sh.pixelplayeross
+com.material.music
 ```
 
 Public releases are planned on a regular weekly cadence when `main` passes the release checklist.
@@ -154,7 +154,7 @@ If PixelPlayerOSS is useful to you, you can support ongoing development through 
 ## Project Structure
 
 ```text
-app/src/main/java/com/lostf1sh/pixelplayeross/
+app/src/main/java/com/material/music/
 - data/             Room, repositories, preferences, services, workers
 - di/               Hilt modules and qualifiers
 - presentation/     Compose screens, components, navigation, ViewModels
