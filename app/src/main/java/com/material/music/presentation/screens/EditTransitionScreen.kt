@@ -52,6 +52,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -465,11 +466,15 @@ private fun TransitionDurationSection(
 
         CrossfadeVisualizer(durationMs = settings.durationMs)
 
-        Slider(
+        val durationSliderState = rememberSliderState(
             value = settings.durationMs.toFloat(),
-            onValueChange = { onDurationChange(it.toInt()) },
-            valueRange = 0f..12000f,
             steps = 11,
+            trackRange = 0f..12000f
+        )
+        durationSliderState.value = settings.durationMs.toFloat()
+        Slider(
+            state = durationSliderState,
+            onValueChange = { onDurationChange(it.toInt()) },
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
                 activeTrackColor = MaterialTheme.colorScheme.primary,

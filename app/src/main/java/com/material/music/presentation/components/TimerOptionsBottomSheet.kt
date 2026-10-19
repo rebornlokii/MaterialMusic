@@ -33,6 +33,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -80,6 +81,17 @@ fun TimerOptionsBottomSheet(
 
     var counterSliderPosition by remember { mutableStateOf(1f) }
     var isTimerMode by remember { mutableStateOf(true) }
+
+    val timerSliderState = rememberSliderState(
+        value = timerSliderPosition,
+        steps = predefinedTimes.size - 2,
+        trackRange = 0f..(predefinedTimes.size - 1).toFloat()
+    )
+    val counterSliderState = rememberSliderState(
+        value = counterSliderPosition,
+        steps = 8,
+        trackRange = 1f..10f
+    )
 
     val boxBackgroundColor by animateColorAsState(
         targetValue = if (isSwitchEnabled) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -165,14 +177,13 @@ fun TimerOptionsBottomSheet(
                             )
                         )
                 ) {
+                    timerSliderState.value = timerSliderPosition
                     Slider(
-                        value = timerSliderPosition,
+                        state = timerSliderState,
                         onValueChange = {
                             timerSliderPosition = it
                             isTimerMode = true
                         },
-                        valueRange = 0f..(predefinedTimes.size - 1).toFloat(),
-                        steps = predefinedTimes.size - 2,
                         enabled = isTimerMode || counterSliderPosition == 1f,
                         onValueChangeFinished = {
                             val selectedIndexOnFinish = timerSliderPosition.roundToInt()
@@ -246,14 +257,13 @@ fun TimerOptionsBottomSheet(
                             shape = RoundedCornerShape(18.dp)
                         )
                 ) {
+                    counterSliderState.value = counterSliderPosition
                     Slider(
-                        value = counterSliderPosition,
+                        state = counterSliderState,
                         onValueChange = {
                             counterSliderPosition = it
                             isTimerMode = false
                         },
-                        valueRange = 1f..10f,
-                        steps = 8,
                         enabled = !isTimerMode || timerSliderPosition == 0f,
                         onValueChangeFinished = {
                             onCancelTimer()

@@ -54,6 +54,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
@@ -1417,10 +1418,14 @@ private fun IndividualEffectRow(
         
         Spacer(modifier = Modifier.height(8.dp))
         
-        Slider(
+        val strengthSliderState = rememberSliderState(
             value = strength.toFloat(),
+            trackRange = 0f..maxStrength.toFloat()
+        )
+        strengthSliderState.value = strength.toFloat()
+        Slider(
+            state = strengthSliderState,
             onValueChange = { onStrengthChange(it.roundToInt()) },
-            valueRange = 0f..maxStrength.toFloat(),
             enabled = isEnabled,
             modifier = Modifier.fillMaxWidth(),
             track = { sliderState ->
@@ -1473,8 +1478,10 @@ private fun VolumeControlCard(
                 )
                 
                 Column(modifier = Modifier.weight(1f)) {
+                    val volumeSliderState = rememberSliderState(value = volume)
+                    volumeSliderState.value = volume
                     Slider(
-                        value = volume,
+                        state = volumeSliderState,
                         onValueChange = { newValue ->
                             val currentPercent = (newValue * 100).roundToInt()
                             val lastPercent = (lastHapticValue * 100).roundToInt()
@@ -1684,8 +1691,14 @@ private fun HybridHorizontalSlider(
         }
 
         Box(modifier = Modifier.weight(1f)) {
-            androidx.compose.material3.Slider(
+            val levelSliderState = rememberSliderState(
                 value = level.toFloat(),
+                steps = 0,
+                trackRange = -15f..15f
+            )
+            levelSliderState.value = level.toFloat()
+            androidx.compose.material3.Slider(
+                state = levelSliderState,
                 onValueChange = { 
                     val intVal = it.roundToInt()
                     if (intVal != lastHapticValue) {
@@ -1694,8 +1707,6 @@ private fun HybridHorizontalSlider(
                     }
                     onLevelChanged(intVal) 
                 },
-                valueRange = -15f..15f,
-                steps = 0,
                 enabled = isEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 track = { sliderState ->

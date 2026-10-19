@@ -157,6 +157,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.compose.material3.MediumExtendedFloatingActionButton
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.rememberSliderState
 
 
 import kotlinx.coroutines.launch
@@ -1629,11 +1630,11 @@ fun ThickSlider(
     valueRange: ClosedFloatingPointRange<Float>,
     steps: Int = 0
 ) {
+    val thickSliderState = rememberSliderState(value = value, steps = steps, trackRange = valueRange)
+    thickSliderState.value = value
     Slider(
-        value = value,
+        state = thickSliderState,
         onValueChange = onValueChange,
-        valueRange = valueRange,
-        steps = steps,
         colors = SliderDefaults.colors(
              thumbColor = MaterialTheme.colorScheme.primary,
              activeTrackColor = MaterialTheme.colorScheme.primary,

@@ -37,6 +37,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -267,8 +268,13 @@ fun NavBarCornerRadiusContent(
                             )
 
                             Box(modifier = Modifier.weight(1f)) {
-                                Slider(
+                                val cornerRadiusSliderState = rememberSliderState(
                                     value = sliderValue,
+                                    trackRange = MIN_NAV_BAR_CORNER_RADIUS.toFloat()..MAX_NAV_BAR_CORNER_RADIUS.toFloat()
+                                )
+                                cornerRadiusSliderState.value = sliderValue
+                                Slider(
+                                    state = cornerRadiusSliderState,
                                     onValueChange = {
                                         if (sliderValue != it) {
                                             if (it.toInt() != sliderValue.toInt()) {
@@ -277,7 +283,6 @@ fun NavBarCornerRadiusContent(
                                             sliderValue = it.safeRadius()
                                         }
                                     },
-                                    valueRange = MIN_NAV_BAR_CORNER_RADIUS.toFloat()..MAX_NAV_BAR_CORNER_RADIUS.toFloat(),
                                     colors = SliderDefaults.colors(
                                         thumbColor = MaterialTheme.colorScheme.primary,
                                         activeTrackColor = MaterialTheme.colorScheme.primary,
