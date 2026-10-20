@@ -11,13 +11,6 @@
     <string name="about_signal_community_first">Community-first</string>
     <string name="about_signal_material3">Material 3 expressive</string>
     <string name="about_signal_open_source">Open source</string>
-    <string name="about_support_body">Help keep the FOSS edition maintained, reviewed, and tested for real Android devices.</string>
-    <string name="about_support_chip_ci">CI and releases</string>
-    <string name="about_support_chip_foss">FOSS maintenance</string>
-    <string name="about_support_chip_streaming">Self-hosted music</string>
-    <string name="about_support_cta">Sponsor on GitHub</string>
-    <string name="about_support_eyebrow">GitHub Sponsors</string>
-    <string name="about_support_title">Support Material Music</string>
     <string name="about_tagline">Local-first music, self-hosted streaming, and Material 3 craft in one FOSS player.</string>
     <string name="about_version_format">Version v%1$s</string>
     <string name="accounts_unable_open_screen">Unable to open this screen right now.</string>

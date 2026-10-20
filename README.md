@@ -128,10 +128,6 @@ To install one, download the APK for your device from the release assets and sid
 
 Alpha builds are signed with a dedicated CI key, so they update over each other, but switching between an alpha and a stable install requires an uninstall/reinstall.
 
-## Support
-
-If Material Music is useful to you, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/rebornlokii).
-
 ## Project Structure
 
 ```text
