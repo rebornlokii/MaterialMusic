@@ -100,7 +100,7 @@
     <string-array name="changelog_070_fixes">
         <item>Added F-Droid metadata, Fastlane store metadata, privacy notes, security notes, dependency/license documentation, and contributor guidance.</item>
         <item>Release builds stay unsigned when local signing keys are absent.</item>
-        <item>Added pixelplayer.disableReleaseSigning=true for deterministic unsigned verification builds.</item>
+        <item>Added materialmusic.disableReleaseSigning=true for deterministic unsigned verification builds.</item>
         <item>Documented asset and dependency license trails, including native/binary Maven artifacts and JitPack dependencies.</item>
     </string-array>
     <string-array name="changelog_070_improvements">
@@ -110,7 +110,7 @@
         <item>Removed release paths that depended on local/private signing artifacts, dummy signing values, or app-store-only assumptions.</item>
     </string-array>
     <string-array name="changelog_070_whats_new">
-        <item>First public FOSS release of PixelPlayerOSS.</item>
+        <item>First public FOSS release of Material Music.</item>
         <item>Includes local playback, playlists, favorites, lyrics, listening stats, dynamic Material 3 theming, widgets, and backup/restore.</item>
         <item>Keeps self-hosted Navidrome/Subsonic and Jellyfin support, plus optional LRCLIB lyrics and Deezer artist artwork lookup.</item>
     </string-array>

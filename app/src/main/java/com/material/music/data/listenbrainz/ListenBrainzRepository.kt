@@ -46,7 +46,7 @@ class ListenBrainzRepository @Inject constructor(
         private const val KEY_AUTH_INVALID = "auth_invalid"
         private const val KEY_SERVER_URL = "server_url"
 
-        private const val SUBMISSION_CLIENT = "PixelPlayerOSS"
+        private const val SUBMISSION_CLIENT = "Material Music"
         private const val MAX_QUEUE_SIZE = 3000
     }
 

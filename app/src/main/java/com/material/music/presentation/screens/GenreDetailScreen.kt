@@ -73,7 +73,7 @@ import com.material.music.presentation.viewmodel.SectionData
 import com.material.music.presentation.viewmodel.AlbumData
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.StablePlayerState
-import com.material.music.ui.theme.LocalPixelPlayerDarkTheme
+import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import com.material.music.utils.formatDuration
 import com.material.music.utils.formatSongCount
 import kotlinx.collections.immutable.persistentListOf
@@ -108,7 +108,7 @@ fun GenreDetailScreen(
     }
 
     val density = LocalDensity.current
-    val darkMode = LocalPixelPlayerDarkTheme.current
+    val darkMode = LocalMaterialMusicDarkTheme.current
 
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()

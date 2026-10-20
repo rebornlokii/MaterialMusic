@@ -16,7 +16,7 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.material.music.BuildConfig
-import com.material.music.PixelPlayerApplication
+import com.material.music.MaterialMusicApplication
 import com.material.music.data.database.AlbumArtThemeDao
 import com.material.music.data.database.EngagementDao
 import com.material.music.data.database.FavoritesDao
@@ -26,7 +26,7 @@ import com.material.music.data.database.ListenBrainzDao
 import com.material.music.data.database.MIGRATION_1_2
 import com.material.music.data.database.MIGRATION_2_3
 import com.material.music.data.database.MusicDao
-import com.material.music.data.database.PixelPlayerDatabase
+import com.material.music.data.database.MaterialMusicDatabase
 import com.material.music.data.database.SearchHistoryDao
 import com.material.music.data.database.TransitionDao
 import com.material.music.data.preferences.UserPreferencesRepository
@@ -68,8 +68,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideApplication(@ApplicationContext app: Context): PixelPlayerApplication {
-        return app as PixelPlayerApplication
+    fun provideApplication(@ApplicationContext app: Context): MaterialMusicApplication {
+        return app as MaterialMusicApplication
     }
 
     @Singleton
@@ -119,13 +119,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providePixelPlayerDatabase(@ApplicationContext context: Context): PixelPlayerDatabase {
+    fun provideMaterialMusicDatabase(@ApplicationContext context: Context): MaterialMusicDatabase {
         val builder = Room.databaseBuilder(
             context.applicationContext,
-            PixelPlayerDatabase::class.java,
-            "pixelplayer_database"
+            MaterialMusicDatabase::class.java,
+            "materialmusic_database"
         )
-            .addCallback(PixelPlayerDatabase.createRuntimeArtifactsCallback())
+            .addCallback(MaterialMusicDatabase.createRuntimeArtifactsCallback())
             .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
 
@@ -138,67 +138,67 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAlbumArtThemeDao(database: PixelPlayerDatabase): AlbumArtThemeDao {
+    fun provideAlbumArtThemeDao(database: MaterialMusicDatabase): AlbumArtThemeDao {
         return database.albumArtThemeDao()
     }
 
     @Singleton
     @Provides
-    fun provideSearchHistoryDao(database: PixelPlayerDatabase): SearchHistoryDao {
+    fun provideSearchHistoryDao(database: MaterialMusicDatabase): SearchHistoryDao {
         return database.searchHistoryDao()
     }
 
     @Singleton
     @Provides
-    fun provideMusicDao(database: PixelPlayerDatabase): MusicDao {
+    fun provideMusicDao(database: MaterialMusicDatabase): MusicDao {
         return database.musicDao()
     }
 
     @Singleton
     @Provides
-    fun provideTransitionDao(database: PixelPlayerDatabase): TransitionDao {
+    fun provideTransitionDao(database: MaterialMusicDatabase): TransitionDao {
         return database.transitionDao()
     }
 
     @Singleton
     @Provides
-    fun provideEngagementDao(database: PixelPlayerDatabase): EngagementDao {
+    fun provideEngagementDao(database: MaterialMusicDatabase): EngagementDao {
         return database.engagementDao()
     }
 
     @Singleton
     @Provides
-    fun provideFavoritesDao(database: PixelPlayerDatabase): FavoritesDao {
+    fun provideFavoritesDao(database: MaterialMusicDatabase): FavoritesDao {
         return database.favoritesDao()
     }
 
     @Singleton
     @Provides
-    fun provideLyricsDao(database: PixelPlayerDatabase): LyricsDao {
+    fun provideLyricsDao(database: MaterialMusicDatabase): LyricsDao {
         return database.lyricsDao()
     }
 
     @Singleton
     @Provides
-    fun provideLocalPlaylistDao(database: PixelPlayerDatabase): LocalPlaylistDao {
+    fun provideLocalPlaylistDao(database: MaterialMusicDatabase): LocalPlaylistDao {
         return database.localPlaylistDao()
     }
 
     @Singleton
     @Provides
-    fun provideNavidromeDao(database: PixelPlayerDatabase): com.material.music.data.database.NavidromeDao {
+    fun provideNavidromeDao(database: MaterialMusicDatabase): com.material.music.data.database.NavidromeDao {
         return database.navidromeDao()
     }
     
     @Singleton
     @Provides
-    fun provideJellyfinDao(database: PixelPlayerDatabase): com.material.music.data.database.JellyfinDao {
+    fun provideJellyfinDao(database: MaterialMusicDatabase): com.material.music.data.database.JellyfinDao {
         return database.jellyfinDao()
     }
 
     @Singleton
     @Provides
-    fun provideListenBrainzDao(database: PixelPlayerDatabase): ListenBrainzDao {
+    fun provideListenBrainzDao(database: MaterialMusicDatabase): ListenBrainzDao {
         return database.listenBrainzDao()
     }
 
@@ -353,7 +353,7 @@ object AppModule {
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
                 val requestWithUserAgent = originalRequest.newBuilder()
-                    .header("User-Agent", "PixelPlayerOSS/1.0 (Android; Music Player)")
+                    .header("User-Agent", "MaterialMusic/1.0 (Android; Music Player)")
                     .build()
                 chain.proceed(requestWithUserAgent)
             }
@@ -406,7 +406,7 @@ object AppModule {
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
                 val requestWithHeaders = originalRequest.newBuilder()
-                    .header("User-Agent", "PixelPlayerOSS/1.0 (Android; Music Player)")
+                    .header("User-Agent", "MaterialMusic/1.0 (Android; Music Player)")
                     .header("Accept", "application/json")
                     .build()
                 chain.proceed(requestWithHeaders)

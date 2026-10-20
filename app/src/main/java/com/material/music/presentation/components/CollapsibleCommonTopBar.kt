@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.material.music.ui.theme.PixelPlayerStatusBarStyle
+import com.material.music.ui.theme.MaterialMusicStatusBarStyle
 import androidx.compose.ui.res.stringResource
 import com.material.music.R
 
@@ -65,7 +65,7 @@ fun CollapsibleCommonTopBar(
     val statusBarFallbackColor = backgroundColor.compositeOver(MaterialTheme.colorScheme.surface)
 
     if (syncStatusBarWithContainer) {
-        PixelPlayerStatusBarStyle(color = statusBarFallbackColor)
+        MaterialMusicStatusBarStyle(color = statusBarFallbackColor)
     }
     
     Box(

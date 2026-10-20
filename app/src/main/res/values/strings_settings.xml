@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="about_app_name">PixelPlayerOSS</string>
+    <string name="about_app_name">Material Music</string>
     <string name="about_contributions_format">%1$d contrib.</string>
     <string name="about_link_fdroid_subtitle">Available on the F-Droid catalog</string>
     <string name="about_link_fdroid_title">F-Droid</string>
-    <string name="about_link_source_subtitle">github.com/lostf1sh/PixelPlayerOSS</string>
+    <string name="about_link_source_subtitle">github.com/rebornlokii/MaterialMusic</string>
     <string name="about_link_source_title">Source code</string>
-    <string name="about_maintainer_subtitle">FOSS and original/non-FOSS maintainership.</string>
+    <string name="about_maintainer_subtitle">Current maintainer and original project credits.</string>
     <string name="about_maintainer_title">Maintainers</string>
     <string name="about_project_subtitle">Source, releases, and community entry points.</string>
     <string name="about_project_title">Project</string>
@@ -19,7 +19,7 @@
     <string name="about_support_chip_streaming">Self-hosted music</string>
     <string name="about_support_cta">Sponsor on GitHub</string>
     <string name="about_support_eyebrow">GitHub Sponsors</string>
-    <string name="about_support_title">Support PixelPlayerOSS</string>
+    <string name="about_support_title">Support Material Music</string>
     <string name="about_tagline">Local-first music, self-hosted streaming, and Material 3 craft in one FOSS player.</string>
     <string name="about_version_format">Version v%1$s</string>
     <string name="accounts_unable_open_screen">Unable to open this screen right now.</string>
@@ -28,7 +28,7 @@
     <string name="backup_dialog_restoring">Restoring Backup</string>
     <string name="backup_dialog_supporting_export">Choose exactly what you want to include in the backup package.</string>
     <string name="backup_exporting">Exporting</string>
-    <string name="backup_file_name_format">PixelPlayerOSS_Backup_%1$d.pxpl</string>
+    <string name="backup_file_name_format">MaterialMusic_Backup_%1$d.pxpl</string>
     <string name="backup_history_modules_line">%1$d modules · v%2$s · schema v%3$d</string>
     <string name="backup_how_body">Choose sections, export a .pxpl file, and import it later. Restore only replaces the sections you select.</string>
     <string name="backup_how_title">How backup works</string>
@@ -305,8 +305,8 @@
     <string name="restore_partial_unresolved_format">Restore completed with unresolved issues. Failed: %1$s</string>
     <string name="search_no_songs_match">No songs match your search.</string>
     <string name="search_songs_by_title_artist_album">Search by title, artist, or album</string>
-    <string name="setcat_about_pixelplayer_subtitle">App version, credits, and more.</string>
-    <string name="setcat_about_pixelplayer_title">About PixelPlayerOSS</string>
+    <string name="setcat_about_materialmusic_subtitle">App version, credits, and more.</string>
+    <string name="setcat_about_materialmusic_title">About Material Music</string>
     <string name="setcat_album_art_cache_limit">Album Art Cache Limit</string>
     <string name="setcat_album_art_palette_subtitle">Current: %1$s. Open live preview and choose style.</string>
     <string name="setcat_album_art_palette_title">Album Art Palette Style</string>

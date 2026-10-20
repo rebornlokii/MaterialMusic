@@ -83,7 +83,7 @@ import com.material.music.data.jellyfin.model.JellyfinCredentials
 import com.material.music.presentation.components.CloudLibraryPickerItem
 import com.material.music.presentation.components.CloudLibraryPickerSheet
 import com.material.music.ui.theme.RoundedSans
-import com.material.music.ui.theme.PixelPlayerTheme
+import com.material.music.ui.theme.MaterialMusicTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.collections.immutable.toImmutableList
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
@@ -95,7 +95,7 @@ class JellyfinLoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PixelPlayerTheme {
+            MaterialMusicTheme {
                 JellyfinLoginScreen(onClose = { finish() })
             }
         }

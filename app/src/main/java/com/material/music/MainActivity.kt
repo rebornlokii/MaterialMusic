@@ -128,7 +128,7 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.screens.SetupScreen
 import com.material.music.presentation.viewmodel.MainViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
-import com.material.music.ui.theme.PixelPlayerTheme
+import com.material.music.ui.theme.MaterialMusicTheme
 import com.material.music.utils.CrashHandler
 import com.material.music.utils.LogUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -205,13 +205,13 @@ class MainActivity : ComponentActivity() {
         val isBenchmarkMode = intent.getBooleanExtra("is_benchmark", false)
         val shouldBenchmarkRebuildDatabase =
             isBenchmarkMode && intent.getBooleanExtra("benchmark_rebuild_database", false)
-        Timber.tag("PixelPlayerBenchmark").i(
+        Timber.tag("MaterialMusicBenchmark").i(
             "onCreate benchmark=$isBenchmarkMode rebuildDatabase=$shouldBenchmarkRebuildDatabase"
         )
         if (shouldBenchmarkRebuildDatabase) {
             lifecycleScope.launch {
                 userPreferencesRepository.setInitialSetupDone(true)
-                Timber.tag("PixelPlayerBenchmark").i("Enqueueing benchmark database rebuild")
+                Timber.tag("MaterialMusicBenchmark").i("Enqueueing benchmark database rebuild")
                 syncManager.rebuildDatabase()
                 delay(1_500L)
                 playerViewModel.prepareBenchmarkPlayerFromLibrary()
@@ -261,7 +261,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            PixelPlayerTheme(
+            MaterialMusicTheme(
                 darkTheme = useDarkTheme
             ) {
                 var contentVisible by remember { mutableStateOf(false) }

@@ -49,7 +49,7 @@ import com.material.music.presentation.components.getNavigationBarHeight
 import com.material.music.presentation.components.resolveNavBarOccupiedHeight
 import com.material.music.presentation.utils.GenreIconProvider
 import com.material.music.presentation.viewmodel.PlayerViewModel
-import com.material.music.ui.theme.LocalPixelPlayerDarkTheme
+import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import androidx.compose.ui.res.stringResource
 import com.material.music.R
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
@@ -155,7 +155,7 @@ private fun GenreCard(
     onClick: () -> Unit,
     isGridView: Boolean
 ) {
-    val isDark = LocalPixelPlayerDarkTheme.current
+    val isDark = LocalMaterialMusicDarkTheme.current
     val themeColor = remember(genre, isDark) {
         com.material.music.ui.theme.GenreThemeUtils.getGenreThemeColor(
             genre = genre,

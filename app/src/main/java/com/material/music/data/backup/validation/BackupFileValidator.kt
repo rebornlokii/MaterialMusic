@@ -62,7 +62,7 @@ class BackupFileValidator @Inject constructor(
         }
 
         if (format == BackupFormatDetector.Format.UNKNOWN) {
-            errors.add(ValidationError("FORMAT_UNKNOWN", "File is not a recognized PixelPlayerOSS backup format."))
+            errors.add(ValidationError("FORMAT_UNKNOWN", "File is not a recognized Material Music backup format."))
             return BackupValidationResult.Invalid(errors)
         }
 

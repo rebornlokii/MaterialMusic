@@ -81,7 +81,7 @@ import com.material.music.presentation.components.scoped.rememberSheetVisualStat
 import com.material.music.presentation.viewmodel.PlayerSheetState
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.StablePlayerState
-import com.material.music.ui.theme.LocalPixelPlayerDarkTheme
+import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -469,7 +469,7 @@ fun UnifiedPlayerSheetV2(
 
     val activePlayerSchemePair by playerViewModel.activePlayerColorSchemePair.collectAsStateWithLifecycle()
     val themedAlbumArtUri by playerViewModel.currentThemedAlbumArtUri.collectAsStateWithLifecycle()
-    val isDarkTheme = LocalPixelPlayerDarkTheme.current
+    val isDarkTheme = LocalMaterialMusicDarkTheme.current
     val currentSong = infrequentPlayerState.currentSong
     val sheetThemeState = rememberSheetThemeState(
         activePlayerSchemePair = activePlayerSchemePair,
@@ -541,7 +541,7 @@ fun UnifiedPlayerSheetV2(
         currentSheetContentState,
         infrequentPlayerState.currentSong?.title
     ) {
-        "PixelPlayer player sheet ${currentSheetContentState.name.lowercase()} " +
+        "Material Music player sheet ${currentSheetContentState.name.lowercase()} " +
             (infrequentPlayerState.currentSong?.title ?: "")
     }
 

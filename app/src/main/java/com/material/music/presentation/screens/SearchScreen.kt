@@ -80,7 +80,7 @@ import com.material.music.presentation.components.SmartImage
 import com.material.music.presentation.components.SmartImageListTargetSize
 import com.material.music.presentation.components.SongInfoBottomSheet
 import com.material.music.presentation.viewmodel.PlayerViewModel
-import com.material.music.ui.theme.LocalPixelPlayerDarkTheme
+import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.History
@@ -192,7 +192,7 @@ fun SearchScreen(
 
     val searchbarCornerRadius = 28.dp
 
-    val dm = LocalPixelPlayerDarkTheme.current
+    val dm = LocalMaterialMusicDarkTheme.current
 
     val primaryContainer = MaterialTheme.colorScheme.primaryContainer
     val onPrimaryContainer = MaterialTheme.colorScheme.onPrimaryContainer

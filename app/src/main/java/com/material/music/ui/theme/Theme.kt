@@ -25,7 +25,7 @@ import androidx.core.view.WindowCompat
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import androidx.core.graphics.ColorUtils
 
-val LocalPixelPlayerDarkTheme = staticCompositionLocalOf { false }
+val LocalMaterialMusicDarkTheme = staticCompositionLocalOf { false }
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
@@ -35,7 +35,7 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
 
 @Suppress("DEPRECATION")
 @Composable
-fun PixelPlayerStatusBarStyle(
+fun MaterialMusicStatusBarStyle(
     color: Color,
     useDarkIcons: Boolean = ColorUtils.calculateLuminance(color.toArgb()) > 0.55,
     navigationColor: Color? = null,
@@ -69,31 +69,31 @@ fun PixelPlayerStatusBarStyle(
 }
 
 val DarkColorScheme = darkColorScheme(
-    primary = PixelPlayerPurplePrimary,
-    secondary = PixelPlayerPink,
-    tertiary = PixelPlayerOrange,
-    background = PixelPlayerPurpleDark,
-    surface = PixelPlayerSurface,
-    onPrimary = PixelPlayerWhite,
-    onSecondary = PixelPlayerWhite,
-    onTertiary = PixelPlayerWhite,
-    onBackground = PixelPlayerWhite,
-    onSurface = PixelPlayerLightPurple,
+    primary = MaterialMusicPurplePrimary,
+    secondary = MaterialMusicPink,
+    tertiary = MaterialMusicOrange,
+    background = MaterialMusicPurpleDark,
+    surface = MaterialMusicSurface,
+    onPrimary = MaterialMusicWhite,
+    onSecondary = MaterialMusicWhite,
+    onTertiary = MaterialMusicWhite,
+    onBackground = MaterialMusicWhite,
+    onSurface = MaterialMusicLightPurple,
     error = Color(0xFFFF5252),
-    onError = PixelPlayerWhite
+    onError = MaterialMusicWhite
 )
 
 val LightColorScheme = lightColorScheme(
     primary = LightPrimary,
-    onPrimary = PixelPlayerWhite,
+    onPrimary = MaterialMusicWhite,
     primaryContainer = LightPrimaryContainer,
     onPrimaryContainer = LightOnPrimaryContainer,
-    secondary = PixelPlayerPink,
-    onSecondary = PixelPlayerWhite,
-    secondaryContainer = PixelPlayerPink.copy(alpha = 0.15f),
-    onSecondaryContainer = PixelPlayerPink.copy(alpha = 0.85f),
-    tertiary = PixelPlayerOrange,
-    onTertiary = PixelPlayerBlack,
+    secondary = MaterialMusicPink,
+    onSecondary = MaterialMusicWhite,
+    secondaryContainer = MaterialMusicPink.copy(alpha = 0.15f),
+    onSecondaryContainer = MaterialMusicPink.copy(alpha = 0.85f),
+    tertiary = MaterialMusicOrange,
+    onTertiary = MaterialMusicBlack,
     background = LightBackground,
     onBackground = LightOnSurface,
     surface = LightSurface,
@@ -104,12 +104,12 @@ val LightColorScheme = lightColorScheme(
     outlineVariant = LightOutline.copy(alpha = 0.6f),
     surfaceTint = LightPrimary,
     error = Color(0xFFD32F2F),
-    onError = PixelPlayerWhite
+    onError = MaterialMusicWhite
 )
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PixelPlayerTheme(
+fun MaterialMusicTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     colorSchemePairOverride: ColorSchemePair? = null,
     content: @Composable () -> Unit
@@ -130,12 +130,12 @@ fun PixelPlayerTheme(
         else -> LightColorScheme
     }
 
-    PixelPlayerStatusBarStyle(
+    MaterialMusicStatusBarStyle(
         color = finalColorScheme.background,
         navigationColor = finalColorScheme.background
     )
 
-    CompositionLocalProvider(LocalPixelPlayerDarkTheme provides darkTheme) {
+    CompositionLocalProvider(LocalMaterialMusicDarkTheme provides darkTheme) {
         MaterialTheme(
             colorScheme = finalColorScheme,
             motionScheme = MotionScheme.expressive(),

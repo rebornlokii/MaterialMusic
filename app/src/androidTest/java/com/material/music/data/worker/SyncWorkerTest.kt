@@ -14,7 +14,7 @@ import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import com.google.common.truth.Truth.assertThat
 import com.material.music.data.database.MusicDao
-import com.material.music.data.database.PixelPlayerDatabase
+import com.material.music.data.database.MaterialMusicDatabase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -29,7 +29,7 @@ import java.io.IOException
 class SyncWorkerTest {
 
     private lateinit var context: Context
-    private lateinit var database: PixelPlayerDatabase
+    private lateinit var database: MaterialMusicDatabase
     private lateinit var musicDao: MusicDao
     private lateinit var mockContentResolver: android.content.ContentResolver
 
@@ -62,8 +62,8 @@ class SyncWorkerTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
-        database = Room.inMemoryDatabaseBuilder(context, PixelPlayerDatabase::class.java)
-            .addCallback(PixelPlayerDatabase.createRuntimeArtifactsCallback())
+        database = Room.inMemoryDatabaseBuilder(context, MaterialMusicDatabase::class.java)
+            .addCallback(MaterialMusicDatabase.createRuntimeArtifactsCallback())
             .allowMainThreadQueries()
             .build()
         musicDao = database.musicDao()

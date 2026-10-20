@@ -16,7 +16,7 @@ import okio.IOException
 import java.io.File
 
 object PlayerInfoStateDefinition : GlanceStateDefinition<PlayerInfo> {
-    private const val DATASTORE_FILE_NAME = "pixelPlayPlayerInfo_v1_json"
+    private const val DATASTORE_FILE_NAME = "materialMusicPlayerInfo_v1_json"
 
     private val json = Json {
         ignoreUnknownKeys = true

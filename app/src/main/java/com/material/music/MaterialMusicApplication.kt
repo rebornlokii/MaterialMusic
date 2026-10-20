@@ -30,7 +30,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class PixelPlayerApplication : Application(), ImageLoaderFactory, Configuration.Provider {
+class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
@@ -65,7 +65,7 @@ class PixelPlayerApplication : Application(), ImageLoaderFactory, Configuration.
     private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     companion object {
-        const val NOTIFICATION_CHANNEL_ID = "pixelplayer_music_channel"
+        const val NOTIFICATION_CHANNEL_ID = "materialmusic_music_channel"
     }
 
     private val appLifecycleObserver = object : DefaultLifecycleObserver {
@@ -90,7 +90,7 @@ class PixelPlayerApplication : Application(), ImageLoaderFactory, Configuration.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
-                "PixelPlayerOSS Music Playback",
+                "Material Music Playback",
                 NotificationManager.IMPORTANCE_LOW
             )
             val notificationManager = getSystemService(NotificationManager::class.java)
@@ -102,7 +102,7 @@ class PixelPlayerApplication : Application(), ImageLoaderFactory, Configuration.
         syncManager.get().start()
 
         startupScope.launch {
-            AlbumArtUtils.migrateLegacyCacheLocation(this@PixelPlayerApplication)
+            AlbumArtUtils.migrateLegacyCacheLocation(this@MaterialMusicApplication)
             val savedLimit = runCatching {
                 userPreferencesRepository.get().albumArtCacheLimitMbFlow.first()
             }.getOrNull()

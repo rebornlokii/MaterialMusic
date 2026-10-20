@@ -125,7 +125,7 @@
     <string name="setup_app_navigation_title">App Navigation</string>
     <string name="setup_backup_created_format">Created %1$s</string>
     <string name="setup_backup_from_version">Backup from %1$s</string>
-    <string name="setup_backup_have_description">If you already have a PixelPlayerOSS backup, restore it now and skip most of the remaining setup on this device.</string>
+    <string name="setup_backup_have_description">If you already have a Material Music backup, restore it now and skip most of the remaining setup on this device. Material Music also supports importing .pxpl backup files.</string>
     <string name="setup_backup_have_title">Do you have a backup?</string>
     <string name="setup_beta_label">Beta</string>
     <string name="setup_beta_symbol">β</string>
@@ -142,7 +142,7 @@
     <string name="setup_external_lyrics_description">Search lrclib.net when local or embedded lyrics are missing.</string>
     <string name="setup_external_lyrics_title">Online lyrics from LRCLIB</string>
     <string name="setup_external_services_footer">You can change these later in Settings &gt; Music Management &gt; Optional online services.</string>
-    <string name="setup_external_services_subtitle">PixelPlayerOSS works offline by default. Enable only the lookups you want.</string>
+    <string name="setup_external_services_subtitle">Material Music works offline by default. Enable only the lookups you want.</string>
     <string name="setup_external_services_title">Optional Online Services</string>
     <string name="setup_grant_media_permission">Grant Media Permission</string>
     <string name="setup_grant_permission_generic">Grant Permission</string>
@@ -157,10 +157,10 @@
     <string name="setup_nav_full_width_description">Standard full-width bar</string>
     <string name="setup_navbar_default_style">Default Style</string>
     <string name="setup_navbar_footer">You can change this later in Settings &gt; Appearance &gt; Navbar Style.</string>
-    <string name="setup_permission_alarms_description">Optional, but recommended if you use Sleep Timer and want PixelPlayerOSS to stop playback exactly on time.</string>
+    <string name="setup_permission_alarms_description">Optional, but recommended if you use Sleep Timer and want Material Music to stop playback exactly on time.</string>
     <string name="setup_permission_alarms_title">Alarms &amp; Reminders</string>
     <string name="setup_permission_granted">Permission Granted</string>
-    <string name="setup_permission_media_description">PixelPlayerOSS needs access to your audio files to build your music library.</string>
+    <string name="setup_permission_media_description">Material Music needs access to your audio files to build your music library.</string>
     <string name="setup_permission_media_title">Media Permission</string>
     <string name="setup_permission_notifications_description">Enable notifications to control your music from the lock screen and notification shade.</string>
     <string name="setup_permission_notifications_title">Notifications</string>
@@ -170,7 +170,7 @@
     <string name="setup_restore_backup_title">Restore Backup</string>
     <string name="setup_restoring_backup">Restoring backup</string>
     <string name="setup_step_format">Step %1$d of %2$d</string>
-    <string name="setup_theme_dark_description">The default Material 3 dark look for PixelPlayerOSS.</string>
+    <string name="setup_theme_dark_description">The default Material 3 dark look for Material Music.</string>
     <string name="setup_theme_dark_title">Dark</string>
     <string name="setup_theme_follow_description">Match your phone\'s current appearance setting.</string>
     <string name="setup_theme_follow_title">Follow system</string>

@@ -39,7 +39,7 @@ import androidx.media3.session.SessionResult
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import com.material.music.PixelPlayerApplication
+import com.material.music.MaterialMusicApplication
 import com.material.music.MainActivity
 import com.material.music.R
 import com.material.music.data.model.PlayerInfo
@@ -52,7 +52,7 @@ import com.material.music.data.repository.MusicRepository
 import com.material.music.data.service.player.DualPlayerEngine
 import com.material.music.data.service.player.TransitionController
 import com.material.music.ui.glancewidget.ControlWidget4x2
-import com.material.music.ui.glancewidget.PixelPlayerGlanceWidget
+import com.material.music.ui.glancewidget.MaterialMusicGlanceWidget
 import com.material.music.ui.glancewidget.PlayerActions
 import com.material.music.ui.glancewidget.PlayerInfoStateDefinition
 import com.material.music.utils.AlbumArtUtils
@@ -141,7 +141,7 @@ suspend fun loadArtworkBytesViaCoil(context: Context, uri: Uri): ByteArray? {
             config = ArtworkTransportSanitizer.WIDGET_CONFIG,
         )
     }.getOrElse { error ->
-        Timber.tag("MusicService_PixelPlayer").w(error, "Artwork read failed via Coil for uri=%s", uri)
+        Timber.tag("MusicService_MaterialMusic").w(error, "Artwork read failed via Coil for uri=%s", uri)
         null
     }
 }
@@ -218,7 +218,7 @@ class MusicService : MediaLibraryService() {
     private var temporaryForegroundNotificationVisible = false
 
     companion object {
-        private const val TAG = "MusicService_PixelPlayer"
+        private const val TAG = "MusicService_MaterialMusic"
         const val NOTIFICATION_ID = 101
         const val ACTION_SLEEP_TIMER_EXPIRED = "com.material.music.ACTION_SLEEP_TIMER_EXPIRED"
         const val EXTRA_FORCE_FOREGROUND_ON_START =
@@ -231,7 +231,7 @@ class MusicService : MediaLibraryService() {
         private val pendingMediaButtonForegroundStarts = AtomicInteger(0)
 
         private const val APP_PACKAGE_PREFIX = "com.material.music"
-        private const val LOCAL_LIBRARY_ROOT_ID = "pixelplayer_root"
+        private const val LOCAL_LIBRARY_ROOT_ID = "materialmusic_root"
         private const val DEFAULT_STREAM_BUFFER_SIZE = 8 * 1024
         private const val WIDGET_ART_FAILURE_RETRY_MS = 30_000L
         private const val WIDGET_QUEUE_PREVIEW_LIMIT = 4
@@ -640,7 +640,7 @@ class MusicService : MediaLibraryService() {
                     .setMediaId(LOCAL_LIBRARY_ROOT_ID)
                     .setMediaMetadata(
                         androidx.media3.common.MediaMetadata.Builder()
-                            .setTitle("PixelPlayerOSS")
+                            .setTitle("Material Music")
                             .setIsBrowsable(true)
                             .setIsPlayable(false)
                             .setMediaType(androidx.media3.common.MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
@@ -793,7 +793,7 @@ class MusicService : MediaLibraryService() {
     private fun startTemporaryForegroundForCommand() {
         val notification = NotificationCompat.Builder(
             this,
-            PixelPlayerApplication.NOTIFICATION_CHANNEL_ID
+            MaterialMusicApplication.NOTIFICATION_CHANNEL_ID
         )
             .setSmallIcon(R.drawable.monochrome_player)
             .setContentTitle(getString(R.string.app_name))
@@ -2158,10 +2158,10 @@ class MusicService : MediaLibraryService() {
             val glanceManager = GlanceAppWidgetManager(applicationContext)
             val widgetPlayerInfo = playerInfo.toWidgetTransportState()
 
-            val glanceIds = glanceManager.getGlanceIds(PixelPlayerGlanceWidget::class.java)
+            val glanceIds = glanceManager.getGlanceIds(MaterialMusicGlanceWidget::class.java)
             glanceIds.forEach { id ->
                 updateAppWidgetState(applicationContext, PlayerInfoStateDefinition, id) { widgetPlayerInfo }
-                PixelPlayerGlanceWidget().update(applicationContext, id)
+                MaterialMusicGlanceWidget().update(applicationContext, id)
             }
 
             val barGlanceIds = glanceManager.getGlanceIds(BarWidget4x1::class.java)

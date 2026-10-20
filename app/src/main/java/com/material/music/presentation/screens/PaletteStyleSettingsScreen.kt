@@ -68,7 +68,7 @@ import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
-import com.material.music.ui.theme.LocalPixelPlayerDarkTheme
+import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import com.material.music.ui.theme.generateColorSchemeFromSeed
 import kotlin.math.roundToInt
 
@@ -82,7 +82,7 @@ fun PaletteStyleSettingsScreen(
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     val stablePlayerState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
-    val isDarkTheme = LocalPixelPlayerDarkTheme.current
+    val isDarkTheme = LocalMaterialMusicDarkTheme.current
     val albumSchemePair by playerViewModel.currentAlbumArtColorSchemePair.collectAsStateWithLifecycle()
 
     val baseScheme = MaterialTheme.colorScheme

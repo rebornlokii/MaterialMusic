@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.components.external.ExternalPlayerOverlay
-import com.material.music.ui.theme.PixelPlayerTheme
+import com.material.music.ui.theme.MaterialMusicTheme
 import android.content.Intent.EXTRA_STREAM
 import androidx.media3.common.util.UnstableApi
 import com.material.music.data.preferences.AppThemeMode
@@ -51,7 +51,7 @@ class ExternalPlayerActivity : ComponentActivity() {
                 AppThemeMode.LIGHT -> false
                 else -> systemDarkTheme
             }
-            PixelPlayerTheme(darkTheme = useDarkTheme) {
+            MaterialMusicTheme(darkTheme = useDarkTheme) {
                 ExternalPlayerOverlay(
                     playerViewModel = playerViewModel,
                     onDismiss = { finish() },

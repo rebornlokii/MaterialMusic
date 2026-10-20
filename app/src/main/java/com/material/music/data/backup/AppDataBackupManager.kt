@@ -254,7 +254,7 @@ class AppDataBackupManager @Inject constructor(
                 step = ++step,
                 totalSteps = totalSteps,
                 title = "Backup complete",
-                detail = "Your PixelPlayerOSS backup was created successfully."
+                detail = "Your Material Music backup was created successfully."
             )
         }
     }

@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.material.music.BuildConfig
 import com.material.music.R
 import com.material.music.ui.theme.RoundedSans
-import com.material.music.ui.theme.PixelPlayerStatusBarStyle
+import com.material.music.ui.theme.MaterialMusicStatusBarStyle
 import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +57,7 @@ fun GenreGradientTopBar(
         Brush.verticalGradient(colors = listOf(startColor, endColor))
     }
 
-    PixelPlayerStatusBarStyle(color = startColor)
+    MaterialMusicStatusBarStyle(color = startColor)
 
     LargeTopAppBar(
         scrollBehavior = scrollBehavior,
@@ -108,7 +108,7 @@ fun HomeGradientTopBar(
 ) {
     val surfaceContainerHigh = MaterialTheme.colorScheme.surfaceContainerHighest
 
-    PixelPlayerStatusBarStyle(color = surfaceContainerHigh)
+    MaterialMusicStatusBarStyle(color = surfaceContainerHigh)
 
     val animatedAlpha by animateFloatAsState(
         targetValue = if (isScrolled) 1f else 0f,

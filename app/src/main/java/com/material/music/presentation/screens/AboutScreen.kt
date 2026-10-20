@@ -120,21 +120,31 @@ private data class Contributor(
     val contributions: Int? = null,
 )
 
-private val CoreMaintainer = Contributor(
+private val CurrentMaintainer = Contributor(
+    id = "rebornlokii",
+    displayName = "@rebornlokii",
+    role = "Maintainer",
+    detail = "Maintains Material Music. GitHub: @rebornlokii.",
+    avatarUrl = "https://github.com/rebornlokii.png",
+    iconRes = R.drawable.round_developer_board_24,
+    githubUrl = "https://github.com/rebornlokii",
+)
+
+private val OriginalFossMaintainer = Contributor(
     id = "lostf1sh",
     displayName = "@lostf1sh",
-    role = "FOSS Maintainer",
-    detail = "Maintains PixelPlayerOSS. GitHub and Telegram: @lostf1sh.",
+    role = "Original FOSS Maintainer",
+    detail = "Maintained PixelPlayerOSS, the free and open-source project Material Music is based on.",
+    badge = "Original project",
     avatarUrl = "https://github.com/lostf1sh.png",
     iconRes = R.drawable.round_developer_board_24,
     githubUrl = "https://github.com/lostf1sh",
-    telegramUrl = "https://t.me/lostf1sh",
 )
 
-private val NonFossMaintainer = Contributor(
+private val OriginalAuthor = Contributor(
     id = "theovilardo",
     displayName = "@theovilardo",
-    role = "Author / Non-FOSS Maintainer",
+    role = "Original Author",
     detail = "Author and maintainer of the original Google Play / non-FOSS PixelPlayer release.",
     badge = "Original app",
     avatarUrl = "https://github.com/theovilardo.png",
@@ -143,13 +153,14 @@ private val NonFossMaintainer = Contributor(
 )
 
 private val AboutMaintainers = listOf(
-    CoreMaintainer,
-    NonFossMaintainer,
+    CurrentMaintainer,
+    OriginalFossMaintainer,
+    OriginalAuthor,
 )
 
-private const val SourceRepoUrl = "https://github.com/lostf1sh/PixelPlayerOSS"
+private const val SourceRepoUrl = "https://github.com/rebornlokii/MaterialMusic"
 private const val FDroidUrl = "https://f-droid.org/packages/com.material.music/"
-private const val SponsorUrl = "https://github.com/sponsors/lostf1sh"
+private const val SponsorUrl = "https://github.com/sponsors/rebornlokii"
 
 private data class ProjectLink(
     val id: String,
@@ -414,7 +425,7 @@ private fun AboutHeroCard(
                         color = MaterialTheme.colorScheme.primaryContainer,
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.pixelplayer_base_monochrome),
+                            painter = painterResource(R.drawable.materialmusic_base_monochrome),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(10.dp).size(28.dp),

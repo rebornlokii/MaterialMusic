@@ -32,10 +32,10 @@
     <string name="action_merge">Merge</string>
     <string name="action_reset">Reset</string>
     <string name="action_undo">Undo</string>
-    <string name="all_files_access_description">To edit song metadata (.mp3 files), PixelPlayerOSS needs special access to all files. This allows us to modify track tags directly. Please grant this permission on the next screen to enable metadata editing.</string>
+    <string name="all_files_access_description">To edit song metadata (.mp3 files), Material Music needs special access to all files. This allows us to modify track tags directly. Please grant this permission on the next screen to enable metadata editing.</string>
     <string name="all_files_access_title">Special Permission Required</string>
-    <string name="app_name">PixelPlayerOSS</string>
-    <string name="app_name_change_message">This app is now PixelPlayerOSS. Keep playing!</string>
+    <string name="app_name">Material Music</string>
+    <string name="app_name_change_message">This app is now Material Music. Keep playing!</string>
     <string name="app_name_change_title">App Name Change</string>
     <string name="cancel">Cancel</string>
     <string name="cd_about_open_link">Open %1$s</string>
@@ -95,7 +95,7 @@
     <string name="clear_all">Clear all</string>
     <string name="close_notification_player">Close player</string>
     <string name="could_not_find_artist">Could not find the artist</string>
-    <string name="crash_report_share_subject">PixelPlayerOSS crash report</string>
+    <string name="crash_report_share_subject">Material Music crash report</string>
     <string name="dash_last_synced_format">Last synced: %1$s</string>
     <string name="dash_libraries_all">All libraries</string>
     <string name="dash_libraries_all_subtitle">Include every library exposed by this server</string>
@@ -116,7 +116,7 @@
     <string name="duplicates_none">No duplicate tracks found.</string>
     <string name="duplicates_summary">%1$d groups · %2$d tracks</string>
     <string name="duplicates_title">Duplicate tracks</string>
-    <string name="easter_egg_thank_you">Thank you for using PixelPlayerOSS!</string>
+    <string name="easter_egg_thank_you">Thank you for using Material Music!</string>
     <string name="error">Error</string>
     <string name="error_unknown">Unknown error</string>
     <plurals name="exported_playlists_message">
@@ -143,7 +143,7 @@
     <string name="player_error_skipping">Couldn\'t play this track — skipping</string>
     <string name="player_only_first_n_albums_added_queue">Only the first %1$d albums were added to queue</string>
     <string name="player_only_first_n_albums_next">Only the first %1$d albums were added as next</string>
-    <string name="playlist_export_folder_display">Music/PixelPlayerOSS Exports</string>
+    <string name="playlist_export_folder_display">Music/Material Music Exports</string>
     <string name="add">Add</string>
     <string name="clear">Clear</string>
     <string name="date_today">Today</string>

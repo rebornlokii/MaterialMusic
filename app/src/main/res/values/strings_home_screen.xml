@@ -9,7 +9,7 @@
     <string name="crash_report_title">Oops! Something went wrong</string>
     <string name="device_capabilities_unknown_short">--</string>
     <string name="home_empty_placeholder_refresh">Refresh</string>
-    <string name="home_empty_placeholder_subtitle">Your mix will appear here when PixelPlayerOSS finds songs or syncs a source.</string>
+    <string name="home_empty_placeholder_subtitle">Your mix will appear here when Material Music finds songs or syncs a source.</string>
     <string name="home_empty_placeholder_title">No data to show yet</string>
     <string name="home_option_dj_mashup">DJ Mashup</string>
     <string name="home_your_mix_title">Your\nMix</string>
@@ -28,7 +28,7 @@
     <string name="beta_sheet_avoid_3">Unredacted logs or screenshots with private data.</string>
     <string name="beta_sheet_avoid_title">Please avoid</string>
     <string name="beta_sheet_before_1">Search existing open and closed issues to avoid duplicates.</string>
-    <string name="beta_sheet_before_2">Update to the latest PixelPlayerOSS version and confirm the problem still happens.</string>
+    <string name="beta_sheet_before_2">Update to the latest Material Music version and confirm the problem still happens.</string>
     <string name="beta_sheet_before_3">Restart the app and confirm the problem persists.</string>
     <string name="beta_sheet_before_4">Try to reproduce it and write down the exact steps.</string>
     <string name="beta_sheet_before_title">Before opening an issue</string>
@@ -47,7 +47,7 @@
     <string name="beta_sheet_env_extra">Extra context: SD card usage, special settings, permissions, etc.</string>
     <string name="beta_sheet_env_source">Install source: GitHub Release, debug build, nightly build, etc.</string>
     <string name="beta_sheet_env_title">Environment</string>
-    <string name="beta_sheet_env_version">PixelPlayerOSS version:</string>
+    <string name="beta_sheet_env_version">Material Music version:</string>
     <string name="beta_sheet_expect_1">Bugs, crashes, or incomplete features may occur unexpectedly.</string>
     <string name="beta_sheet_expect_2">Some features may change or be removed without notice.</string>
     <string name="beta_sheet_expect_3">Beta builds may be more unstable than release versions.</string>
@@ -87,7 +87,7 @@
     <string name="beta_sheet_title_examples_title">Good issue titles</string>
     <string name="beta_sheet_welcome_body">You\'re using a beta build that may contain bugs, crashes, or experimental features. Help us improve by reporting issues.</string>
     <string name="beta_sheet_welcome_body_stable">You\'re running the stable release build. Check the changelog to see what\'s new, and report anything that misbehaves.</string>
-    <string name="beta_sheet_welcome_title">Welcome to PixelPlayerOSS %1$s</string>
+    <string name="beta_sheet_welcome_title">Welcome to Material Music %1$s</string>
     <string name="daily_mix_based_on_history">Based on History</string>
     <string name="home_daily_mix_queue_name">Daily Mix</string>
     <string name="home_daily_mix_action_see_all">Check all of Daily Mix</string>

@@ -2,14 +2,14 @@ package com.material.music.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PixelPlayerPurpleDark = Color(0xFF1E1234)
-val PixelPlayerPurplePrimary = Color(0xFFAB47BC)
-val PixelPlayerPink = Color(0xFFF06292)
-val PixelPlayerOrange = Color(0xFFFF8A65)
-val PixelPlayerLightPurple = Color(0xFFE1BEE7)
-val PixelPlayerWhite = Color(0xFFFFFFFF)
-val PixelPlayerBlack = Color(0xFF000000)
-val PixelPlayerSurface = Color(0xFF2A1F40)
+val MaterialMusicPurpleDark = Color(0xFF1E1234)
+val MaterialMusicPurplePrimary = Color(0xFFAB47BC)
+val MaterialMusicPink = Color(0xFFF06292)
+val MaterialMusicOrange = Color(0xFFFF8A65)
+val MaterialMusicLightPurple = Color(0xFFE1BEE7)
+val MaterialMusicWhite = Color(0xFFFFFFFF)
+val MaterialMusicBlack = Color(0xFF000000)
+val MaterialMusicSurface = Color(0xFF2A1F40)
 
 val LightBackground = Color(0xFFF7F2FF)
 val LightSurface = Color(0xFFFBF8FF)

@@ -222,7 +222,7 @@
     <string name="album_sel_selected">selected</string>
     <string name="artist_example_arrow"> → </string>
     <string name="artist_group_by_album_artist_sub">Group the Artists tab and albums by album artist, so featured and compilation artists don\'t clutter the list</string>
-    <string name="artist_info_body">PixelPlayerOSS splits artist tags using character delimiters (/, ;, &amp;) and word delimiters (feat., ft., vs., x). Word delimiters are matched case-insensitively.
+    <string name="artist_info_body">Material Music splits artist tags using character delimiters (/, ;, &amp;) and word delimiters (feat., ft., vs., x). Word delimiters are matched case-insensitively.
 
 "Extract Artists from Title" detects patterns like (feat. Artist) in song titles.
 
@@ -263,7 +263,7 @@ Backslash (\) can be used to escape character delimiters.</string>
     <string name="song_info_ringtone_local_only">Only local songs can be used as ringtones.</string>
     <string name="song_info_ringtone_missing_file">Couldn\'t prepare this audio file for ringtone.</string>
     <string name="song_info_ringtone_permission_missing">Modify system settings was not enabled.</string>
-    <string name="song_info_ringtone_permission_prompt">Enable Modify system settings, then return to PixelPlayerOSS to finish automatically.</string>
+    <string name="song_info_ringtone_permission_prompt">Enable Modify system settings, then return to Material Music to finish automatically.</string>
     <string name="song_info_set_as_short">Set as</string>
     <string name="song_info_share_chooser_title">Share song file via</string>
     <string name="song_info_tab_details">Details</string>
@@ -279,7 +279,7 @@ Backslash (\) can be used to escape character delimiters.</string>
     <string name="song_info_tone_notification_label">notification sound</string>
     <string name="song_info_tone_notification_subtitle">Messages and app alerts</string>
     <string name="song_info_tone_notification_title">Notification sound</string>
-    <string name="song_info_tone_picker_body">Choose where PixelPlayerOSS should install this sound.</string>
+    <string name="song_info_tone_picker_body">Choose where Material Music should install this sound.</string>
     <string name="song_info_tone_picker_title">Use this song as</string>
     <string name="song_info_tone_ringtone_label">ringtone</string>
     <string name="song_info_tone_ringtone_subtitle">Incoming calls</string>
