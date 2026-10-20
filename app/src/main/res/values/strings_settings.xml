@@ -2,8 +2,6 @@
 <resources>
     <string name="about_app_name">Material Music</string>
     <string name="about_contributions_format">%1$d contrib.</string>
-    <string name="about_link_fdroid_subtitle">Available on the F-Droid catalog</string>
-    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_subtitle">github.com/rebornlokii/MaterialMusic</string>
     <string name="about_link_source_title">Source code</string>
     <string name="about_maintainer_subtitle">Current maintainer and original project credits.</string>

@@ -7,9 +7,6 @@
   <a href="https://github.com/rebornlokii/MaterialMusic/releases/latest">
     <img src="https://img.shields.io/github/v/release/rebornlokii/MaterialMusic?include_prereleases&logo=github&style=for-the-badge&label=Latest%20Release" alt="Latest release">
   </a>
-  <a href="https://f-droid.org/packages/com.material.music/">
-    <img src="https://img.shields.io/f-droid/v/com.material.music?logo=fdroid&style=for-the-badge&label=F-Droid" alt="F-Droid version">
-  </a>
   <a href="https://github.com/rebornlokii/MaterialMusic/releases">
     <img src="https://img.shields.io/github/downloads/rebornlokii/MaterialMusic/total?logo=github&style=for-the-badge" alt="Total downloads">
   </a>
@@ -95,7 +92,7 @@ Build one universal debug APK for local installation:
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleDebug -Pmaterialmusic.enableAbiSplits=false
 ```
 
-Build a universal unsigned release APK suitable for F-Droid verification:
+Build a universal unsigned release APK (no signing applied):
 
 ```sh
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleRelease -Pmaterialmusic.enableAbiSplits=false -Pmaterialmusic.disableReleaseSigning=true
@@ -115,29 +112,13 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :baselineprofile:generateBaseli
 
 ## Download
 
-Material Music is available on F-Droid:
-
-<a href="https://f-droid.org/packages/com.material.music/">
-  <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
-</a>
-
 GitHub releases are available at:
 
 ```text
 https://github.com/rebornlokii/MaterialMusic/releases
 ```
 
-Obtainium app id:
-
-```text
-com.material.music
-```
-
 Public releases are planned on a regular weekly cadence when `main` passes the release checklist.
-
-F-Droid listing metadata lives in `fastlane/metadata/android/en-US`; build/release notes for F-Droid are in [docs/FDROID.md](docs/FDROID.md).
-
-> Note: F-Droid builds and signs its own APKs from source, so they may lag behind GitHub releases while the new version works through the F-Droid build cycle. F-Droid and GitHub APK signatures differ — switching between the two requires an uninstall/reinstall.
 
 ### Alpha builds
 
@@ -145,7 +126,7 @@ Every merge into `main` automatically publishes a pre-release tagged like `v0.2.
 
 To install one, download the APK for your device from the release assets and sideload it: `arm64-v8a` fits most modern devices, `armeabi-v7a` is for older 32-bit ones.
 
-Alpha builds are signed with a dedicated CI key, so they update over each other, but switching between alpha and a stable or F-Droid install requires an uninstall/reinstall. In Obtainium, enable "Include prereleases" to get alphas automatically.
+Alpha builds are signed with a dedicated CI key, so they update over each other, but switching between an alpha and a stable install requires an uninstall/reinstall.
 
 ## Support
 
@@ -193,8 +174,6 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:testDebugUnitTest
 ```
 
 Release process: [docs/RELEASE.md](docs/RELEASE.md)
-
-F-Droid notes: [docs/FDROID.md](docs/FDROID.md)
 
 Privacy policy: [PRIVACY.md](PRIVACY.md)
 

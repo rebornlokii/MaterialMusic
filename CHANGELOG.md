@@ -22,7 +22,7 @@ All notable changes to Material Music will be documented in this file.
 - Removed release paths that depended on local/private signing artifacts, dummy signing values, or app-store-only assumptions.
 
 ### Release readiness
-- Added F-Droid metadata, Fastlane store metadata, dependency/license documentation, privacy notes, security notes, and contributor guidance.
+- Added dependency/license documentation, privacy notes, security notes, and contributor guidance.
 - Release builds now stay unsigned when local signing keys are absent, and `materialmusic.disableReleaseSigning=true` forces unsigned verification builds even on a maintainer machine.
 - Documented third-party asset and dependency licenses, including native/binary Maven artifacts and JitPack source trails.
 

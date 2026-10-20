@@ -98,7 +98,7 @@
         <item>Also includes smart playlist persistence, duplicate-track scanning, playback speed control, clearer playback/sync failure messages, and improved accessibility.</item>
     </string-array>
     <string-array name="changelog_070_fixes">
-        <item>Added F-Droid metadata, Fastlane store metadata, privacy notes, security notes, dependency/license documentation, and contributor guidance.</item>
+        <item>Added privacy notes, security notes, dependency/license documentation, and contributor guidance.</item>
         <item>Release builds stay unsigned when local signing keys are absent.</item>
         <item>Added materialmusic.disableReleaseSigning=true for deterministic unsigned verification builds.</item>
         <item>Documented asset and dependency license trails, including native/binary Maven artifacts and JitPack dependencies.</item>
