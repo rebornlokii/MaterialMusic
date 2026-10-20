@@ -1,6 +1,6 @@
 # F-Droid
 
-PixelPlayerOSS is published on F-Droid:
+Material Music is published on F-Droid:
 
 ```text
 https://f-droid.org/packages/com.material.music/
@@ -36,7 +36,7 @@ uninstall/reinstall.
 ## Recipe Notes
 
 The official recipe builds `:app:assembleRelease` with
-`pixelplayer.enableAbiSplits=false` and `pixelplayer.disableReleaseSigning=true`,
+`materialmusic.enableAbiSplits=false` and `materialmusic.disableReleaseSigning=true`,
 producing a single universal unsigned APK. Its `prebuild` step strips two things the
 F-Droid build servers cannot use:
 
@@ -50,7 +50,7 @@ When editing those lines in `settings.gradle.kts` or `gradle.properties`, check 
 recipe's `sed` commands still apply cleanly, or update the recipe in `fdroiddata`.
 
 Build from git source or `git archive`, not from a manual copy of the working tree.
-Ignored local artifacts such as `app/release/`, `vz-pixelplay.jks`,
+Ignored local artifacts such as `app/release/`, `vz-materialmusic.jks`,
 `keystore.properties`, and `local.properties` must not be included in any source
 tarball.
 
@@ -104,10 +104,10 @@ The project source is GPL-3.0-licensed. Release APKs also include `org.jellyfin.
 
 ## Local Verification Build
 
-Reproduce the F-Droid-style artifact locally — a universal unsigned release APK. Pass `pixelplayer.disableReleaseSigning=true` so local ignored signing files cannot affect the artifact:
+Reproduce the F-Droid-style artifact locally — a universal unsigned release APK. Pass `materialmusic.disableReleaseSigning=true` so local ignored signing files cannot affect the artifact:
 
 ```sh
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleRelease -Ppixelplayer.enableAbiSplits=false -Ppixelplayer.disableReleaseSigning=true
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleRelease -Pmaterialmusic.enableAbiSplits=false -Pmaterialmusic.disableReleaseSigning=true
 ```
 
 Expected artifact:

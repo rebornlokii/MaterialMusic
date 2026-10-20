@@ -1,6 +1,6 @@
 # Privacy Policy
 
-PixelPlayerOSS is local-first and does not include analytics, advertising SDKs, Firebase, Crashlytics, or Google Play Services runtime dependencies.
+Material Music is local-first and does not include analytics, advertising SDKs, Firebase, Crashlytics, or Google Play Services runtime dependencies.
 
 ## Data Stored On Device
 
@@ -19,7 +19,7 @@ Server credentials and preferences are stored locally. The app does not sell or 
 
 ## Files And Media
 
-PixelPlayerOSS requests media/file permissions to scan and play local music, read artwork, edit metadata, and export/import user backups.
+Material Music requests media/file permissions to scan and play local music, read artwork, edit metadata, and export/import user backups.
 
 ## Crash Reports
 

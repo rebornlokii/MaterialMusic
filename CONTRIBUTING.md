@@ -1,6 +1,6 @@
-# Contributing to PixelPlayerOSS
+# Contributing to Material Music
 
-Thanks for your interest in improving PixelPlayerOSS! This guide covers the
+Thanks for your interest in improving Material Music! This guide covers the
 conventions that aren't obvious from the code alone. For a deeper architectural
 overview, see [CLAUDE.md](CLAUDE.md) (written for AI assistants but accurate for
 humans too).
@@ -8,11 +8,11 @@ humans too).
 ## Getting started
 
 ```sh
-git clone https://github.com/lostf1sh/PixelPlayerOSS.git
-cd PixelPlayerOSS
+git clone https://github.com/rebornlokii/MaterialMusic.git
+cd MaterialMusic
 
 # Universal debug APK for local installation
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleDebug -Ppixelplayer.enableAbiSplits=false
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleDebug -Pmaterialmusic.enableAbiSplits=false
 ```
 
 Requirements: **JDK 21**, Android **compile/target SDK 37**, min SDK 30 (Android 11+).

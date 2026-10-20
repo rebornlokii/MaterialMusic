@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to PixelPlayerOSS will be documented in this file.
+All notable changes to Material Music will be documented in this file.
 
 ## [Unreleased]
 
@@ -11,7 +11,7 @@ All notable changes to PixelPlayerOSS will be documented in this file.
 ## [0.1.0] - 2026-06-09
 
 ### Initial release
-- First public FOSS release of PixelPlayerOSS, an OSS-focused Android music player.
+- First public FOSS release of Material Music, an OSS-focused Android music player.
 - Includes local music playback, playlists, favorites, lyrics, listening stats, dynamic Material 3 theming, widgets, and backup/restore.
 - Keeps self-hosted library support for Navidrome/Subsonic and Jellyfin, plus optional LRCLIB lyrics and Deezer artist artwork lookups.
 
@@ -23,7 +23,7 @@ All notable changes to PixelPlayerOSS will be documented in this file.
 
 ### Release readiness
 - Added F-Droid metadata, Fastlane store metadata, dependency/license documentation, privacy notes, security notes, and contributor guidance.
-- Release builds now stay unsigned when local signing keys are absent, and `pixelplayer.disableReleaseSigning=true` forces unsigned verification builds even on a maintainer machine.
+- Release builds now stay unsigned when local signing keys are absent, and `materialmusic.disableReleaseSigning=true` forces unsigned verification builds even on a maintainer machine.
 - Documented third-party asset and dependency licenses, including native/binary Maven artifacts and JitPack source trails.
 
 ### Security and privacy
