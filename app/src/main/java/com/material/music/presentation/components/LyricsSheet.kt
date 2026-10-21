@@ -139,6 +139,8 @@ import com.material.music.presentation.components.subcomps.PlayingEqIcon
 import com.material.music.utils.MultiLangRomanizer
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 internal data class LyricsSheetColors(
     val container: Color,
@@ -324,6 +326,22 @@ fun LyricsSheet(
         context.dataStore.data.map { it[booleanPreferencesKey("show_lyrics_romanization")] ?: true }
     }
     val showLyricsRomanization by showLyricsRomanizationFlow.collectAsStateWithLifecycle(initialValue = true)
+
+    // Plain lyrics are stored without romanization; derive it off the main thread only
+    // while the romanization toggle is on.
+    val shouldRomanizePlainLyrics = showLyricsRomanization && hasRomanizedLyrics
+    val plainLyricsRomanization by produceState<List<String?>?>(
+        initialValue = null,
+        lyrics?.plain,
+        shouldRomanizePlainLyrics
+    ) {
+        val plainLines = lyrics?.plain
+        value = if (!shouldRomanizePlainLyrics || plainLines.isNullOrEmpty()) {
+            null
+        } else {
+            withContext(Dispatchers.Default) { romanizePlainLyrics(plainLines) }
+        }
+    }
 
     val useAnimatedLyricsFlow = remember(context) {
         context.dataStore.data.map { it[booleanPreferencesKey("use_animated_lyrics")] ?: false }
@@ -795,10 +813,11 @@ fun LyricsSheet(
                                 itemsIndexed(
                                     items = plain,
                                     key = { index, line -> "$index-$line" }
-                                ) { _, line ->
+                                ) { index, line ->
                                     PlainLyricsLine(
                                         line = line,
                                         style = lyricsTextStyle,
+                                        romanization = plainLyricsRomanization?.getOrNull(index),
                                         lyricsAlignment = lyricsAlignment,
                                         showTranslation = if (hasTranslatedLyrics) showLyricsTranslation else true,
                                         showRomanization = if (hasRomanizedLyrics) showLyricsRomanization else true,
@@ -1648,6 +1667,7 @@ fun LyricWordSpan(
 fun PlainLyricsLine(
     line: String,
     style: TextStyle,
+    romanization: String? = null,
     lyricsAlignment: String = "left",
     showTranslation: Boolean = true,
     showRomanization: Boolean = true,
@@ -1672,7 +1692,7 @@ fun PlainLyricsLine(
         } else ""
     }
 
-    val romanizationText = remember(sanitizedLines, primaryText, isRomanizedScript) {
+    val embeddedRomanizationText = remember(sanitizedLines, primaryText, isRomanizedScript) {
          if (sanitizedLines.size > 1) {
             val firstExtra = sanitizedLines[1]
             val isLatin = firstExtra.any { it.code in 32..126 } 
@@ -1681,6 +1701,7 @@ fun PlainLyricsLine(
             if (isFirstRomanization) sanitizeLyricLineText(firstExtra) else ""
         } else ""
     }
+    val romanizationText = romanization?.takeIf { it.isNotBlank() } ?: embeddedRomanizationText
     val textAlign = when (lyricsAlignment) {
         "center" -> TextAlign.Center
         "right" -> TextAlign.Right
@@ -1724,6 +1745,21 @@ fun PlainLyricsLine(
                     modifier = Modifier.padding(top = if (showRomanization && romanizationText.isNotBlank()) 2.dp else 4.dp)
                 )
             }
+        }
+    }
+}
+
+private val KanaRange = '\u3040'..'\u30FF'
+
+/** Romanizes each plain lyric line; null entries mean the line needs no romanization. */
+private fun romanizePlainLyrics(lines: List<String>): List<String?> {
+    val entireLyricsHasKana = lines.any { line -> line.any { it in KanaRange } }
+    return lines.map { line ->
+        val primary = sanitizeLyricLineText(line.substringBefore('\n'))
+        if (MultiLangRomanizer.isScriptThatNeedsRomanization(primary)) {
+            MultiLangRomanizer.romanizeLine(primary, entireLyricsHasKana)
+        } else {
+            null
         }
     }
 }
