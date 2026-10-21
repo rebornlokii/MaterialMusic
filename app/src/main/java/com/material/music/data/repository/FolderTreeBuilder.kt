@@ -211,7 +211,8 @@ class FolderTreeBuilder @Inject constructor() {
             name = temp.name,
             songs = temp.songs
                 .sortedWith(
-                    compareBy<Song> { if (it.trackNumber > 0) it.trackNumber else Int.MAX_VALUE }
+                    compareBy<Song> { it.discNumber?.takeIf { d -> d > 0 } ?: Int.MAX_VALUE }
+                        .thenBy { if (it.trackNumber > 0) it.trackNumber else Int.MAX_VALUE }
                         .thenBy { it.title.lowercase() }
                 )
                 .toImmutableList(),

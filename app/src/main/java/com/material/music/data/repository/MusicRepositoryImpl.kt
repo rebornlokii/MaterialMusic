@@ -439,7 +439,14 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun getSongsForAlbum(albumId: Long): Flow<List<Song>> {
         return musicDao.getSongsByAlbumId(albumId).map { entities ->
-            entities.map { it.toSong() }.sortedBy { it.trackNumber }
+            // Sort by disc first, then track — a Kotlin trackNumber-only sort would
+            // interleave the discs of a multi-disc album (issue #162). Unknown or
+            // non-positive disc/track numbers sort last, matching the SQL above.
+            entities.map { it.toSong() }.sortedWith(
+                compareBy<Song> { it.discNumber?.takeIf { d -> d > 0 } ?: Int.MAX_VALUE }
+                    .thenBy { if (it.trackNumber > 0) it.trackNumber else Int.MAX_VALUE }
+                    .thenBy { it.title.lowercase() }
+            )
         }.flowOn(Dispatchers.IO)
     }
 
