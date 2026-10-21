@@ -22,6 +22,7 @@ import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.worker.collectArtistNames
 import com.material.music.utils.AlbumArtUtils
 import com.material.music.utils.LocalArtworkUri
+import com.material.music.utils.MediaStorePermissionHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -327,6 +328,10 @@ class SongMetadataEditor(
             val useVorbisJavaPrimary = effectiveExtension == "opus"
             val useJAudioTaggerPrimary = effectiveExtension in setOf("wav", "ogg") || isHighResFlac
             val fileExists = finalFilePath.isNotBlank() && File(finalFilePath).exists()
+            // Without File API write access (scoped storage after MediaStore write consent),
+            // the tag writers cannot open the original path; edit a copy and stream it back
+            // through the ContentResolver instead.
+            val needsContentResolverWriteBack = fileExists && !File(finalFilePath).canWrite()
 
             val runPipeline: (String) -> Boolean = { path ->
                 if (useVorbisJavaPrimary) {
@@ -405,8 +410,11 @@ class SongMetadataEditor(
             val fileUpdateSuccess = if (!fileExists) {
                 Timber.tag(TAG).e("METADATA_EDIT: File does not exist: $finalFilePath")
                 false
-            } else if (needsExtensionSwap) {
-                writeMetadataViaExtensionSwap(finalFilePath, effectiveExtension, runPipeline)
+            } else if (needsExtensionSwap || needsContentResolverWriteBack) {
+                // Without File API write access (scoped storage after MediaStore write consent),
+                // the tag writers cannot open the original path; edit a copy and stream it back
+                // through the ContentResolver instead.
+                writeMetadataViaExtensionSwap(songId, finalFilePath, effectiveExtension, runPipeline)
             } else {
                 runPipeline(finalFilePath)
             }
@@ -502,9 +510,12 @@ class SongMetadataEditor(
      * Copies [originalPath] to a temp file with [correctExtension], runs [writer] on the temp
      * path (so JAudioTagger/TagLib pick the correct parser by extension), and streams the edited
      * bytes back into the original location. The original filename/extension are preserved so
-     * MediaStore URIs stay valid; only the file's byte content is replaced.
+     * MediaStore URIs stay valid; only the file's byte content is replaced. When the original
+     * is not writable through the File API, the bytes go back through the song's MediaStore
+     * URI opened in "rwt" mode.
      */
     private fun writeMetadataViaExtensionSwap(
+        songId: Long,
         originalPath: String,
         correctExtension: String,
         writer: (String) -> Boolean
@@ -526,7 +537,11 @@ class SongMetadataEditor(
                 Timber.tag(TAG).e("METADATA_EDIT: Writer failed on temp file ${tempFile.absolutePath}")
                 return false
             }
-            replaceFileContentSafely(tempFile, originalFile)
+            if (originalFile.canWrite()) {
+                replaceFileContentSafely(tempFile, originalFile)
+            } else if (!writeBackViaContentResolver(songId, tempFile)) {
+                return false
+            }
             Timber.tag(TAG).d(
                 "METADATA_EDIT: Restored ${tempFile.length()} edited bytes back to $originalPath"
             )
@@ -539,6 +554,27 @@ class SongMetadataEditor(
                 Timber.tag(TAG).w("METADATA_EDIT: Could not delete temp file ${tempFile.absolutePath}")
             }
         }
+    }
+
+    private fun writeBackViaContentResolver(songId: Long, source: File): Boolean {
+        val uri = MediaStorePermissionHelper.getMediaStoreUri(context, songId)
+        if (uri == null) {
+            Timber.tag(TAG).e("METADATA_EDIT: Cannot write back: file is not writable and no MediaStore URI resolved")
+            return false
+        }
+        val pfd = context.contentResolver.openFileDescriptor(uri, "rwt")
+        if (pfd == null) {
+            Timber.tag(TAG).e("METADATA_EDIT: ContentResolver returned no descriptor for $uri")
+            return false
+        }
+        pfd.use {
+            FileOutputStream(it.fileDescriptor).use { out ->
+                source.inputStream().use { input -> input.copyTo(out) }
+                out.fd.sync()
+            }
+        }
+        Timber.tag(TAG).d("METADATA_EDIT: Wrote edited bytes back via ContentResolver (rwt)")
+        return true
     }
 
     /**
