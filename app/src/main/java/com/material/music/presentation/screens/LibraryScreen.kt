@@ -166,6 +166,7 @@ import com.material.music.presentation.components.subcomps.SelectionCountPill
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import com.material.music.presentation.viewmodel.PlayerUiState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.presentation.viewmodel.StablePlayerState
 import com.material.music.presentation.viewmodel.PlaylistUiState
 import com.material.music.presentation.viewmodel.PlaylistViewModel
@@ -311,7 +312,7 @@ private fun PlayerUiState.toLibraryScreenProjection(): LibraryScreenPlayerProjec
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    playerViewModel: PlayerViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = sharedPlayerViewModel(),
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     songInfoBottomSheetViewModel: SongInfoBottomSheetViewModel = hiltViewModel()
@@ -525,17 +526,13 @@ fun LibraryScreen(
         }
     }
 
-    val hasSelectionInCurrentTab by remember {
-        derivedStateOf {
-            when (currentTabId) {
-                LibraryTabId.PLAYLISTS -> isPlaylistSelectionMode
-                LibraryTabId.ALBUMS -> isAlbumSelectionMode
-                LibraryTabId.SONGS,
-                LibraryTabId.LIKED,
-                LibraryTabId.FOLDERS -> isSelectionMode
-                LibraryTabId.ARTISTS -> false
-            }
-        }
+    val hasSelectionInCurrentTab = when (currentTabId) {
+        LibraryTabId.PLAYLISTS -> isPlaylistSelectionMode
+        LibraryTabId.ALBUMS -> isAlbumSelectionMode
+        LibraryTabId.SONGS,
+        LibraryTabId.LIKED,
+        LibraryTabId.FOLDERS -> isSelectionMode
+        LibraryTabId.ARTISTS -> false
     }
     val canHandleFolderBack by remember {
         derivedStateOf {
