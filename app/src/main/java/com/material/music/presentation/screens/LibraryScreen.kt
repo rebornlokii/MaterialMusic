@@ -545,7 +545,12 @@ fun LibraryScreen(
         }
     }
 
-    BackHandler(enabled = hasSelectionInCurrentTab || canHandleFolderBack) {
+    // Registration order decides which BackHandler wins, and this one can register after the
+    // player sheet's handlers. Stand down only while the player or its queue will actually
+    // consume back; during a sheet drag or with no current song, keep folder/selection back.
+    val isPlayerSheetHandlingBack by playerViewModel.isPlayerSheetHandlingBack.collectAsStateWithLifecycle()
+
+    BackHandler(enabled = !isPlayerSheetHandlingBack && (hasSelectionInCurrentTab || canHandleFolderBack)) {
         when {
             hasSelectionInCurrentTab -> {
                 when (currentTabId) {
