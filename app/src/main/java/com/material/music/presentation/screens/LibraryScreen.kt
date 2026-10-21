@@ -8,7 +8,6 @@ import com.material.music.presentation.navigation.navigateSafelyReplacing
 import android.os.Trace
 import com.material.music.utils.traceSection
 import android.text.format.Formatter
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -152,6 +151,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.res.stringResource
 import com.material.music.presentation.components.PlaylistArtCollage
+import com.material.music.presentation.components.PlayerSheetAwareBackHandler
 import com.material.music.presentation.components.ReorderTabsSheet
 import com.material.music.presentation.components.EditMultipleSongsSheet
 import com.material.music.presentation.components.SongInfoBottomSheet
@@ -545,12 +545,12 @@ fun LibraryScreen(
         }
     }
 
-    // Registration order decides which BackHandler wins, and this one can register after the
-    // player sheet's handlers. Stand down only while the player or its queue will actually
-    // consume back; during a sheet drag or with no current song, keep folder/selection back.
-    val isPlayerSheetHandlingBack by playerViewModel.isPlayerSheetHandlingBack.collectAsStateWithLifecycle()
-
-    BackHandler(enabled = !isPlayerSheetHandlingBack && (hasSelectionInCurrentTab || canHandleFolderBack)) {
+    // The coordinator restores this callback as soon as the sheet stops handling back, even if
+    // LibraryScreen has not recomposed yet. It also preserves player priority after late registration.
+    PlayerSheetAwareBackHandler(
+        coordinator = playerViewModel.playerSheetBackCoordinator,
+        enabled = hasSelectionInCurrentTab || canHandleFolderBack
+    ) {
         when {
             hasSelectionInCurrentTab -> {
                 when (currentTabId) {
