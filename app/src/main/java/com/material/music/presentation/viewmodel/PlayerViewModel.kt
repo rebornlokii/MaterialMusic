@@ -3012,7 +3012,7 @@ class PlayerViewModel @Inject constructor(
         }
         _isSheetVisible.value = true
 
-        val startMediaItem = buildResolvedPlaybackMediaItem(effectiveStartSong)
+        val startMediaItem = buildResolvedPlaybackMediaItem(effectiveStartSong, playlistId)
 
         val playSongsAction = {
             dualPlayerEngine.cancelNext()
@@ -3050,23 +3050,18 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    private suspend fun buildResolvedPlaybackMediaItem(song: Song): MediaItem {
-        val mediaItem = MediaItemBuilder.build(song)
-        val originalUri = mediaItem.localConfiguration?.uri ?: return mediaItem
-        val scheme = originalUri.scheme
-        if (
-            scheme != "navidrome" &&
-            scheme != "jellyfin"
-        ) {
-            return mediaItem
-        }
-
-        val resolvedUri = dualPlayerEngine.resolveCloudUri(originalUri)
-        return if (resolvedUri == originalUri) {
-            mediaItem
-        } else {
-            mediaItem.buildUpon().setUri(resolvedUri).build()
-        }
+    /**
+     * Builds the media item for [song] and resolves its playback URI.
+     *
+     * [playlistId] is carried on the item so the service can pick the playlist's own
+     * transition rule instead of the global default.
+     */
+    private suspend fun buildResolvedPlaybackMediaItem(
+        song: Song,
+        playlistId: String? = null,
+    ): MediaItem {
+        val mediaItem = buildPlaybackMediaItem(song, playlistId)
+        return dualPlayerEngine.resolveMediaItem(mediaItem)
     }
 
 

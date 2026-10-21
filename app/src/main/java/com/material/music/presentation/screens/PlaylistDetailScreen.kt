@@ -372,7 +372,8 @@ fun PlaylistDetailScreen(
                                 playerViewModel.playSongs(
                                     localReorderableSongs,
                                     localReorderableSongs.first(),
-                                    currentPlaylist.name
+                                    currentPlaylist.name,
+                                    currentPlaylist.id,
                                 )
                                 if (playerStableState.isShuffleEnabled) playerViewModel.toggleShuffle()
                             }

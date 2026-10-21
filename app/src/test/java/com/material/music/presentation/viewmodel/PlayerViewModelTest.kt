@@ -2,6 +2,7 @@ package com.material.music.presentation.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
 import app.cash.turbine.test
 import com.material.music.data.database.AlbumArtThemeDao
 import com.google.common.util.concurrent.ListenableFuture
@@ -21,6 +22,7 @@ import io.mockk.*
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -385,6 +387,51 @@ class PlayerViewModelTest {
 
             expectNoEvents()
         }
+    }
+
+    @Test
+    fun `playlist playback keeps the playlist id on the initial media item`() = runTest {
+        mockkStatic(Uri::class)
+        mockkConstructor(Bundle::class, relaxed = true)
+        val playbackUri = mockk<Uri>(relaxed = true)
+        every { Uri.parse(any()) } returns playbackUri
+        every { playbackUri.scheme } returns "content"
+        mockkObject(MediaItemBuilder)
+        every { MediaItemBuilder.build(any()) } returns MediaItem.Builder()
+            .setMediaId("playlist-song")
+            .setUri("file:///tmp/test.mp3")
+            .setMediaMetadata(MediaMetadata.Builder().setTitle("Playlist Song").build())
+            .build()
+        val player = mockk<Player>(relaxed = true)
+        every { mockDualPlayerEngine.masterPlayer } returns player
+        val song = Song(
+            id = "playlist-song",
+            title = "Playlist Song",
+            artist = "Artist",
+            artistId = 1L,
+            album = "Album",
+            albumId = 1L,
+            path = "/storage/emulated/0/Music/playlist-song.mp3",
+            contentUriString = "content://media/external/audio/media/42",
+            albumArtUriString = null,
+            duration = 180_000L,
+            mimeType = "audio/mpeg",
+            bitrate = null,
+            sampleRate = null,
+        )
+        advanceUntilIdle()
+
+        playerViewModel.playSongs(
+            songsToPlay = listOf(song),
+            startSong = song,
+            queueName = "Road Trip",
+            playlistId = "playlist-42",
+        )
+        advanceUntilIdle()
+
+        // The service reads the playlist id off the item to pick the playlist's transition rule.
+        verify { anyConstructed<Bundle>().putString("playlistId", "playlist-42") }
+        verify { player.setMediaItem(any(), 0L) }
     }
 
     @Test
