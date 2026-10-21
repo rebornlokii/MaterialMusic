@@ -147,6 +147,7 @@ import com.material.music.presentation.components.subcomps.PlayingEqIcon
 import com.material.music.presentation.components.player.AnimatedPlaybackControls
 import com.material.music.presentation.viewmodel.PlayerUiState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
 import com.material.music.presentation.utils.LocalAppHapticsConfig
@@ -210,7 +211,7 @@ private fun PlayerUiState.toQueueUndoBarProjection(): QueueUndoBarProjection =
 )
 @Composable
 fun QueueBottomSheet(
-    viewModel: PlayerViewModel = hiltViewModel(),
+    viewModel: PlayerViewModel = sharedPlayerViewModel(),
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     queue: ImmutableList<Song>,

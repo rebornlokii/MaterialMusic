@@ -103,6 +103,7 @@ import com.material.music.presentation.components.subcomps.PlayingEqIcon
 import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.components.StreamingProviderSheet
 import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
 import com.material.music.presentation.viewmodel.StatsViewModel
 import com.material.music.ui.theme.ExpTitleTypography
@@ -125,7 +126,7 @@ private const val HomeLoadingPlaceholderMinDurationMillis = 1200L
 fun HomeScreen(
     navController: NavController,
     paddingValuesParent: PaddingValues,
-    playerViewModel: PlayerViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = sharedPlayerViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     navidromeViewModel: NavidromeDashboardViewModel = hiltViewModel(),
     jellyfinViewModel: JellyfinDashboardViewModel = hiltViewModel(),

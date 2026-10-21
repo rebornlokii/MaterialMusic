@@ -80,6 +80,7 @@ import com.material.music.presentation.components.SmartImage
 import com.material.music.presentation.components.SmartImageListTargetSize
 import com.material.music.presentation.components.SongInfoBottomSheet
 import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.PlaylistPlay
@@ -138,7 +139,7 @@ private data class SearchUiSlice(
 @Composable
 fun SearchScreen(
     paddingValues: PaddingValues,
-    playerViewModel: PlayerViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = sharedPlayerViewModel(),
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     navController: NavHostController,
     onSearchBarActiveChange: (Boolean) -> Unit = {}
