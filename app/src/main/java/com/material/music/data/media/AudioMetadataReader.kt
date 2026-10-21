@@ -12,6 +12,8 @@ import java.io.File
 data class AudioMetadata(
     val title: String?,
     val artist: String?,
+    /** Every physical ARTIST field, in tag order. [artist] remains the primary value. */
+    val artists: List<String>,
     val albumArtist: String?,
     val album: String?,
     val genre: String?,
@@ -32,6 +34,28 @@ data class AudioMetadataArtwork(
     val bytes: ByteArray,
     val mimeType: String?
 )
+
+/**
+ * Normalizes values read from repeated metadata fields without changing their source order.
+ *
+ * Vorbis comments and some ID3 writers can store ARTIST more than once. Keeping this helper
+ * format-agnostic lets both TagLib's property map and JAudioTagger's field list use the exact
+ * same case-insensitive de-duplication policy.
+ */
+internal fun normalizeArtistMetadataValues(
+    vararg sources: Iterable<String>?
+): List<String> {
+    val result = mutableListOf<String>()
+    sources.forEach { source ->
+        source?.forEach { value ->
+            val normalized = value.trim()
+            if (normalized.isNotEmpty() && result.none { it.equals(normalized, ignoreCase = true) }) {
+                result += normalized
+            }
+        }
+    }
+    return result
+}
 
 object AudioMetadataReader {
 
@@ -68,7 +92,8 @@ object AudioMetadataReader {
                 Timber.tag(TAG).w("TagLib propertyMap keys for ${file.name}: ${propertyMap.keys}")
 
                 val title = propertyMap["TITLE"]?.firstOrNull()?.takeIf { it.isNotBlank() }
-                val artist = propertyMap["ARTIST"]?.firstOrNull()?.takeIf { it.isNotBlank() }
+                val artists = normalizeArtistMetadataValues(propertyMap["ARTIST"]?.asIterable())
+                val artist = artists.firstOrNull()
                 val albumArtist = propertyMap["ALBUMARTIST"]?.firstOrNull()?.takeIf { it.isNotBlank() }
                     ?: propertyMap["ALBUM ARTIST"]?.firstOrNull()?.takeIf { it.isNotBlank() }
                     ?: propertyMap["BAND"]?.firstOrNull()?.takeIf { it.isNotBlank() }
@@ -116,9 +141,12 @@ object AudioMetadataReader {
                     readWithJAudioTagger(file)
                 } else null
 
+                val resolvedArtists = artists.ifEmpty { fallback?.artists.orEmpty() }
+
                 AudioMetadata(
                     title = title ?: fallback?.title,
-                    artist = artist ?: fallback?.artist,
+                    artist = resolvedArtists.firstOrNull() ?: artist ?: fallback?.artist,
+                    artists = resolvedArtists,
                     albumArtist = albumArtist ?: fallback?.albumArtist,
                     album = album ?: fallback?.album,
                     genre = genre ?: fallback?.genre,
@@ -157,7 +185,15 @@ object AudioMetadataReader {
                     "header=${header?.format}, sampleRate=${header?.sampleRateAsNumber}")
 
             val title = tag?.getFirst(FieldKey.TITLE)?.takeIf { it.isNotBlank() }
-            val artist = tag?.getFirst(FieldKey.ARTIST)?.takeIf { it.isNotBlank() }
+            val artists = normalizeArtistMetadataValues(
+                runCatching { tag?.getAll(FieldKey.ARTIST) }.getOrNull(),
+                listOfNotNull(
+                    runCatching { tag?.getFirst(FieldKey.ARTIST) }
+                        .getOrNull()
+                        ?.takeIf { it.isNotBlank() }
+                )
+            )
+            val artist = artists.firstOrNull()
             val albumArtist = tag?.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() }
             val album = tag?.getFirst(FieldKey.ALBUM)?.takeIf { it.isNotBlank() }
             val genre = tag?.getFirst(FieldKey.GENRE)?.takeIf { it.isNotBlank() }
@@ -189,6 +225,7 @@ object AudioMetadataReader {
             AudioMetadata(
                 title = title,
                 artist = artist,
+                artists = artists,
                 albumArtist = albumArtist,
                 album = album,
                 genre = genre,
