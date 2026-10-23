@@ -122,6 +122,7 @@ import com.material.music.presentation.components.subcomps.FetchLyricsDialog
 import com.material.music.presentation.viewmodel.LyricsSearchUiState
 import com.material.music.presentation.viewmodel.PlayerSheetState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.ui.theme.GoogleSansFlexFamily
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.AudioMetaUtils.mimeTypeToFormat
 import com.material.music.utils.LyricsImportFailureReason
@@ -243,6 +244,7 @@ fun FullPlayerContent(
     val showPlayerFileInfo = fullPlayerSlice.showPlayerFileInfo
     val immersiveLyricsEnabled = fullPlayerSlice.immersiveLyricsEnabled
     val immersiveLyricsTimeout = fullPlayerSlice.immersiveLyricsTimeout
+    val lyricsFontSizeMultiplier = fullPlayerSlice.lyricsFontSizeMultiplier
     val isImmersiveTemporarilyDisabled = fullPlayerSlice.isImmersiveTemporarilyDisabled
     val isExternalOutputActive = false
     val isBluetoothEnabled = fullPlayerSlice.isBluetoothEnabled
@@ -805,7 +807,8 @@ fun FullPlayerContent(
             onDismissLyricsSearch = { playerViewModel.resetLyricsSearchState() },
             lyricsSyncOffset = lyricsSyncOffset,
             onLyricsSyncOffsetChange = { currentSong?.id?.let { songId -> playerViewModel.setLyricsSyncOffset(songId, it) } },
-            lyricsTextStyle = MaterialTheme.typography.titleLarge,
+            lyricsTextStyle = MaterialTheme.typography.titleLarge.copy(fontFamily = GoogleSansFlexFamily),
+            lyricsFontSizeMultiplier = lyricsFontSizeMultiplier,
             colorScheme = LocalMaterialTheme.current,
             onBackClick = { showLyricsSheet = false },
             onSaveLyricsToFile = playerViewModel::saveLyricsToFile,
