@@ -387,6 +387,7 @@
     <string name="setcat_lyrics_management">Lyrics Management</string>
     <string name="setcat_lyrics_online_first">Online First</string>
     <string name="setcat_lyrics_screen">Lyrics Screen</string>
+    <string name="lyrics_size">Lyrics size</string>
     <string name="setcat_lyrics_source_priority_desc">Choose which source to try first when fetching lyrics.</string>
     <string name="setcat_lyrics_source_priority_label">Lyrics Source Priority</string>
     <string name="setcat_maintenance">Maintenance</string>
