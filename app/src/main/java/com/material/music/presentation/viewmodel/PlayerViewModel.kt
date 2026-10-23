@@ -508,6 +508,13 @@ class PlayerViewModel @Inject constructor(
             initialValue = 4000L
         )
 
+    val lyricsFontSizeMultiplier: StateFlow<Float> = userPreferencesRepository.lyricsFontSizeMultiplierFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 1.0f
+        )
+
     private val _isImmersiveTemporarilyDisabled = MutableStateFlow(false)
     val isImmersiveTemporarilyDisabled: StateFlow<Boolean> = _isImmersiveTemporarilyDisabled.asStateFlow()
 
@@ -1151,6 +1158,7 @@ class PlayerViewModel @Inject constructor(
         val showPlayerFileInfo: Boolean = true,
         val immersiveLyricsEnabled: Boolean = false,
         val immersiveLyricsTimeout: Long = 4000L,
+        val lyricsFontSizeMultiplier: Float = 1.0f,
         val isImmersiveTemporarilyDisabled: Boolean = false,
         val isBluetoothEnabled: Boolean = false,
         val bluetoothName: String? = null
@@ -1176,10 +1184,11 @@ class PlayerViewModel @Inject constructor(
     private val fullPlayerSlicePart2 = combine(
         immersiveLyricsEnabled,
         immersiveLyricsTimeout,
+        lyricsFontSizeMultiplier,
         isImmersiveTemporarilyDisabled,
         bluetoothSlice
-    ) { immersive: Boolean, immersiveTimeout: Long, immersiveDisabled: Boolean, bt: BluetoothSlice ->
-        FullPlayerSlicePart2(immersive, immersiveTimeout, immersiveDisabled, bt.enabled, bt.name)
+    ) { immersive: Boolean, immersiveTimeout: Long, lyricsFontSizeMultiplier: Float, immersiveDisabled: Boolean, bt: BluetoothSlice ->
+        FullPlayerSlicePart2(immersive, immersiveTimeout, lyricsFontSizeMultiplier, immersiveDisabled, bt.enabled, bt.name)
     }
 
     private data class FullPlayerSlicePart1(
@@ -1193,6 +1202,7 @@ class PlayerViewModel @Inject constructor(
     private data class FullPlayerSlicePart2(
         val immersiveLyricsEnabled: Boolean,
         val immersiveLyricsTimeout: Long,
+        val lyricsFontSizeMultiplier: Float,
         val isImmersiveTemporarilyDisabled: Boolean,
         val isBluetoothEnabled: Boolean,
         val bluetoothName: String?
@@ -1210,6 +1220,7 @@ class PlayerViewModel @Inject constructor(
             showPlayerFileInfo = p1.showPlayerFileInfo,
             immersiveLyricsEnabled = p2.immersiveLyricsEnabled,
             immersiveLyricsTimeout = p2.immersiveLyricsTimeout,
+            lyricsFontSizeMultiplier = p2.lyricsFontSizeMultiplier,
             isImmersiveTemporarilyDisabled = p2.isImmersiveTemporarilyDisabled,
             isBluetoothEnabled = p2.isBluetoothEnabled,
             bluetoothName = p2.bluetoothName
