@@ -106,6 +106,7 @@ import com.material.music.presentation.components.subcomps.FetchLyricsDialog
 import com.material.music.presentation.components.subcomps.PlayerSeekBar
 import com.material.music.presentation.viewmodel.LyricsSearchUiState
 import com.material.music.presentation.viewmodel.StablePlayerState
+import com.material.music.ui.theme.GoogleSansFlexFamily
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.BubblesLine
 import com.material.music.utils.ProviderText
@@ -237,6 +238,7 @@ fun LyricsSheet(
     lyricsSyncOffset: Int,
     onLyricsSyncOffsetChange: (Int) -> Unit,
     lyricsTextStyle: TextStyle,
+    lyricsFontSizeMultiplier: Float = 1.0f,
     colorScheme: ColorScheme,
     onBackClick: () -> Unit,
     onSeekTo: (Long) -> Unit,
@@ -493,8 +495,9 @@ fun LyricsSheet(
     )
     
     val scaledTextStyle = lyricsTextStyle.copy(
-        fontSize = lyricsTextStyle.fontSize * fontScale,
-        lineHeight = lyricsTextStyle.lineHeight * fontScale
+        fontFamily = GoogleSansFlexFamily,
+        fontSize = lyricsTextStyle.fontSize * fontScale * lyricsFontSizeMultiplier,
+        lineHeight = lyricsTextStyle.lineHeight * fontScale * lyricsFontSizeMultiplier
     )
 
     fun resetImmersiveTimer() {
@@ -730,7 +733,7 @@ fun LyricsSheet(
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                             Text(
                                                 text = context.resources.getString(R.string.loading_lyrics),
-                                                style = MaterialTheme.typography.titleMedium
+                                                style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansFlexFamily)
                                             )
                                             Spacer(modifier = Modifier.height(8.dp))
                                             LinearWavyProgressIndicator(
@@ -816,7 +819,7 @@ fun LyricsSheet(
                                 ) { index, line ->
                                     PlainLyricsLine(
                                         line = line,
-                                        style = lyricsTextStyle,
+                                        style = scaledTextStyle,
                                         romanization = plainLyricsRomanization?.getOrNull(index),
                                         lyricsAlignment = lyricsAlignment,
                                         showTranslation = if (hasTranslatedLyrics) showLyricsTranslation else true,
