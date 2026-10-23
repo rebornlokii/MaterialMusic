@@ -646,6 +646,24 @@ fun SettingsCategoryScreen(
                             }
 
                             SettingsSubsection(title = stringResource(R.string.setcat_lyrics_screen)) {
+                                var lyricsSizeDraft by remember(uiState.lyricsFontSizeMultiplier) {
+                                    mutableStateOf(uiState.lyricsFontSizeMultiplier)
+                                }
+
+                                SliderSettingsItem(
+                                    label = stringResource(R.string.lyrics_size),
+                                    value = lyricsSizeDraft,
+                                    valueRange = 0.7f..1.8f,
+                                    steps = 21,
+                                    onValueChange = { lyricsSizeDraft = it },
+                                    onValueChangeFinished = {
+                                        if (lyricsSizeDraft != uiState.lyricsFontSizeMultiplier) {
+                                            settingsViewModel.setLyricsFontSizeMultiplier(lyricsSizeDraft)
+                                        }
+                                    },
+                                    valueText = { value -> "${(value * 100).toInt()}%" }
+                                )
+
                                 SwitchSettingItem(
                                     title = stringResource(R.string.setcat_immersive_lyrics_title),
                                     subtitle = stringResource(R.string.setcat_immersive_lyrics_subtitle),
