@@ -1,6 +1,9 @@
 package com.material.music.presentation.navigation
 
+<<<<<<< HEAD
 import android.net.Uri
+=======
+>>>>>>> origin/main
 import androidx.compose.runtime.Immutable
 
 
@@ -10,6 +13,7 @@ sealed class Screen(val route: String) {
     object Search : Screen("search")
     object Library : Screen("library")
     object Settings : Screen("settings")
+<<<<<<< HEAD
     object Accounts : Screen("settings_accounts?highlightKey={highlightKey}") {
         fun createRoute(highlightKey: String? = null) =
             if (highlightKey != null) "settings_accounts?highlightKey=$highlightKey" else "settings_accounts"
@@ -34,6 +38,15 @@ sealed class Screen(val route: String) {
         fun createRoute(highlightKey: String? = null) =
             if (highlightKey != null) "nav_bar_corner_radius?highlightKey=$highlightKey" else "nav_bar_corner_radius"
     }
+=======
+    object Accounts : Screen("settings_accounts")
+    object SettingsCategory : Screen("settings_category/{categoryId}") {
+        fun createRoute(categoryId: String) = "settings_category/$categoryId"
+    }
+    object PaletteStyle : Screen("palette_style_settings")
+    object Experimental : Screen("experimental_settings")
+    object NavBarCrRad : Screen("nav_bar_corner_radius")
+>>>>>>> origin/main
     object PlaylistDetail : Screen("playlist_detail/{playlistId}") {
         fun createRoute(playlistId: String) = "playlist_detail/$playlistId"
     }
@@ -41,10 +54,14 @@ sealed class Screen(val route: String) {
     object  DailyMixScreen : Screen("daily_mix")
     object RecentlyPlayed : Screen("recently_played")
     object Stats : Screen("stats")
+<<<<<<< HEAD
     object Duplicates : Screen("duplicates?highlightKey={highlightKey}") {
         fun createRoute(highlightKey: String? = null) =
             if (highlightKey != null) "duplicates?highlightKey=$highlightKey" else "duplicates"
     }
+=======
+    object Duplicates : Screen("duplicates")
+>>>>>>> origin/main
     object GenreDetail : Screen("genre_detail/{genreId}") {
         fun createRoute(genreId: String) = "genre_detail/$genreId"
     }
@@ -63,6 +80,7 @@ sealed class Screen(val route: String) {
     }
 
     object About : Screen("about")
+<<<<<<< HEAD
     object Licenses : Screen("licenses")
     object EasterEgg : Screen("easter_egg")
 
@@ -90,5 +108,16 @@ sealed class Screen(val route: String) {
     object AudioBookmarkFolder : Screen("audio_bookmarks/{songId}") {
         fun createRoute(songId: String) = "audio_bookmarks/${Uri.encode(songId)}"
     }
+=======
+    object EasterEgg : Screen("easter_egg")
+
+    object ArtistSettings : Screen("artist_settings")
+    object DelimiterConfig : Screen("delimiter_config")
+    object WordDelimiterConfig : Screen("word_delimiter_config")
+    object Equalizer : Screen("equalizer")
+    object DeviceCapabilities : Screen("device_capabilities")
+    object NavidromeDashboard : Screen("navidrome_dashboard")
+    object JellyfinDashboard : Screen("jellyfin_dashboard")
+>>>>>>> origin/main
 
 }

@@ -1,10 +1,15 @@
 package com.material.music.data.service.player
 
+<<<<<<< HEAD
 import androidx.media3.common.C
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import com.material.music.data.model.AudioOutputMode
+=======
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.UnstableApi
+>>>>>>> origin/main
 import java.util.Locale
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -16,6 +21,7 @@ internal object AudioDecoderPolicy {
         AUDIO_MIDI
     )
 
+<<<<<<< HEAD
     /**
      * True when the item exposes audio but no audio track can be decoded by any renderer
      * (FFmpeg included), so ExoPlayer would advance a silent clock.
@@ -42,6 +48,14 @@ internal object AudioDecoderPolicy {
         outputMode: AudioOutputMode
     ): List<T> {
         return if (shouldUseExtensionRenderer(mimeType, outputMode)) {
+=======
+    fun shouldUseExtensionRenderer(mimeType: String): Boolean {
+        return extensionOnlyMimeTypes.any { it.equals(mimeType, ignoreCase = true) }
+    }
+
+    fun <T> selectPlatformDecoders(mimeType: String, decoderInfos: List<T>): List<T> {
+        return if (shouldUseExtensionRenderer(mimeType)) {
+>>>>>>> origin/main
             emptyList()
         } else {
             decoderInfos

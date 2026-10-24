@@ -9,10 +9,15 @@ import androidx.lifecycle.viewModelScope
 import com.material.music.R
 import com.material.music.data.model.Artist
 import com.material.music.data.model.Song
+<<<<<<< HEAD
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.repository.ArtistImageRepository
 import com.material.music.data.repository.MusicRepository
 import com.material.music.utils.GenreParser
+=======
+import com.material.music.data.repository.ArtistImageRepository
+import com.material.music.data.repository.MusicRepository
+>>>>>>> origin/main
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job

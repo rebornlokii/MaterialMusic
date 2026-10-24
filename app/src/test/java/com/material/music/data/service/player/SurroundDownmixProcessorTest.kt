@@ -10,6 +10,7 @@ import java.nio.ByteOrder
 class SurroundDownmixProcessorTest {
 
     @Test
+<<<<<<< HEAD
     fun queueInput_reusesDrainedPcm16BufferWithoutReturningOldSamples() {
         val processor = SurroundDownmixProcessor()
         processor.configure(AudioFormat(48_000, 6, C.ENCODING_PCM_16BIT))
@@ -79,6 +80,8 @@ class SurroundDownmixProcessorTest {
     }
 
     @Test
+=======
+>>>>>>> origin/main
     fun queueInput_downmixes51Pcm16BitToStereo() {
         val processor = SurroundDownmixProcessor()
         val outputFormat = processor.configure(AudioFormat(48_000, 6, C.ENCODING_PCM_16BIT))

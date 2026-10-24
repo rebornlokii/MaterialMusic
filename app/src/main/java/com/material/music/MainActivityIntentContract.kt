@@ -4,5 +4,8 @@ object MainActivityIntentContract {
     const val ACTION_SHUFFLE_ALL = "com.material.music.ACTION_SHUFFLE_ALL"
     const val ACTION_OPEN_PLAYLIST = "com.material.music.ACTION_OPEN_PLAYLIST"
     const val EXTRA_PLAYLIST_ID = "playlist_id"
+<<<<<<< HEAD
     const val ACTION_OPEN_UPDATES = "com.material.music.ACTION_OPEN_UPDATES"
+=======
+>>>>>>> origin/main
 }

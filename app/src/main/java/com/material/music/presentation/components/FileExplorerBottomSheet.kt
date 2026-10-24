@@ -105,7 +105,10 @@ import androidx.compose.ui.window.DialogProperties
 import com.material.music.presentation.screens.TabAnimation
 import com.material.music.presentation.viewmodel.DirectoryEntry
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
 import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.utils.StorageInfo
 import java.io.File
 import kotlinx.collections.immutable.ImmutableList
@@ -275,7 +278,11 @@ fun FileExplorerContent(
     }
     val loadingHint = remember(isPriming, isReady) {
         if (isPriming || !isReady) {
+<<<<<<< HEAD
             "This can take a moment while MaterialMusic scans the available subfolders."
+=======
+            "This can take a moment while Material Music scans the available subfolders."
+>>>>>>> origin/main
         } else {
             null
         }
@@ -297,6 +304,7 @@ fun FileExplorerContent(
                     )
                 },
                 navigationIcon = {
+<<<<<<< HEAD
                     if (navigationIcon != null) {
                         navigationIcon()
                     } else {
@@ -313,6 +321,20 @@ fun FileExplorerContent(
                                 contentDescription = stringResource(R.string.presentation_batch_g_file_explorer_cd_close)
                             )
                         }
+=======
+                    FilledIconButton(
+                        modifier = Modifier.padding(start = 6.dp),
+                        onClick = onDismiss,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Close,
+                            contentDescription = stringResource(R.string.file_explorer_cd_close)
+                        )
+>>>>>>> origin/main
                     }
                 },
                 actions = {
@@ -328,7 +350,7 @@ fun FileExplorerContent(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Refresh,
-                            contentDescription = stringResource(R.string.presentation_batch_g_file_explorer_cd_refresh)
+                            contentDescription = stringResource(R.string.file_explorer_cd_refresh)
                         )
                     }
                 }
@@ -345,11 +367,11 @@ fun FileExplorerContent(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Done,
-                    contentDescription = stringResource(R.string.presentation_batch_g_file_explorer_cd_done),
+                    contentDescription = stringResource(R.string.file_explorer_cd_done),
                     tint = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = stringResource(R.string.presentation_batch_g_file_explorer_done))
+                Text(text = stringResource(R.string.file_explorer_done))
             }
         }
     ) { innerPadding ->
@@ -396,7 +418,7 @@ fun FileExplorerContent(
             }
 
             Text(
-                text = stringResource(R.string.presentation_batch_g_file_explorer_hint),
+                text = stringResource(R.string.file_explorer_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
@@ -457,7 +479,7 @@ fun FileExplorerContent(
                             supportingText = loadingHint
                         )
 
-                        children.isEmpty() -> ExplorerEmptyState(text = stringResource(R.string.presentation_batch_g_file_explorer_empty_folders))
+                        children.isEmpty() -> ExplorerEmptyState(text = stringResource(R.string.file_explorer_empty_folders))
 
                         else -> {
                             LazyColumn(
@@ -887,7 +909,7 @@ private fun FileExplorerHeader(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = stringResource(R.string.presentation_batch_g_file_explorer_cd_navigate_up),
+                        contentDescription = stringResource(R.string.file_explorer_cd_navigate_up),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -963,7 +985,7 @@ private fun FileExplorerHeader(
                                 if (isRoot) {
                                     Icon(
                                         imageVector = Icons.Rounded.Home,
-                                        contentDescription = stringResource(R.string.presentation_batch_g_file_explorer_cd_go_root),
+                                        contentDescription = stringResource(R.string.file_explorer_cd_go_root),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier
                                             .padding(end = 4.dp)

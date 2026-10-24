@@ -144,11 +144,17 @@ import com.material.music.R
 import com.material.music.presentation.components.ShimmerBox
 import com.material.music.data.model.Album
 import com.material.music.data.model.Artist
+<<<<<<< HEAD
 import com.material.music.data.model.Genre
 import com.material.music.data.model.MusicFolder
 import com.material.music.data.model.FolderSource
 import com.material.music.data.model.Song
 import com.material.music.data.offline.CloudOfflineRepository
+=======
+import com.material.music.data.model.MusicFolder
+import com.material.music.data.model.FolderSource
+import com.material.music.data.model.Song
+>>>>>>> origin/main
 import com.material.music.data.model.SortOption
 import com.material.music.data.model.StorageFilter
 import com.material.music.presentation.components.MiniPlayerHeight
@@ -160,22 +166,34 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.res.stringResource
 import com.material.music.presentation.components.PlaylistArtCollage
+<<<<<<< HEAD
 import com.material.music.presentation.components.ReorderTabsSheet
 import com.material.music.presentation.components.PlayerSheetAwareBackHandler
+=======
+import com.material.music.presentation.components.PlayerSheetAwareBackHandler
+import com.material.music.presentation.components.ReorderTabsSheet
+>>>>>>> origin/main
 import com.material.music.presentation.components.EditMultipleSongsSheet
 import com.material.music.presentation.components.SongInfoBottomSheet
 import com.material.music.presentation.components.subcomps.LibraryActionRow
 import com.material.music.presentation.navigation.Screen
+<<<<<<< HEAD
 import com.material.music.presentation.components.GenreMultiSelectionOptionSheet
 import com.material.music.presentation.components.MultiSelectionBottomSheet
 import com.material.music.presentation.components.PlaylistMultiSelectionBottomSheet
 import com.material.music.presentation.components.DeletePlaylistsConfirmationDialog
+=======
+import com.material.music.presentation.components.MultiSelectionBottomSheet
+import com.material.music.presentation.components.AlbumMultiSelectionOptionSheet
+import com.material.music.presentation.components.PlaylistMultiSelectionBottomSheet
+>>>>>>> origin/main
 import com.material.music.presentation.components.PlaylistCreationTypeDialog
 import com.material.music.presentation.components.subcomps.SelectionActionRow
 import com.material.music.presentation.components.subcomps.SelectionCountPill
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import com.material.music.presentation.viewmodel.PlayerUiState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
 import com.material.music.presentation.viewmodel.CloudDownloadsViewModel
 import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistUiState
@@ -183,11 +201,19 @@ import com.material.music.presentation.viewmodel.PlaylistViewModel
 import com.material.music.presentation.viewmodel.SongInfoBottomSheetViewModel
 import com.material.music.presentation.viewmodel.SmartMixTarget
 import com.material.music.presentation.viewmodel.SmartMixViewModel
+=======
+import com.material.music.presentation.viewmodel.sharedPlayerViewModel
+import com.material.music.presentation.viewmodel.StablePlayerState
+import com.material.music.presentation.viewmodel.PlaylistUiState
+import com.material.music.presentation.viewmodel.PlaylistViewModel
+import com.material.music.presentation.viewmodel.SongInfoBottomSheetViewModel
+>>>>>>> origin/main
 import com.material.music.data.model.LibraryTabId
 import com.material.music.data.model.toLibraryTabIdOrNull
 import com.material.music.data.preferences.LibraryNavigationMode
 import com.material.music.data.worker.SyncProgress
 import com.material.music.presentation.screens.search.components.GenreTypography
+<<<<<<< HEAD
 import com.material.music.presentation.utils.SegmentedItemShapeDefaults
 import com.material.music.presentation.utils.clipToShapePath
 import com.material.music.presentation.utils.getSegmentedItemShape
@@ -199,6 +225,10 @@ import com.material.music.presentation.selection.dragToSelect
 import com.material.music.presentation.selection.rememberDragToSelectState
 import com.material.music.presentation.selection.selectionIndex
 import com.material.music.presentation.selection.toggleOrderedSelection
+=======
+import com.material.music.presentation.components.SyncProgressBar
+import com.material.music.presentation.viewmodel.LibraryViewModel
+>>>>>>> origin/main
 import com.material.music.utils.formatSongCount
 import androidx.paging.compose.collectAsLazyPagingItems
 import android.content.Intent
@@ -266,11 +296,16 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.LoadState
 import com.material.music.presentation.components.ExpressiveScrollBar
+<<<<<<< HEAD
 import com.material.music.presentation.components.animatedScrollbarInset
 import com.material.music.ui.theme.LocalShowScrollbar
 import com.material.music.presentation.components.LibrarySortBottomSheet
 import com.material.music.presentation.library.KeepUnscrolledListAtTop
 import com.material.music.presentation.library.sortFolderSongs
+=======
+import com.material.music.presentation.components.LibrarySortBottomSheet
+import com.material.music.presentation.components.subcomps.EnhancedSongListItem
+>>>>>>> origin/main
 import timber.log.Timber
 import java.io.File
 import kotlin.math.abs
@@ -465,10 +500,21 @@ fun LibraryScreen(
 
     val toggleAlbumSelection: (Album) -> Unit = remember(selectedAlbums, multiSelectionState) {
         { album ->
+<<<<<<< HEAD
             // A changed category selection invalidates any songs resolved for an earlier snapshot.
             multiSelectionState.clearSelection()
             showMultiSelectionSheet = false
             selectedAlbums = toggleOrderedSelection(selectedAlbums, album, Album::id).toImmutableList()
+=======
+            val existingIndex = selectedAlbums.indexOfFirst { it.id == album.id }
+            if (existingIndex >= 0) {
+                selectedAlbums = selectedAlbums.toMutableList().also { it.removeAt(existingIndex) }.toImmutableList()
+            } else if (selectedAlbums.size >= MAX_ALBUM_MULTI_SELECTION) {
+                playerViewModel.sendToast(context.getString(R.string.library_toast_max_albums_selection, MAX_ALBUM_MULTI_SELECTION))
+            } else {
+                selectedAlbums = (selectedAlbums + album).toImmutableList()
+            }
+>>>>>>> origin/main
         }
     }
 
@@ -687,14 +733,29 @@ fun LibraryScreen(
         }
     }
 
+<<<<<<< HEAD
     val hasSelectionInCurrentTab = when (visibleCurrentTabId) {
+=======
+    val hasSelectionInCurrentTab = when (currentTabId) {
+>>>>>>> origin/main
         LibraryTabId.PLAYLISTS -> isPlaylistSelectionMode
         LibraryTabId.ALBUMS -> isAlbumSelectionMode
         LibraryTabId.SONGS,
         LibraryTabId.LIKED,
         LibraryTabId.FOLDERS -> isSelectionMode
+<<<<<<< HEAD
         LibraryTabId.ARTISTS -> isArtistSelectionMode
         LibraryTabId.GENRES -> isGenreSelectionMode
+=======
+        LibraryTabId.ARTISTS -> false
+    }
+    val canHandleFolderBack by remember {
+        derivedStateOf {
+            currentTabId == LibraryTabId.FOLDERS &&
+                    canNavigateBackInFolders &&
+                    !isSortSheetVisible
+        }
+>>>>>>> origin/main
     }
     val canHandleFolderBack = visibleCurrentTabId == LibraryTabId.FOLDERS &&
             canNavigateBackInFolders &&
@@ -861,7 +922,7 @@ fun LibraryScreen(
                         } else {
                             Text(
                                 modifier = Modifier.padding(start = 8.dp),
-                                text = stringResource(R.string.presentation_batch_d_library_title),
+                                text = stringResource(R.string.library_screen_title),
                                 fontFamily = RoundedSans,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = MaterialTheme.colorScheme.primary,
@@ -897,7 +958,7 @@ fun LibraryScreen(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.rounded_settings_24),
-                                contentDescription = stringResource(R.string.presentation_batch_d_open_settings_cd)
+                                contentDescription = stringResource(R.string.library_cd_open_settings)
                             )
                         }
                     },
@@ -951,13 +1012,13 @@ fun LibraryScreen(
                         }
                         TabAnimation(
                             index = -1,
-                            title = stringResource(R.string.presentation_batch_d_edit_library_tabs_cd),
+                            title = stringResource(R.string.library_tab_edit),
                             selectedIndex = currentTabIndex,
                             onClick = { showReorderTabsSheet = true }
                         ) {
                             Icon(
                                 Icons.Default.Edit,
-                                contentDescription = stringResource(R.string.presentation_batch_d_reorder_tabs_cd),
+                                contentDescription = stringResource(R.string.library_cd_reorder_tabs),
                                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
                             )
                         }
@@ -1115,6 +1176,7 @@ fun LibraryScreen(
                                     SelectionActionRow(
                                         selectedCount = selectedAlbums.size,
                                         onSelectAll = {
+<<<<<<< HEAD
                                             multiSelectionState.clearSelection()
                                             showMultiSelectionSheet = false
                                             selectedAlbums = appendDistinctSelection(
@@ -1122,6 +1184,24 @@ fun LibraryScreen(
                                                 candidates = playerViewModel.albumsFlow.value,
                                                 keyOf = Album::id
                                             ).toImmutableList()
+=======
+                                            val remaining = MAX_ALBUM_MULTI_SELECTION - selectedAlbums.size
+                                            if (remaining <= 0) {
+                                                playerViewModel.sendToast(
+                                                    context.getString(
+                                                        R.string.library_toast_max_albums_selection,
+                                                        MAX_ALBUM_MULTI_SELECTION
+                                                    )
+                                                )
+                                            } else {
+                                                val albumsToAppend = playerViewModel.albumsFlow.value
+                                                    .filterNot { selectedAlbumIds.contains(it.id) }
+                                                    .take(remaining)
+                                                if (albumsToAppend.isNotEmpty()) {
+                                                    selectedAlbums = (selectedAlbums + albumsToAppend).toImmutableList()
+                                                }
+                                            }
+>>>>>>> origin/main
                                         },
                                         onDeselect = {
                                             selectedAlbums = persistentListOf()
@@ -1263,7 +1343,7 @@ fun LibraryScreen(
                             val isGenresTab = currentTabId == LibraryTabId.GENRES
 
                             LibrarySortBottomSheet(
-                                title = stringResource(R.string.presentation_batch_d_sort_by),
+                                title = stringResource(R.string.sort_by),
                                 options = sanitizedSortOptions,
                                 selectedOption = selectedOptionForSheet,
                                 onDismiss = { playerViewModel.hideSortingSheet() },
@@ -1287,8 +1367,8 @@ fun LibraryScreen(
                                 secondaryTargetLabel = stringResource(R.string.library_tab_songs),
                                 initiallyShowSecondary = playerUiState.currentFolder?.songs?.isNotEmpty() == true,
                                 showViewToggle = isFoldersTab,
-                                viewSectionTitle = stringResource(R.string.presentation_batch_d_view_section_view),
-                                viewToggleLabel = stringResource(R.string.presentation_batch_d_playlist_view),
+                                viewSectionTitle = stringResource(R.string.library_sort_section_view),
+                                viewToggleLabel = stringResource(R.string.playlist_view),
                                 viewToggleChecked = playerUiState.isFoldersPlaylistView,
                                 onViewToggleChange = { isChecked ->
                                     playerViewModel.setFoldersPlaylistView(isChecked)
@@ -1314,7 +1394,7 @@ fun LibraryScreen(
                                                 inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 activeCornerRadius = 32.dp,
                                                 onClick = { playerViewModel.setAlbumsListView(false) },
-                                                text = stringResource(R.string.presentation_batch_d_view_grid),
+                                                text = stringResource(R.string.view_grid),
                                                 imageVector = Icons.Rounded.ViewModule
                                             )
 
@@ -1327,7 +1407,7 @@ fun LibraryScreen(
                                                 inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 activeCornerRadius = 32.dp,
                                                 onClick = { playerViewModel.setAlbumsListView(true) },
-                                                text = stringResource(R.string.presentation_batch_d_view_list),
+                                                text = stringResource(R.string.view_list),
                                                 imageVector = Icons.AutoMirrored.Rounded.ViewList
                                             )
                                         }
@@ -1383,7 +1463,7 @@ fun LibraryScreen(
                                                 inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 activeCornerRadius = 32.dp,
                                                 onClick = { playerViewModel.setFoldersSource(FolderSource.INTERNAL) },
-                                                text = stringResource(R.string.presentation_batch_d_storage_internal)
+                                                text = stringResource(R.string.library_storage_internal)
                                             )
                                             ToggleSegmentButton(
                                                 modifier = Modifier
@@ -1400,12 +1480,12 @@ fun LibraryScreen(
                                                         playerViewModel.setFoldersSource(FolderSource.SD_CARD)
                                                     }
                                                 },
-                                                text = stringResource(R.string.presentation_batch_d_storage_sd_card)
+                                                text = stringResource(R.string.library_storage_sd_card)
                                             )
                                         }
                                         if (!playerUiState.isSdCardAvailable) {
                                             Text(
-                                                text = stringResource(R.string.presentation_batch_d_sd_card_unavailable),
+                                                text = stringResource(R.string.library_storage_sd_card_unavailable),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 modifier = Modifier.padding(top = 8.dp, start = 2.dp)
@@ -1459,14 +1539,18 @@ fun LibraryScreen(
                                     if (!isFoldersTab && !isGenresTab) {
                                         Spacer(modifier = Modifier.height(12.dp))
                                         Text(
-                                            text = stringResource(R.string.presentation_batch_d_cloud_sources_heading),
+                                            text = stringResource(R.string.library_cloud_sources_heading),
                                             style = MaterialTheme.typography.headlineSmall,
                                             fontFamily = com.material.music.ui.theme.RoundedSans,
                                             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                             modifier = Modifier.padding(start = 2.dp, bottom = 8.dp)
                                         )
                                         com.material.music.presentation.components.LibrarySheetToggleCard(
+<<<<<<< HEAD
                                             label = stringResource(R.string.presentation_batch_d_cloud_only),
+=======
+                                            label = stringResource(R.string.cloud_only),
+>>>>>>> origin/main
                                             checked = playerUiState.hideLocalMedia,
                                             boxBackgroundColor = if (playerUiState.hideLocalMedia)
                                                 MaterialTheme.colorScheme.tertiary
@@ -1633,7 +1717,12 @@ fun LibraryScreen(
                                         val folders = playerUiState.musicFolders
                                         val currentFolder = playerUiState.currentFolder
                                         val isLoading = playerUiState.isLoadingLibraryCategories
+<<<<<<< HEAD
                                         val defaultFolderName = stringResource(R.string.presentation_batch_d_folder_name_fallback)
+=======
+                                        val stablePlayerState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
+                                        val defaultFolderName = stringResource(R.string.library_folder_name_fallback)
+>>>>>>> origin/main
 
                                         LibraryFoldersTab(
                                             folders = folders,
@@ -2113,22 +2202,22 @@ fun LibraryScreen(
                 pendingMergePlaylistIds = emptyList()
                 mergePlaylistName = ""
             },
-            title = { Text(stringResource(R.string.presentation_batch_d_merge_playlists_title)) },
+            title = { Text(stringResource(R.string.merge_playlists_dialog_title)) },
             text = {
                 Column {
-                    Text(stringResource(R.string.presentation_batch_d_merge_playlists_prompt))
+                    Text(stringResource(R.string.merge_playlists_dialog_prompt))
                     Spacer(modifier = Modifier.height(12.dp))
                     OutlinedTextField(
                         value = mergePlaylistName,
                         onValueChange = { mergePlaylistName = it },
-                        placeholder = { Text(stringResource(R.string.presentation_batch_d_merge_playlists_placeholder)) },
+                        placeholder = { Text(stringResource(R.string.merge_playlists_dialog_placeholder)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = stringResource(
-                            R.string.presentation_batch_d_merge_playlists_body,
+                            R.string.merge_playlists_dialog_body,
                             pendingMergePlaylistIds.size
                         ),
                         style = MaterialTheme.typography.bodySmall,
@@ -2554,6 +2643,7 @@ private fun LibraryNavigationCompactTitle(
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
+<<<<<<< HEAD
                 AnimatedContent(
                     targetState = Pair(pageIndex, displayedTitle),
                     transitionSpec = {
@@ -2589,6 +2679,19 @@ private fun LibraryNavigationCompactTitle(
                         maxLines = 1,
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis
+=======
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = animatedArrowHorizontalPadding)
+                        .width(arrowContentWidth),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.rotate(arrowRotation),
+                        imageVector = Icons.Rounded.KeyboardArrowDown,
+                        contentDescription = stringResource(R.string.library_cd_expand_tab_menu),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+>>>>>>> origin/main
                     )
                 }
             }
@@ -2622,12 +2725,12 @@ private fun LibraryTabSwitcherSheet(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.presentation_batch_d_library_tabs_sheet_title),
+                text = stringResource(R.string.library_tabs_sheet_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontFamily = RoundedSans
             )
             Text(
-                text = stringResource(R.string.presentation_batch_d_library_tabs_sheet_subtitle),
+                text = stringResource(R.string.library_tabs_sheet_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -2676,7 +2779,7 @@ private fun LibraryTabSwitcherSheet(
                                 contentDescription = null
                             )
                             Spacer(modifier = Modifier.width(10.dp))
-                            Text(stringResource(R.string.presentation_batch_d_reorder_tabs_label))
+                            Text(stringResource(R.string.library_reorder_tabs_label))
                         }
                     }
                 }
@@ -3335,7 +3438,7 @@ fun FolderListItem(
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_folder),
-                contentDescription = stringResource(R.string.presentation_batch_d_cd_folder),
+                contentDescription = stringResource(R.string.library_cd_folder),
                 modifier = Modifier
                     .size(48.dp)
                     .background(MaterialTheme.colorScheme.primaryContainer, ShapeCache.expressiveClover)
@@ -3681,12 +3784,21 @@ fun ArtistListItem(
                                 .height(20.dp)
                                 .clip(RoundedCornerShape(4.dp))
                         )
+<<<<<<< HEAD
                         Spacer(modifier = Modifier.height(4.dp))
                         ShimmerBox(
                             modifier = Modifier
                                 .fillMaxWidth(0.3f)
                                 .height(16.dp)
                                 .clip(RoundedCornerShape(4.dp))
+=======
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.rounded_artist_24),
+                            contentDescription = stringResource(R.string.cd_artist),
+                            modifier = Modifier.padding(8.dp),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+>>>>>>> origin/main
                         )
                     }
                 } else {

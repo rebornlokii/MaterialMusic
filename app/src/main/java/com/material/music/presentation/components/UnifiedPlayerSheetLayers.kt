@@ -35,10 +35,14 @@ import com.material.music.data.model.Song
 import com.material.music.data.preferences.FullPlayerLoadingTweaks
 import com.material.music.presentation.components.player.FullPlayerContent
 import com.material.music.presentation.components.scoped.FullPlayerVisualState
+<<<<<<< HEAD
 import com.material.music.presentation.components.scoped.miniPlayerLayerOffsetXPx
 import com.material.music.presentation.components.scoped.miniPlayerLayerWidthPx
 import com.material.music.presentation.components.scoped.rememberFullPlayerRuntimePolicy
 import com.material.music.presentation.components.scoped.sheetHorizontalPaddingPx
+=======
+import com.material.music.presentation.components.scoped.rememberFullPlayerRuntimePolicy
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlayerSheetState
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.StablePlayerState

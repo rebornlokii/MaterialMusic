@@ -4,6 +4,7 @@ package com.material.music.presentation.screens
 
 import com.material.music.presentation.navigation.navigateSafely
 import com.material.music.presentation.navigation.navigateSafelyReplacing
+<<<<<<< HEAD
 import com.material.music.presentation.components.DetailHeroFloatingLayer
 import com.material.music.presentation.components.DetailHeroPinnedActionsHeight
 import com.material.music.presentation.components.DetailSongsSummary
@@ -13,6 +14,8 @@ import com.material.music.presentation.components.rememberDetailHeroDock
 import com.material.music.presentation.components.rememberSongCollectionMenuActions
 import com.material.music.presentation.utils.getSegmentedItemShape
 import com.material.music.presentation.utils.SegmentedItemShapeDefaults
+=======
+>>>>>>> origin/main
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -73,7 +76,10 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
 import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.MaterialMusicStatusBarStyle
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
@@ -94,9 +100,12 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.viewmodel.ArtistDetailViewModel
 import com.material.music.presentation.viewmodel.ArtistAlbumSection
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
 import com.material.music.presentation.viewmodel.collapseKey
 import com.material.music.presentation.viewmodel.isAlbumSectionExpanded
 import com.material.music.presentation.viewmodel.isAnyAlbumSectionExpanded
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlaylistViewModel
 import com.material.music.utils.formatSongCount
 import com.material.music.utils.shapes.RoundedStarShape
@@ -855,14 +864,14 @@ private fun CollapsibleAlbumSectionHeader(
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             ) {
-                Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.presentation_batch_d_cd_play_title, section.title))
+                Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.artist_cd_play_title, section.title))
             }
             Icon(
                 imageVector = Icons.Rounded.ExpandMore,
                 contentDescription = if (isExpanded) {
-                    stringResource(R.string.presentation_batch_d_cd_collapse_title, section.title)
+                    stringResource(R.string.artist_cd_collapse_title, section.title)
                 } else {
-                    stringResource(R.string.presentation_batch_d_cd_expand_title, section.title)
+                    stringResource(R.string.artist_cd_expand_title, section.title)
                 },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.graphicsLayer {
@@ -945,7 +954,15 @@ private fun ArtistHeaderBackdrop(
     headerImageRequestSize: Size,
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
+<<<<<<< HEAD
     val expandedContentAlpha = 1f - (collapseFraction * 2f).coerceIn(0f, 1f)
+=======
+    val statusBarColor =
+        if (LocalMaterialMusicDarkTheme.current) Color.Black.copy(alpha = 0.6f)
+        else Color.White.copy(alpha = 0.4f)
+    val solidAlpha = (collapseFraction * 2f).coerceIn(0f, 1f)
+    val expandedContentAlpha = 1f - solidAlpha
+>>>>>>> origin/main
     val displayUrl = effectiveImageUrl?.takeIf { it.isNotBlank() }
     val headerOverlayBrush = remember(surfaceColor, expandedContentAlpha) {
         Brush.verticalGradient(
@@ -1080,7 +1097,7 @@ private fun SharedArtistTopBarProbe(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,
-                            contentDescription = stringResource(R.string.presentation_batch_d_edit_artist_image_cd)
+                            contentDescription = stringResource(R.string.artist_cd_edit_image)
                         )
                     }
 
@@ -1089,7 +1106,7 @@ private fun SharedArtistTopBarProbe(
                         onDismissRequest = { showImageMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.presentation_batch_d_change_photo)) },
+                            text = { Text(stringResource(R.string.artist_action_change_photo)) },
                             leadingIcon = {
                                 Icon(Icons.Rounded.AddAPhoto, contentDescription = null)
                             },
@@ -1100,7 +1117,7 @@ private fun SharedArtistTopBarProbe(
                         )
                         if (hasCustomImage) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.presentation_batch_d_reset_to_default)) },
+                                text = { Text(stringResource(R.string.artist_action_reset_to_default)) },
                                 leadingIcon = {
                                     Icon(Icons.Rounded.Delete, contentDescription = null)
                                 },
@@ -1114,6 +1131,25 @@ private fun SharedArtistTopBarProbe(
                 }
             }
         )
+<<<<<<< HEAD
+=======
+
+        LargeExtendedFloatingActionButton(
+            onClick = onPlayClick,
+            shape = RoundedStarShape(sides = 8, curve = 0.05, rotation = 0f),
+            modifier = Modifier
+                .align(shuffleAlignment)
+                .statusBarsPadding()
+                .padding(end = 16.dp)
+                .graphicsLayer {
+                    scaleX = expandedContentAlpha
+                    scaleY = expandedContentAlpha
+                    alpha = expandedContentAlpha
+                }
+        ) {
+            Icon(Icons.Rounded.Shuffle, contentDescription = stringResource(R.string.artist_cd_shuffle_play))
+        }
+>>>>>>> origin/main
     }
 }
 
@@ -1249,14 +1285,14 @@ private fun CustomCollapsingTopBar(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                             contentColor = MaterialTheme.colorScheme.onSurface
                         ) {
-                            Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.presentation_batch_d_edit_artist_image_cd))
+                            Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.artist_cd_edit_image))
                         }
                         DropdownMenu(
                             expanded = showImageMenu,
                             onDismissRequest = { showImageMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.presentation_batch_d_change_photo)) },
+                                text = { Text(stringResource(R.string.artist_action_change_photo)) },
                                 leadingIcon = { Icon(Icons.Rounded.AddAPhoto, contentDescription = null) },
                                 onClick = {
                                     showImageMenu = false
@@ -1265,7 +1301,7 @@ private fun CustomCollapsingTopBar(
                             )
                             if (hasCustomImage) {
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.presentation_batch_d_reset_to_default)) },
+                                    text = { Text(stringResource(R.string.artist_action_reset_to_default)) },
                                     leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
                                     onClick = {
                                         showImageMenu = false

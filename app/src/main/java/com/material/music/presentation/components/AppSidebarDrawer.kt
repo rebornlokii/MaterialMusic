@@ -1,5 +1,6 @@
 package com.material.music.presentation.components
 
+<<<<<<< HEAD
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.PredictiveBackHandler
@@ -72,6 +73,40 @@ sealed class DrawerDestination(val route: String) {
     object Stats : DrawerDestination("stats")
     object Equalizer : DrawerDestination("equalizer")
     object Bookmarks : DrawerDestination("audio_bookmarks")
+=======
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.GraphicEq
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.material.music.R
+
+sealed class DrawerDestination(val route: String) {
+    object Home : DrawerDestination("home")
+    object Equalizer : DrawerDestination("equalizer")
+>>>>>>> origin/main
     object Settings : DrawerDestination("settings")
 }
 
@@ -79,6 +114,7 @@ sealed class DrawerDestination(val route: String) {
 fun AppSidebarDrawer(
     drawerState: DrawerState,
     selectedRoute: String,
+<<<<<<< HEAD
     enabledShortcuts: Set<String>,
     onShortcutsChanged: (Set<String>) -> Unit,
     onDestinationSelected: (DrawerDestination) -> Unit,
@@ -94,11 +130,20 @@ fun AppSidebarDrawer(
         // Only while open, so the scrim and a swipe can close it. Edge-swipe opening stays
         // off because it would fight the system back gesture; the Home menu button opens it.
         gesturesEnabled = drawerState.isOpen,
+=======
+    onDestinationSelected: (DrawerDestination) -> Unit,
+    content: @Composable () -> Unit
+) {
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = false,
+>>>>>>> origin/main
         drawerContent = {
             ModalDrawerSheet(
                 modifier = Modifier
                     .width(300.dp)
                     .fillMaxHeight()
+<<<<<<< HEAD
                     .graphicsLayer {
                         val scale = 1f - (predictiveBackProgress * 0.08f)
                         scaleX = scale
@@ -107,19 +152,25 @@ fun AppSidebarDrawer(
                             closingDirection * predictiveBackProgress * PredictiveBackMaxOffset.toPx()
                         alpha = 1f - (predictiveBackProgress * 0.15f)
                     }
+=======
+>>>>>>> origin/main
                     .clip(RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)),
                 drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
             ) {
                 DrawerContent(
                     selectedRoute = selectedRoute,
+<<<<<<< HEAD
                     enabledShortcuts = enabledShortcuts,
                     onEditShortcutsClick = { showConfigDialog = true },
+=======
+>>>>>>> origin/main
                     onDestinationSelected = onDestinationSelected
                 )
             }
         },
         content = content
     )
+<<<<<<< HEAD
 
     AppSidebarBackHandler(
         drawerState = drawerState,
@@ -222,13 +273,18 @@ private fun shortcutLabel(key: String): String = when (key) {
     SidebarShortcutKeys.EQUALIZER -> stringResource(R.string.settings_category_equalizer_title)
     SidebarShortcutKeys.AUDIO_BOOKMARKS -> stringResource(R.string.audio_bookmarks_title)
     else -> key
+=======
+>>>>>>> origin/main
 }
 
 @Composable
 private fun DrawerContent(
     selectedRoute: String,
+<<<<<<< HEAD
     enabledShortcuts: Set<String>,
     onEditShortcutsClick: () -> Unit,
+=======
+>>>>>>> origin/main
     onDestinationSelected: (DrawerDestination) -> Unit
 ) {
     Column(
@@ -237,6 +293,7 @@ private fun DrawerContent(
             .statusBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
+<<<<<<< HEAD
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -272,6 +329,23 @@ private fun DrawerContent(
                     modifier = Modifier.size(18.dp)
                 )
             }
+=======
+        Column(
+            modifier = Modifier.padding(vertical = 24.dp, horizontal = 8.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.app_tagline),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+>>>>>>> origin/main
         }
 
         HorizontalDivider(
@@ -281,6 +355,7 @@ private fun DrawerContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+<<<<<<< HEAD
         if (SidebarShortcutKeys.HOME in enabledShortcuts) {
             DrawerItem(
                 icon = rememberVectorPainter(Icons.Rounded.Home),
@@ -316,6 +391,61 @@ private fun DrawerContent(
                 onClick = { onDestinationSelected(DrawerDestination.Bookmarks) }
             )
         }
+=======
+        NavigationDrawerItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Rounded.Home,
+                    contentDescription = stringResource(R.string.tab_home)
+                )
+            },
+            label = {
+                Text(
+                    text = stringResource(R.string.tab_home),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            },
+            selected = selectedRoute == DrawerDestination.Home.route,
+            onClick = { onDestinationSelected(DrawerDestination.Home) },
+            modifier = Modifier.padding(vertical = 4.dp),
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unselectedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            shape = RoundedCornerShape(16.dp)
+        )
+
+        NavigationDrawerItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Rounded.GraphicEq,
+                    contentDescription = stringResource(R.string.settings_category_equalizer_title)
+                )
+            },
+            label = {
+                Text(
+                    text = stringResource(R.string.settings_category_equalizer_title),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            },
+            selected = selectedRoute == DrawerDestination.Equalizer.route,
+            onClick = { onDestinationSelected(DrawerDestination.Equalizer) },
+            modifier = Modifier.padding(vertical = 4.dp),
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unselectedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            shape = RoundedCornerShape(16.dp)
+        )
+>>>>>>> origin/main
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -324,16 +454,45 @@ private fun DrawerContent(
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
         )
 
+<<<<<<< HEAD
         DrawerItem(
             icon = painterResource(R.drawable.rounded_settings_24),
             label = stringResource(R.string.settings_top_bar_title),
             selected = selectedRoute == DrawerDestination.Settings.route,
             onClick = { onDestinationSelected(DrawerDestination.Settings) }
+=======
+        NavigationDrawerItem(
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.rounded_settings_24),
+                    contentDescription = stringResource(R.string.settings_top_bar_title)
+                )
+            },
+            label = {
+                Text(
+                    text = stringResource(R.string.settings_top_bar_title),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            },
+            selected = selectedRoute == DrawerDestination.Settings.route,
+            onClick = { onDestinationSelected(DrawerDestination.Settings) },
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 0.dp),
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unselectedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            shape = RoundedCornerShape(16.dp)
+>>>>>>> origin/main
         )
 
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
+<<<<<<< HEAD
 
 @Composable
 private fun ShortcutsConfigDialog(
@@ -400,3 +559,5 @@ private fun ShortcutsConfigDialog(
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
     )
 }
+=======
+>>>>>>> origin/main

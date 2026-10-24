@@ -1,20 +1,30 @@
 package com.material.music.data.worker
 
+<<<<<<< HEAD
 import android.Manifest
 import android.content.Context
 import android.database.MatrixCursor
 import android.net.Uri
 import android.os.Build
+=======
+import android.content.Context
+import android.database.MatrixCursor
+import android.net.Uri
+>>>>>>> origin/main
 import android.provider.MediaStore
 import androidx.concurrent.futures.ResolvableFuture
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+<<<<<<< HEAD
 import androidx.test.rule.GrantPermissionRule
+=======
+>>>>>>> origin/main
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
+<<<<<<< HEAD
 import androidx.work.workDataOf
 import com.google.common.truth.Truth.assertThat
 import com.material.music.data.database.MusicDao
@@ -34,10 +44,25 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+=======
+import com.google.common.truth.Truth.assertThat
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.MaterialMusicDatabase
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.IOException
+>>>>>>> origin/main
 
 @RunWith(AndroidJUnit4::class)
 class SyncWorkerTest {
 
+<<<<<<< HEAD
     @get:Rule
     val mediaReadPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -47,6 +72,8 @@ class SyncWorkerTest {
         }
     )
 
+=======
+>>>>>>> origin/main
     private lateinit var context: Context
     private lateinit var database: MaterialMusicDatabase
     private lateinit var musicDao: MusicDao
@@ -55,8 +82,12 @@ class SyncWorkerTest {
 
     class TestSyncWorkerFactory(
         private val dao: MusicDao,
+<<<<<<< HEAD
         private val preferences: UserPreferencesRepository = createTestPreferencesRepository(),
         private val tracker: LocalLibraryChangeTracker = LocalLibraryChangeTracker()
+=======
+        private val resolver: android.content.ContentResolver? = null
+>>>>>>> origin/main
     ) : WorkerFactory() {
         override fun createWorker(
             appContext: Context,
@@ -68,11 +99,17 @@ class SyncWorkerTest {
                     appContext = appContext,
                     workerParams = workerParameters,
                     musicDao = dao,
+<<<<<<< HEAD
                     userPreferencesRepository = preferences,
                     lyricsRepository = mockk(relaxed = true),
                     cloudSyncCoordinator = mockk(relaxed = true),
                     artistImageRepository = mockk(relaxed = true),
                     localLibraryChangeTracker = tracker
+=======
+                    userPreferencesRepository = mockk(relaxed = true),
+                    lyricsRepository = mockk(relaxed = true),
+                    cloudSyncCoordinator = mockk(relaxed = true)
+>>>>>>> origin/main
                 )
             } else {
                 null
@@ -95,7 +132,10 @@ class SyncWorkerTest {
     @After
     @Throws(IOException::class)
     fun tearDown() {
+<<<<<<< HEAD
         PlaybackActivityTracker.setPlaybackActive(false)
+=======
+>>>>>>> origin/main
         database.close()
     }
 
@@ -158,7 +198,11 @@ class SyncWorkerTest {
             .build()
 
         val result = worker.doWork()
+<<<<<<< HEAD
         assertSuccessfulSongCount(result, expectedCount = 2)
+=======
+        assertThat(result).isEqualTo(ListenableWorker.Result.success())
+>>>>>>> origin/main
 
         val songsInDb = musicDao.getSongs(emptyList(), false).first()
         assertThat(songsInDb).hasSize(2)
@@ -170,16 +214,24 @@ class SyncWorkerTest {
 
         val artistsInDb = musicDao.getArtists(emptyList(), false).first()
         assertThat(artistsInDb).hasSize(2)
+<<<<<<< HEAD
         assertThat(artistsInDb.map { it.name })
             .containsExactly("Test Artist 1", "Test Artist 2")
         Unit
+=======
+        assertThat(artistsInDb.find { it.id == 101L }?.name).isEqualTo("Test Artist 1")
+>>>>>>> origin/main
     }
 
     @Test
     fun testSyncWorker_success_whenMediaStoreIsEmpty() = runBlocking {
+<<<<<<< HEAD
         every { mockContentResolver.query(any(), any(), any(), any(), any()) } answers {
             MatrixCursor(secondArg<Array<String>?>() ?: emptyArray())
         }
+=======
+        every { mockContentResolver.query(any(), any(), any(), any(), any()) } returns MatrixCursor(arrayOf())
+>>>>>>> origin/main
 
         val testContext = object : ContextWrapper(context) {
             override fun getContentResolver(): android.content.ContentResolver {
@@ -192,11 +244,16 @@ class SyncWorkerTest {
             .build()
 
         val result = worker.doWork()
+<<<<<<< HEAD
         assertSuccessfulSongCount(result, expectedCount = 0)
+=======
+        assertThat(result).isEqualTo(ListenableWorker.Result.success())
+>>>>>>> origin/main
         assertThat(musicDao.getSongCount().first()).isEqualTo(0)
         assertThat(musicDao.getAlbumCount().first()).isEqualTo(0)
         assertThat(musicDao.getArtistCount().first()).isEqualTo(0)
     }
+<<<<<<< HEAD
 
     @Test
     fun incrementalSync_recoversAlbumTracksIndexedWithOldTimestamps() = runBlocking {
@@ -512,6 +569,8 @@ private fun createTestPreferencesRepository(): UserPreferencesRepository {
     coEvery { repository.getMetadataCharsetRepairVersion() } returns
         SyncWorker.CURRENT_METADATA_CHARSET_REPAIR_VERSION
     return repository
+=======
+>>>>>>> origin/main
 }
 
 open class ContextWrapper(base: Context) : android.content.ContextWrapper(base)

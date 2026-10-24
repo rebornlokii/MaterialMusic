@@ -115,6 +115,10 @@ import com.material.music.presentation.components.subcomps.FetchLyricsDialog
 import com.material.music.presentation.components.subcomps.PlayerSeekBar
 import com.material.music.presentation.viewmodel.LyricsSearchUiState
 import com.material.music.presentation.viewmodel.StablePlayerState
+<<<<<<< HEAD
+=======
+import com.material.music.ui.theme.GoogleSansFlexFamily
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.BubblesLine
 import com.material.music.utils.ProviderText
@@ -135,9 +139,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.material.music.data.preferences.dataStore
+<<<<<<< HEAD
 import com.material.music.data.preferences.DEFAULT_LYRICS_FONT_SIZE_SP
 import com.material.music.data.preferences.LYRICS_FONT_SIZE_SP_KEY
 import com.material.music.data.preferences.sanitizeLyricsFontSize
+=======
+>>>>>>> origin/main
 
 import kotlin.math.abs
 import kotlin.math.pow
@@ -155,9 +162,12 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+<<<<<<< HEAD
 import androidx.compose.runtime.produceState
 import kotlin.coroutines.cancellation.CancellationException
 import timber.log.Timber
+=======
+>>>>>>> origin/main
 
 internal data class LyricsSheetColors(
     val container: Color,
@@ -261,6 +271,7 @@ fun LyricsSheet(
     lyricsSyncOffset: Int,
     onLyricsSyncOffsetChange: (Int) -> Unit,
     lyricsTextStyle: TextStyle,
+    lyricsFontSizeMultiplier: Float = 1.0f,
     colorScheme: ColorScheme,
     onBackClick: () -> Unit,
     onSeekTo: (Long) -> Unit,
@@ -352,6 +363,22 @@ fun LyricsSheet(
         context.dataStore.data.map { it[booleanPreferencesKey("show_lyrics_romanization")] ?: true }
     }
     val showLyricsRomanization by showLyricsRomanizationFlow.collectAsStateWithLifecycle(initialValue = true)
+
+    // Plain lyrics are stored without romanization; derive it off the main thread only
+    // while the romanization toggle is on.
+    val shouldRomanizePlainLyrics = showLyricsRomanization && hasRomanizedLyrics
+    val plainLyricsRomanization by produceState<List<String?>?>(
+        initialValue = null,
+        lyrics?.plain,
+        shouldRomanizePlainLyrics
+    ) {
+        val plainLines = lyrics?.plain
+        value = if (!shouldRomanizePlainLyrics || plainLines.isNullOrEmpty()) {
+            null
+        } else {
+            withContext(Dispatchers.Default) { romanizePlainLyrics(plainLines) }
+        }
+    }
 
     val useAnimatedLyricsFlow = remember(context) {
         context.dataStore.data.map { it[booleanPreferencesKey("use_animated_lyrics")] ?: false }
@@ -534,9 +561,16 @@ fun LyricsSheet(
         label = "fontScale"
     )
     
+<<<<<<< HEAD
     val scaledTextStyle = sizedLyricsTextStyle.copy(
         fontSize = sizedLyricsTextStyle.fontSize * fontScale,
         lineHeight = sizedLyricsTextStyle.lineHeight * fontScale
+=======
+    val scaledTextStyle = lyricsTextStyle.copy(
+        fontFamily = GoogleSansFlexFamily,
+        fontSize = lyricsTextStyle.fontSize * fontScale * lyricsFontSizeMultiplier,
+        lineHeight = lyricsTextStyle.lineHeight * fontScale * lyricsFontSizeMultiplier
+>>>>>>> origin/main
     )
 
     fun resetImmersiveTimer() {
@@ -714,10 +748,11 @@ fun LyricsSheet(
                     resetImmersiveTimer()
                 }
         ) {
-            val initialSyncedLineIndex = remember(lyrics, playbackPositionFlow, lyricsSyncOffset) {
+            val initialPlaybackPosition by playbackPositionFlow.collectAsStateWithLifecycle()
+            val initialSyncedLineIndex = remember(lyrics, initialPlaybackPosition, lyricsSyncOffset) {
                 resolveCurrentLineIndex(
                     lines = lyrics?.synced.orEmpty(),
-                    position = (playbackPositionFlow.value + lyricsSyncOffset).coerceAtLeast(0L)
+                    position = (initialPlaybackPosition + lyricsSyncOffset).coerceAtLeast(0L)
                 ).coerceAtLeast(0)
             }
             val syncedListState = rememberLazyListState(
@@ -781,6 +816,7 @@ fun LyricsSheet(
                                     }
                                 ) {
                                     if (isLoadingLyrics) {
+<<<<<<< HEAD
                                         LyricsLoadingPlaceholder(
                                             contentColor = contentColor,
                                             accentColor = lyricHighlightColor,
@@ -790,6 +826,20 @@ fun LyricsSheet(
                                                 else -> Alignment.Start
                                             }
                                         )
+=======
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Text(
+                                                text = context.resources.getString(R.string.loading_lyrics),
+                                                style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansFlexFamily)
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            LinearWavyProgressIndicator(
+                                                trackColor = accentColor.copy(alpha = 0.4f),
+                                                color = accentColor,
+                                                modifier = Modifier.width(100.dp)
+                                            )
+                                        }
+>>>>>>> origin/main
                                     }
                                 }
                             }
@@ -877,7 +927,11 @@ fun LyricsSheet(
                                 ) { index, line ->
                                     PlainLyricsLine(
                                         line = line,
+<<<<<<< HEAD
                                         style = sizedLyricsTextStyle,
+=======
+                                        style = scaledTextStyle,
+>>>>>>> origin/main
                                         romanization = plainLyricsRomanization?.getOrNull(index),
                                         lyricsAlignment = lyricsAlignment,
                                         showTranslation = if (hasTranslatedLyrics) showLyricsTranslation else true,
@@ -1866,6 +1920,7 @@ private fun romanizePlainLyrics(lines: List<String>): List<String?> {
     }
 }
 
+<<<<<<< HEAD
 private fun TextStyle.withLyricsFontSize(fontSizeSp: Float): TextStyle {
     val lineHeightRatio = if (fontSize.isSp && lineHeight.isSp && fontSize.value > 0f) {
         lineHeight.value / fontSize.value
@@ -1880,6 +1935,8 @@ private fun TextStyle.withLyricsFontSize(fontSizeSp: Float): TextStyle {
 
 private const val DEFAULT_LYRICS_LINE_HEIGHT_RATIO = 1.18f
 
+=======
+>>>>>>> origin/main
 private val LeadingTagRegex = Regex("^v\\d+:\\s*", RegexOption.IGNORE_CASE)
 
 internal fun sanitizeLyricLineText(raw: String): String =
@@ -2151,10 +2208,11 @@ internal fun resolveCurrentLineIndex(
 ): Int {
     if (lines.isEmpty()) return -1
 
-    return lines.withIndex().lastOrNull { (index, line) ->
-        val nextTime = lines.getOrNull(index + 1)?.time ?: Int.MAX_VALUE
+    val sortedLines = lines.sortedBy { it.time }
+    return sortedLines.withIndex().lastOrNull { (index, line) ->
+        val nextTime = sortedLines.getOrNull(index + 1)?.time ?: Int.MAX_VALUE
         val lineEndTime = resolveLineEndTimeMs(line, nextTime)
-        position in line.time.toLong()..<lineEndTime
+        position >= line.time.toLong() && position < lineEndTime
     }?.index ?: -1
 }
 

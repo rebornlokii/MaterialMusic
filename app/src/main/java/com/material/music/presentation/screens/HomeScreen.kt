@@ -79,7 +79,10 @@ import androidx.navigation.NavController
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+<<<<<<< HEAD
 import androidx.lifecycle.compose.currentStateAsState
+=======
+>>>>>>> origin/main
 import com.material.music.R
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.CollagePattern
@@ -94,21 +97,33 @@ import com.material.music.presentation.components.HomeOptionsBottomSheet
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.RecentlyPlayedSection
 import com.material.music.presentation.components.RecentlyPlayedSectionMinSongsToShow
+<<<<<<< HEAD
 import com.material.music.presentation.components.RecentlyPlayedSongOptionsSheet
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.SmartImage
 import com.material.music.presentation.components.StatsOverviewCard
 import com.material.music.presentation.components.resolveMainScreenBottomGradientHeight
 import com.material.music.presentation.model.collectRecentlyPlayedSongIds
 import com.material.music.presentation.model.mapRecentlyPlayedSongs
+<<<<<<< HEAD
 import com.material.music.presentation.model.withUpdatedSongs
 import com.material.music.presentation.model.withoutSong
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.subcomps.PlayingEqIcon
 import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.components.StreamingProviderSheet
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
 import com.material.music.presentation.viewmodel.SettingsViewModel
 import com.material.music.presentation.viewmodel.StatsViewModel
 import com.material.music.presentation.viewmodel.sharedPlayerViewModel
+=======
+import com.material.music.presentation.viewmodel.sharedPlayerViewModel
+import com.material.music.presentation.viewmodel.SettingsViewModel
+import com.material.music.presentation.viewmodel.StatsViewModel
+>>>>>>> origin/main
 import com.material.music.ui.theme.ExpTitleTypography
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

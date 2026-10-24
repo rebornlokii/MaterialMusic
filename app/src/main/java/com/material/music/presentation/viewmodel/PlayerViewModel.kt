@@ -36,9 +36,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.material.music.R
+<<<<<<< HEAD
 import com.material.music.data.database.AlbumArtThemeDao
 import com.material.music.data.media.CoverArtUpdate
 import com.material.music.data.media.CustomMetadataChanges
+=======
+import com.material.music.data.EotStateHolder
+import com.material.music.data.database.AlbumArtThemeDao
+import com.material.music.data.media.CoverArtUpdate
+>>>>>>> origin/main
 import com.material.music.data.model.Album
 import com.material.music.data.model.Artist
 import com.material.music.data.model.FolderSource
@@ -59,7 +65,10 @@ import com.material.music.data.preferences.ThemePreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.preferences.AlbumArtQuality
 import com.material.music.data.preferences.ThemePreference
+<<<<<<< HEAD
 import com.material.music.data.preferences.restartsAtPosition
+=======
+>>>>>>> origin/main
 import com.material.music.data.repository.LyricsSearchResult
 import com.material.music.data.repository.MusicRepository
 import com.material.music.data.service.MusicNotificationProvider
@@ -76,9 +85,13 @@ import com.material.music.utils.StorageType
 import com.material.music.utils.StorageUtils
 import com.material.music.utils.traceSection
 import com.material.music.utils.ZipShareHelper
+<<<<<<< HEAD
 import com.material.music.presentation.selection.flattenDistinctGroups
 import com.material.music.presentation.navigation.PlayerSheetBackCoordinator
 import com.material.music.presentation.selection.effectiveLibraryStorageFilter
+=======
+import com.material.music.presentation.navigation.PlayerSheetBackCoordinator
+>>>>>>> origin/main
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
@@ -133,10 +146,13 @@ private const val SONG_ID_QUERY_CHUNK_SIZE = 900
 private const val HOME_MIX_PREVIEW_LIMIT = 48
 private const val EXTERNAL_SONG_ID_PREFIX = "external:"
 private val LOCAL_PLAYBACK_SCHEMES = setOf("content", "file", "android.resource")
+<<<<<<< HEAD
 // Shuffle All, the shuffle tile and play-random queue up to this many random songs. The queue is
 // attached in batches and the crossfade window is spliced back after each swap, so large queues
 // stay intact.
 private const val SHUFFLE_ALL_SONG_LIMIT = 10_000
+=======
+>>>>>>> origin/main
 // How long the current queue index has to hold still before the neighbours' palettes are preloaded.
 internal const val PALETTE_NEIGHBOR_PRELOAD_DEBOUNCE_MS = 220L
 
@@ -518,6 +534,13 @@ class PlayerViewModel @Inject constructor(
             initialValue = 4000L
         )
 
+    val lyricsFontSizeMultiplier: StateFlow<Float> = userPreferencesRepository.lyricsFontSizeMultiplierFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 1.0f
+        )
+
     private val _isImmersiveTemporarilyDisabled = MutableStateFlow(false)
     val isImmersiveTemporarilyDisabled: StateFlow<Boolean> = _isImmersiveTemporarilyDisabled.asStateFlow()
 
@@ -613,7 +636,18 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val state = playerUiState.value
+<<<<<<< HEAD
                 val storageFilter = currentEffectiveLibraryStorageFilter(state)
+=======
+
+                val baseFilter = state.currentStorageFilter
+                val hideLocal = state.hideLocalMedia
+                val storageFilter = if (hideLocal) {
+                    com.material.music.data.model.StorageFilter.ONLINE
+                } else {
+                    baseFilter
+                }
+>>>>>>> origin/main
 
                 val sortedIds = if (tab == LibraryTabId.LIKED) {
                     musicRepository.getFavoriteSongIdsSorted(state.currentFavoriteSortOption, storageFilter)
@@ -1216,6 +1250,7 @@ class PlayerViewModel @Inject constructor(
         val showPlayerFileInfo: Boolean = true,
         val immersiveLyricsEnabled: Boolean = false,
         val immersiveLyricsTimeout: Long = 4000L,
+        val lyricsFontSizeMultiplier: Float = 1.0f,
         val isImmersiveTemporarilyDisabled: Boolean = false,
         val isBluetoothEnabled: Boolean = false,
         val bluetoothName: String? = null
@@ -1241,10 +1276,11 @@ class PlayerViewModel @Inject constructor(
     private val fullPlayerSlicePart2 = combine(
         immersiveLyricsEnabled,
         immersiveLyricsTimeout,
+        lyricsFontSizeMultiplier,
         isImmersiveTemporarilyDisabled,
         bluetoothSlice
-    ) { immersive: Boolean, immersiveTimeout: Long, immersiveDisabled: Boolean, bt: BluetoothSlice ->
-        FullPlayerSlicePart2(immersive, immersiveTimeout, immersiveDisabled, bt.enabled, bt.name)
+    ) { immersive: Boolean, immersiveTimeout: Long, lyricsFontSizeMultiplier: Float, immersiveDisabled: Boolean, bt: BluetoothSlice ->
+        FullPlayerSlicePart2(immersive, immersiveTimeout, lyricsFontSizeMultiplier, immersiveDisabled, bt.enabled, bt.name)
     }
 
     private data class FullPlayerSlicePart1(
@@ -1258,6 +1294,7 @@ class PlayerViewModel @Inject constructor(
     private data class FullPlayerSlicePart2(
         val immersiveLyricsEnabled: Boolean,
         val immersiveLyricsTimeout: Long,
+        val lyricsFontSizeMultiplier: Float,
         val isImmersiveTemporarilyDisabled: Boolean,
         val isBluetoothEnabled: Boolean,
         val bluetoothName: String?
@@ -1275,6 +1312,7 @@ class PlayerViewModel @Inject constructor(
             showPlayerFileInfo = p1.showPlayerFileInfo,
             immersiveLyricsEnabled = p2.immersiveLyricsEnabled,
             immersiveLyricsTimeout = p2.immersiveLyricsTimeout,
+            lyricsFontSizeMultiplier = p2.lyricsFontSizeMultiplier,
             isImmersiveTemporarilyDisabled = p2.isImmersiveTemporarilyDisabled,
             isBluetoothEnabled = p2.isBluetoothEnabled,
             bluetoothName = p2.bluetoothName
@@ -3167,6 +3205,15 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Builds the media item for [song] and resolves its playback URI.
+     *
+     * [playlistId] is carried on the item so the service can pick the playlist's own
+     * transition rule instead of the global default.
+     */
+>>>>>>> origin/main
     private suspend fun buildResolvedPlaybackMediaItem(
         song: Song,
         playlistId: String? = null,
@@ -4217,12 +4264,18 @@ class PlayerViewModel @Inject constructor(
         mediaController = null
         mediaControllerFuture.cancel(true)
         super.onCleared()
+<<<<<<< HEAD
         // The holder moves progress updates to the PlayerViewModel left bound, or stops them when
         // none is; stopping them here would freeze the seek bar of the surviving instance.
+=======
+        // The holder stops progress updates itself, and only when this instance still owns it;
+        // stopping them here would freeze the seek bar of a newer PlayerViewModel.
+>>>>>>> origin/main
         playbackStateHolder.onCleared(ownerScope)
         // The listening session belongs to MusicService, which finalizes it on track end,
         // stop/unload and onDestroy. Finalizing here would split a session that keeps
         // playing in the background after the activity finishes.
+<<<<<<< HEAD
         dailyMixStateHolder.onCleared(ownerScope)
         lyricsStateHolder.onCleared(ownerScope)
         themeStateHolder.onCleared(ownerScope)
@@ -4230,6 +4283,15 @@ class PlayerViewModel @Inject constructor(
         libraryStateHolder.onCleared(ownerScope)
         sleepTimerStateHolder.onCleared(ownerScope)
         connectivityStateHolder.onCleared(ownerScope)
+=======
+        dailyMixStateHolder.onCleared()
+        lyricsStateHolder.onCleared()
+        themeStateHolder.onCleared(ownerScope)
+        searchStateHolder.onCleared()
+        libraryStateHolder.onCleared(ownerScope)
+        sleepTimerStateHolder.onCleared(ownerScope)
+        connectivityStateHolder.onCleared()
+>>>>>>> origin/main
         queueUndoStateHolder.onCleared()
         playlistDismissUndoStateHolder.onCleared()
     }

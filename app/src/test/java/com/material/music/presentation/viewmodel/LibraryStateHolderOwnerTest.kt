@@ -1,7 +1,10 @@
 package com.material.music.presentation.viewmodel
 
 import com.material.music.data.model.SortOption
+<<<<<<< HEAD
 import com.material.music.data.model.Song
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.StorageFilter
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.repository.MusicRepository
@@ -11,8 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+<<<<<<< HEAD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+=======
+>>>>>>> origin/main
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -23,8 +29,11 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryStateHolderOwnerTest {
 
+<<<<<<< HEAD
     private val musicRepository = mockk<MusicRepository>(relaxed = true)
 
+=======
+>>>>>>> origin/main
     @Test
     fun `stale owner clearing keeps the newer binding`() = runTest {
         val holder = holder()
@@ -59,6 +68,7 @@ class LibraryStateHolderOwnerTest {
         owner.cancel()
     }
 
+<<<<<<< HEAD
     @Test
     fun `current owner clearing hands sorting back to the surviving owner`() = runTest {
         val holder = holder()
@@ -127,6 +137,8 @@ class LibraryStateHolderOwnerTest {
         holder.onCleared(owner)
     }
 
+=======
+>>>>>>> origin/main
     // Separate Job so each owner has its own identity, while still running on the test
     // dispatcher that advanceUntilIdle drives.
     private fun TestScope.ownerScope(): CoroutineScope = CoroutineScope(coroutineContext + Job())
@@ -137,6 +149,7 @@ class LibraryStateHolderOwnerTest {
             every { albumsSortOptionFlow } returns flowOf(SortOption.AlbumTitleAZ.storageKey)
             every { artistsSortOptionFlow } returns flowOf(SortOption.ArtistNameAZ.storageKey)
             every { foldersSortOptionFlow } returns flowOf(SortOption.FolderNameAZ.storageKey)
+<<<<<<< HEAD
             every { folderSongsSortOptionFlow } returns flowOf(SortOption.FolderSongTitleAZ.storageKey)
             every { likedSongsSortOptionFlow } returns flowOf(SortOption.LikedSongDateLiked.storageKey)
             every { genresSortOptionFlow } returns flowOf(SortOption.GenreNameAZ.storageKey)
@@ -160,4 +173,11 @@ class LibraryStateHolderOwnerTest {
         bitrate = 320_000,
         sampleRate = 44_100
     )
+=======
+            every { likedSongsSortOptionFlow } returns flowOf(SortOption.LikedSongDateLiked.storageKey)
+            every { lastStorageFilterFlow } returns flowOf(StorageFilter.ALL)
+        }
+        return LibraryStateHolder(mockk<MusicRepository>(relaxed = true), preferences)
+    }
+>>>>>>> origin/main
 }

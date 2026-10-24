@@ -1,16 +1,27 @@
 package com.material.music.data.database
 
 import android.content.Context
+<<<<<<< HEAD
 import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.material.music.utils.GenreParser
+=======
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+>>>>>>> origin/main
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+<<<<<<< HEAD
+=======
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+>>>>>>> origin/main
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,6 +49,7 @@ class MusicDaoTest {
         db.close()
     }
 
+<<<<<<< HEAD
     private fun createSongEntity(
         id: Long,
         title: String,
@@ -50,13 +62,22 @@ class MusicDaoTest {
         trackNumber: Int = 1,
         discNumber: Int? = null
     ): SongEntity {
+=======
+    private fun createSongEntity(id: Long, title: String, artist: String, album: String, path: String, genre: String = "Pop"): SongEntity {
+>>>>>>> origin/main
         return SongEntity(
             id = id,
             title = title,
             artistName = artist,
+<<<<<<< HEAD
             artistId = artistId,
             albumName = album,
             albumId = albumId,
+=======
+            artistId = 101L,
+            albumName = album,
+            albumId = 201L,
+>>>>>>> origin/main
             contentUriString = "uri_$id",
             albumArtUriString = "art_uri_$id",
             duration = 180000,
@@ -64,6 +85,7 @@ class MusicDaoTest {
             filePath = path,
             parentDirectoryPath = path.substringBeforeLast("/"),
             year = 2023,
+<<<<<<< HEAD
             trackNumber = trackNumber,
             discNumber = discNumber
         )
@@ -139,6 +161,18 @@ class MusicDaoTest {
             title = title,
             artistName = artistName,
             artistId = artistId,
+=======
+            trackNumber = 1
+        )
+    }
+
+    private fun createAlbumEntity(id: Long, title: String): AlbumEntity {
+        return AlbumEntity(
+            id = id,
+            title = title,
+            artistName = "Artist",
+            artistId = 101L,
+>>>>>>> origin/main
             albumArtUriString = "art_uri_$id",
             songCount = 5,
             dateAdded = 0L,
@@ -155,6 +189,7 @@ class MusicDaoTest {
     fun insertAndGetSongs() = runTest {
         val songList = listOf(
             createSongEntity(1L, "Song A", "Artist 1", "Album X", "/path/a/songA.mp3"),
+<<<<<<< HEAD
             createSongEntity(
                 2L,
                 "Song B",
@@ -167,6 +202,11 @@ class MusicDaoTest {
             )
         )
         insertSongsWithParents(songList)
+=======
+            createSongEntity(2L, "Song B", "Artist 2", "Album Y", "/path/b/songB.mp3", "Rock")
+        )
+        musicDao.insertSongs(songList)
+>>>>>>> origin/main
 
         val retrievedSongs = musicDao.getSongs(emptyList(), false).first()
         assertEquals(2, retrievedSongs.size)
@@ -177,16 +217,29 @@ class MusicDaoTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetAlbums() = runTest {
+<<<<<<< HEAD
         val artists = listOf(createArtistEntity(101L, "Artist 1"))
         val albums = listOf(
             createAlbumEntity(201L, "Album X", artistName = "Artist 1"),
             createAlbumEntity(202L, "Album Y", artistName = "Artist 1")
         )
+=======
+>>>>>>> origin/main
         val songs = listOf(
             createSongEntity(1L, "Song A", "Artist 1", "Album X", "/path/a/songA.mp3"),
             createSongEntity(2L, "Song B", "Artist 1", "Album X", "/path/a/songB.mp3")
         )
+<<<<<<< HEAD
         musicDao.insertMusicData(songs, albums, artists)
+=======
+        musicDao.insertSongs(songs)
+
+        val albumList = listOf(
+            createAlbumEntity(201L, "Album X"),
+            createAlbumEntity(202L, "Album Y")
+        )
+        musicDao.insertAlbums(albumList)
+>>>>>>> origin/main
         
         val retrievedAlbums = musicDao.getAlbums(emptyList(), false, 0, 1).first()
         
@@ -198,6 +251,7 @@ class MusicDaoTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetArtists() = runTest {
+<<<<<<< HEAD
         val artists = listOf(
             createArtistEntity(101L, "Artist 1"),
             createArtistEntity(102L, "Artist 2")
@@ -207,6 +261,16 @@ class MusicDaoTest {
             createSongEntity(1L, "Song A", "Artist 1", "Album X", "/path/a/songA.mp3")
         )
         musicDao.insertMusicData(songs, albums, artists)
+=======
+        val song = createSongEntity(1L, "Song A", "Artist 1", "Album X", "/path/a/songA.mp3")
+        musicDao.insertSongs(listOf(song))
+
+        val artistList = listOf(
+            createArtistEntity(101L, "Artist 1"),
+            createArtistEntity(102L, "Artist 2")
+        )
+        musicDao.insertArtists(artistList)
+>>>>>>> origin/main
 
         val retrievedArtists = musicDao.getArtists(emptyList(), false).first()
         assertEquals(1, retrievedArtists.size)
@@ -215,6 +279,7 @@ class MusicDaoTest {
 
     @Test
     @Throws(Exception::class)
+<<<<<<< HEAD
     fun insertMusicData_insertsNewWithoutClearingExisting() = runTest {
         val oldSong = createSongEntity(
             1L,
@@ -226,6 +291,11 @@ class MusicDaoTest {
             albumId = 2001L
         )
         insertSongsWithParents(listOf(oldSong))
+=======
+    fun insertMusicData_clearsOldAndInsertsNew() = runTest {
+        val oldSong = createSongEntity(1L, "Old Song", "Old Artist", "Old Album", "/old/path/old.mp3")
+        musicDao.insertSongs(listOf(oldSong))
+>>>>>>> origin/main
 
         val songs = listOf(
             createSongEntity(10L, "Song A", "Artist 1", "Album X", "/path/a/songA.mp3")
@@ -240,10 +310,20 @@ class MusicDaoTest {
         musicDao.insertMusicData(songs, albums, artists)
 
         val oldSongRetrieved = musicDao.getSongById(1L).first()
+<<<<<<< HEAD
         assertNotNull(oldSongRetrieved)
         
         val newSongRetrieved = musicDao.getSongById(10L).first()
         assertNotNull(newSongRetrieved)
+=======
+        assertNull(oldSongRetrieved)
+        
+        val newSongRetrieved = musicDao.getSongById(10L).first()
+        assertNotNull(newSongRetrieved)
+        
+        val oldSongStillThere = musicDao.getSongById(1L).first()
+        assertNotNull(oldSongStillThere)
+>>>>>>> origin/main
     }
 
     @Test
@@ -251,6 +331,7 @@ class MusicDaoTest {
     fun searchSongs_returnsMatchingSongs() = runTest {
         val songs = listOf(
             createSongEntity(1L, "Cool Song", "Artist A", "Album X", "/p1/s1.mp3"),
+<<<<<<< HEAD
             createSongEntity(
                 2L,
                 "Another Song",
@@ -272,12 +353,19 @@ class MusicDaoTest {
             )
         )
         insertSongsWithParents(songs)
+=======
+            createSongEntity(2L, "Another Song", "Artist B", "Album Y", "/p2/s2.mp3", "Rock"),
+            createSongEntity(3L, "Coolest Song Ever", "Artist C", "Album Z", "/p3/s3.mp3")
+        )
+        musicDao.insertSongs(songs)
+>>>>>>> origin/main
 
         val results = musicDao.searchSongs("Cool", emptyList(), false).first()
         assertEquals(2, results.size)
         val titles = results.map { it.title }.sorted()
         assertEquals(listOf("Cool Song", "Coolest Song Ever"), titles)
     }
+<<<<<<< HEAD
 
     @Test
     fun albumSort_ordersEveryLibraryQueryByDiscAndTrackWithinAlbum() = runTest {
@@ -400,4 +488,6 @@ class MusicDaoTest {
         assertEquals(listOf(4L, 5L), songIdsInGenre("K-Pop"))
         assertEquals(listOf(4L, 5L), songIdsInGenre(kelvinKPop))
     }
+=======
+>>>>>>> origin/main
 }

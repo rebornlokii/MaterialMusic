@@ -18,9 +18,9 @@ val keystoreProperties = Properties().apply {
 }
 
 val releaseSigningStoreFile = rootProject.file(
-    keystoreProperties.getProperty("storeFile") ?: "vz-pixelplay.jks"
+    keystoreProperties.getProperty("storeFile") ?: "materialmusic.jks"
 )
-val disableReleaseSigning = providers.gradleProperty("pixelplayer.disableReleaseSigning")
+val disableReleaseSigning = providers.gradleProperty("materialmusic.disableReleaseSigning")
     .getOrElse("false")
     .toBoolean()
 val hasReleaseSigningConfig = !disableReleaseSigning &&
@@ -29,11 +29,11 @@ val hasReleaseSigningConfig = !disableReleaseSigning &&
     keystoreProperties.getProperty("keyAlias") != null &&
     keystoreProperties.getProperty("keyPassword") != null
 
-val enableAbiSplits = providers.gradleProperty("pixelplayer.enableAbiSplits")
+val enableAbiSplits = providers.gradleProperty("materialmusic.enableAbiSplits")
     .getOrElse("true")
     .toBoolean()
 
-val enableComposeCompilerReports = providers.gradleProperty("pixelplayer.enableComposeCompilerReports")
+val enableComposeCompilerReports = providers.gradleProperty("materialmusic.enableComposeCompilerReports")
     .getOrElse("false")
     .toBoolean()
 
@@ -204,6 +204,18 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.lifecycleprocess)
     implementation(libs.androidx.activity.compose)
+    // Pinned above the 1.0.0 that activity-compose pulls in transitively.
+    //
+    // navigationevent 1.0.x throws "This input is not added to any dispatcher." from
+    // NavigationEventInput.dispatchOnBackProgressed when the platform keeps delivering
+    // predictive-back progress for an input that has already been removed from its
+    // dispatcher. That happens whenever a predictive-back handler is torn down or replaced
+    // while the gesture is still animating, for example when the player sheet re-registers
+    // its handler on a new navigation entry, which crashes the app on returning to the
+    // foreground. navigationevent 1.2.0 (androidx "Ignore events on disconnected navigation
+    // inputs") ignores events for disconnected inputs instead of throwing.
+    implementation(libs.androidx.navigationevent)
+    implementation(libs.androidx.navigationevent.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

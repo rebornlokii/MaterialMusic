@@ -13,16 +13,24 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
 import com.material.music.data.diagnostics.AdvancedPerformanceDiagnosticsController
 import com.material.music.data.media.SongMetadataEditor
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.playlist.M3uSyncCoordinator
+========
+import com.material.music.data.preferences.UserPreferencesRepository
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
 import com.material.music.data.repository.ArtistImageRepository
 import com.material.music.presentation.viewmodel.LibraryStateHolder
 import com.material.music.presentation.viewmodel.ThemeStateHolder
 import com.material.music.utils.AlbumArtCacheManager
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
 import com.material.music.utils.FolderArtworkSettingsCoordinator
 import com.material.music.utils.AppLocaleManager
+========
+import com.material.music.utils.AlbumArtUtils
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
 import com.material.music.utils.CrashHandler
 import com.material.music.utils.MediaMetadataRetrieverPool
 import dagger.hilt.android.HiltAndroidApp
@@ -65,6 +73,7 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
     lateinit var userPreferencesRepository: dagger.Lazy<UserPreferencesRepository>
 
     @Inject
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
     lateinit var folderArtworkSettingsCoordinator: dagger.Lazy<FolderArtworkSettingsCoordinator>
 
     @Inject
@@ -81,11 +90,14 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
 
     @Inject
     lateinit var songMetadataEditor: dagger.Lazy<SongMetadataEditor>
+========
+    lateinit var syncManager: dagger.Lazy<com.material.music.data.worker.SyncManager>
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
 
     private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     companion object {
-        const val NOTIFICATION_CHANNEL_ID = "pixelplayer_music_channel"
+        const val NOTIFICATION_CHANNEL_ID = "materialmusic_music_channel"
     }
 
     private val appLifecycleObserver = object : DefaultLifecycleObserver {
@@ -129,7 +141,11 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
                 "MaterialMusic Music Playback",
+========
+                "Material Music Playback",
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
                 NotificationManager.IMPORTANCE_LOW
             )
             val notificationManager = getSystemService(NotificationManager::class.java)
@@ -147,6 +163,10 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
         advancedPerformanceDiagnosticsController.get().start(startupScope)
 
         startupScope.launch {
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
+========
+            AlbumArtUtils.migrateLegacyCacheLocation(this@MaterialMusicApplication)
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
             val savedLimit = runCatching {
                 userPreferencesRepository.get().albumArtCacheLimitMbFlow.first()
             }.getOrNull()

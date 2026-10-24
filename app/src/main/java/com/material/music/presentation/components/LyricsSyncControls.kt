@@ -46,14 +46,14 @@ fun LyricsSyncControls(
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         SyncButton(
-            text = stringResource(R.string.presentation_batch_g_lyrics_offset_minus_half),
+            text = stringResource(R.string.lyrics_offset_minus_half),
             onClick = { onOffsetChange(offsetMillis - 500) },
             weight = 1f,
             containerColor = accentColor,
             contentColor = onAccentColor
         )
         SyncButton(
-            text = stringResource(R.string.presentation_batch_g_lyrics_offset_minus_point_one),
+            text = stringResource(R.string.lyrics_offset_minus_point_one),
             onClick = { onOffsetChange(offsetMillis - 100) },
             weight = 1f,
             containerColor = accentColor,
@@ -61,9 +61,9 @@ fun LyricsSyncControls(
         )
         SyncButton(
             text = if (offsetMillis == 0) {
-                stringResource(R.string.presentation_batch_g_lyrics_offset_zero)
+                stringResource(R.string.lyrics_offset_zero)
             } else {
-                stringResource(R.string.presentation_batch_g_lyrics_offset_seconds_fmt, offsetMillis / 1000f)
+                stringResource(R.string.lyrics_offset_seconds_fmt, offsetMillis / 1000f)
             },
             onClick = { onOffsetChange(0) },
             weight = 1.3f,
@@ -73,14 +73,14 @@ fun LyricsSyncControls(
             fontSize = 12.sp
         )
         SyncButton(
-            text = stringResource(R.string.presentation_batch_g_lyrics_offset_plus_point_one),
+            text = stringResource(R.string.lyrics_offset_plus_point_one),
             onClick = { onOffsetChange(offsetMillis + 100) },
             weight = 1f,
             containerColor = accentColor,
             contentColor = onAccentColor
         )
         SyncButton(
-            text = stringResource(R.string.presentation_batch_g_lyrics_offset_plus_half),
+            text = stringResource(R.string.lyrics_offset_plus_half),
             onClick = { onOffsetChange(offsetMillis + 500) },
             weight = 1f,
             containerColor = accentColor,

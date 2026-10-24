@@ -73,7 +73,12 @@ object MediaItemBuilder {
     )
     private val SUPPORTED_INTERNAL_ARTWORK_SCHEMES = setOf(
         LocalArtworkUri.SCHEME,
+<<<<<<< HEAD
         *CLOUD_ARTWORK_SCHEMES.toTypedArray(),
+=======
+        "navidrome_cover",
+        "jellyfin_cover",
+>>>>>>> origin/main
         "content",
         "file",
         "android.resource",

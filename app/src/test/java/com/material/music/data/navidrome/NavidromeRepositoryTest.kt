@@ -3,7 +3,10 @@ package com.material.music.data.navidrome
 import com.google.common.truth.Truth.assertThat
 import com.material.music.data.database.NavidromePlaylistEntity
 import com.material.music.data.navidrome.model.NavidromeMusicFolder
+<<<<<<< HEAD
 import com.material.music.data.navidrome.model.NavidromeSong
+=======
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 class NavidromeRepositoryTest {

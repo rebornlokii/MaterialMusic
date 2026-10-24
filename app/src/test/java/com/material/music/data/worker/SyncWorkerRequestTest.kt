@@ -34,6 +34,7 @@ class SyncWorkerRequestTest {
     }
 
     @Test
+<<<<<<< HEAD
     fun `default incremental and startup sync requests keep playback deferral`() {
         listOf(
             SyncWorker.incrementalSyncWork(),
@@ -81,6 +82,8 @@ class SyncWorkerRequestTest {
     }
 
     @Test
+=======
+>>>>>>> origin/main
     fun `full sync and rebuild requests run maintenance`() {
         val fullRequest = SyncWorker.fullSyncWork()
         val rebuildRequest = SyncWorker.rebuildDatabaseWork()
@@ -186,6 +189,7 @@ class SyncWorkerRequestTest {
 
         assertEquals(119L, incrementalFetchTimestampSeconds(lastSyncMs))
     }
+<<<<<<< HEAD
 
     @Test
     fun `indexed incremental sync keeps the timestamp cutoff`() {
@@ -253,4 +257,6 @@ class SyncWorkerRequestTest {
         directoryRulesChanged = directoryRulesChanged,
         isFreshInstall = false
     )
+=======
+>>>>>>> origin/main
 }

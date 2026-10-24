@@ -52,7 +52,11 @@ class BarWidget4x1 : GlanceAppWidget() {
         playerInfo: PlayerInfo,
         context: Context
     ) {
+<<<<<<< HEAD
         val title = playerInfo.songTitle.ifEmpty { "MaterialMusic" }
+=======
+        val title = playerInfo.songTitle.ifEmpty { "Material Music" }
+>>>>>>> origin/main
         val artist = playerInfo.artistName.ifEmpty { "Tap to open" }
         val isPlaying = playerInfo.isPlaying
         val albumArtBitmapData = playerInfo.albumArtBitmapData

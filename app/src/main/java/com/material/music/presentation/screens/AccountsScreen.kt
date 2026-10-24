@@ -225,7 +225,7 @@ fun AccountsScreen(
             if (uiState.connectedAccounts.isNotEmpty()) {
                 item {
                     Text(
-                        text = stringResource(R.string.presentation_batch_b_accounts_linked_services),
+                        text = stringResource(R.string.accounts_linked_services),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -358,9 +358,9 @@ private fun ConnectedAccountCard(
     painter: androidx.compose.ui.graphics.painter.Painter? = null,
     extraContent: (@Composable () -> Unit)? = null
 ) {
-    val statusConnected = stringResource(R.string.presentation_batch_b_accounts_status_connected)
-    val openService = stringResource(R.string.presentation_batch_b_accounts_open_service)
-    val loggingOut = stringResource(R.string.presentation_batch_b_accounts_logging_out)
+    val statusConnected = stringResource(R.string.accounts_status_connected)
+    val openService = stringResource(R.string.accounts_action_open_service)
+    val loggingOut = stringResource(R.string.accounts_logging_out_status)
     val logOut = stringResource(R.string.cd_logout)
     val palette = servicePalette(account.service)
     val cardShape = AbsoluteSmoothCornerShape(28.dp, 60)
@@ -529,8 +529,8 @@ private fun EmptyAccountsCard(
     disconnectedServices: ImmutableList<ExternalServiceAccount>,
     onConnect: (ExternalServiceAccount) -> Unit
 ) {
-    val noLinkedTitle = stringResource(R.string.presentation_batch_b_accounts_no_linked_title)
-    val noLinkedBody = stringResource(R.string.presentation_batch_b_accounts_no_linked_body)
+    val noLinkedTitle = stringResource(R.string.accounts_no_linked_title)
+    val noLinkedBody = stringResource(R.string.accounts_no_linked_subtitle)
     Card(
         shape = AbsoluteSmoothCornerShape(28.dp, 60),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
@@ -730,7 +730,7 @@ private fun ConnectServiceButton(
     service: ExternalServiceAccount,
     onConnect: (ExternalServiceAccount) -> Unit
 ) {
-    val connectTemplate = stringResource(R.string.presentation_batch_b_accounts_connect_service)
+    val connectTemplate = stringResource(R.string.accounts_connect_service)
     FilledTonalButton(
         onClick = { onConnect(service) },
         shape = AbsoluteSmoothCornerShape(18.dp, 60),

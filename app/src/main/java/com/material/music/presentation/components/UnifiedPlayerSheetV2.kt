@@ -66,17 +66,26 @@ import com.material.music.data.preferences.sanitizeNavBarCornerRadius
 import com.material.music.presentation.components.scoped.PlayerAlbumNavigationEffect
 import com.material.music.presentation.components.scoped.PlayerArtistNavigationEffect
 import com.material.music.presentation.components.scoped.PlayerSheetPredictiveBackHandler
+<<<<<<< HEAD
 import com.material.music.presentation.components.scoped.QueuePredictiveBackHandler
 import com.material.music.presentation.components.scoped.QueueSheetRuntimeEffects
 import com.material.music.presentation.components.scoped.SheetMotionController
 import com.material.music.presentation.components.scoped.miniPlayerHorizontalGesture
 import com.material.music.presentation.components.scoped.playerContentOffsetXPx
 import com.material.music.presentation.components.scoped.playerContentWidthPx
+=======
+import com.material.music.presentation.components.scoped.QueueSheetRuntimeEffects
+import com.material.music.presentation.components.scoped.SheetMotionController
+import com.material.music.presentation.components.scoped.miniPlayerDismissHorizontalGesture
+>>>>>>> origin/main
 import com.material.music.presentation.components.scoped.playerSheetVerticalDragGesture
 import com.material.music.presentation.components.scoped.rememberFullPlayerCompositionPolicy
 import com.material.music.presentation.components.scoped.rememberFullPlayerVisualState
 import com.material.music.presentation.components.scoped.rememberMiniPlayerDismissGestureHandler
+<<<<<<< HEAD
 import com.material.music.presentation.components.scoped.rememberMiniPlayerSkipGestureHandler
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.scoped.rememberPrewarmFullPlayer
 import com.material.music.presentation.components.scoped.rememberQueueSheetState
 import com.material.music.presentation.components.scoped.rememberSheetActionHandlers
@@ -86,11 +95,17 @@ import com.material.music.presentation.components.scoped.rememberSheetModalOverl
 import com.material.music.presentation.components.scoped.rememberSheetOverlayState
 import com.material.music.presentation.components.scoped.rememberSheetThemeState
 import com.material.music.presentation.components.scoped.rememberSheetVisualState
+<<<<<<< HEAD
 import com.material.music.presentation.components.scoped.sheetHorizontalPaddingPx
 import com.material.music.presentation.viewmodel.PlayerSheetState
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.StablePlayerState
 import com.material.music.ui.theme.LocalMaterialMusicAmoledTheme
+=======
+import com.material.music.presentation.viewmodel.PlayerSheetState
+import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.viewmodel.StablePlayerState
+>>>>>>> origin/main
 import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -615,7 +630,12 @@ fun UnifiedPlayerSheetV2(
         currentSheetContentState,
         currentSongTitle
     ) {
+<<<<<<< HEAD
         playerSheetContentDescription(sheetResources, currentSheetContentState, currentSongTitle)
+=======
+        "Material Music player sheet ${currentSheetContentState.name.lowercase()} " +
+            (infrequentPlayerState.currentSong?.title ?: "")
+>>>>>>> origin/main
     }
 
     Surface(

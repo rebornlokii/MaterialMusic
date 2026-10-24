@@ -43,6 +43,7 @@ import com.google.common.util.concurrent.SettableFuture
 import com.material.music.MaterialMusicApplication
 import com.material.music.MainActivity
 import com.material.music.R
+<<<<<<< HEAD
 import com.material.music.data.diagnostics.AdvancedPerformanceDiagnostics
 import com.material.music.data.model.PlayerInfo
 import com.material.music.data.model.PlaybackQueueItemSnapshot
@@ -60,6 +61,17 @@ import com.material.music.data.service.player.MappingPlayer
 import com.material.music.data.service.player.PreviousButtonPlayer
 import com.material.music.data.service.player.TransitionController
 import com.material.music.data.service.player.selectCanonicalCloudPlaybackUri
+=======
+import com.material.music.data.model.PlayerInfo
+import com.material.music.data.model.PlaybackQueueItemSnapshot
+import com.material.music.data.model.PlaybackQueueSnapshot
+import com.material.music.data.preferences.EqualizerPreferencesRepository
+import com.material.music.data.preferences.ThemePreferencesRepository
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.repository.MusicRepository
+import com.material.music.data.service.player.DualPlayerEngine
+import com.material.music.data.service.player.TransitionController
+>>>>>>> origin/main
 import com.material.music.ui.glancewidget.ControlWidget4x2
 import com.material.music.ui.glancewidget.MaterialMusicGlanceWidget
 import com.material.music.ui.glancewidget.PlayerActions
@@ -272,6 +284,10 @@ class MusicService : MediaSessionService() {
         private val pendingTemporaryForegroundStarts = AtomicInteger(0)
 
         private const val APP_PACKAGE_PREFIX = "com.material.music"
+<<<<<<< HEAD
+=======
+        private const val LOCAL_LIBRARY_ROOT_ID = "materialmusic_root"
+>>>>>>> origin/main
         private const val DEFAULT_STREAM_BUFFER_SIZE = 8 * 1024
         private const val WIDGET_ART_FAILURE_RETRY_MS = 30_000L
         private const val WIDGET_QUEUE_PREVIEW_LIMIT = 4
@@ -424,11 +440,20 @@ class MusicService : MediaSessionService() {
             }
         }
 
+<<<<<<< HEAD
         // Marked foreground-service starts (media buttons, and the widget's
         // startForegroundService() fallback) are promoted here, before super.onCreate(),
         // so Hilt injection and MediaSession setup cannot use up Android's FGS deadline.
         // Plain binds and plain startService() starts are never marked, so opening the
         // app does not flash the temporary placeholder notification.
+=======
+        // Only promote to foreground here when a media-button start is actually
+        // pending. Promoting unconditionally made every service creation — including
+        // plain in-app binds when the user opens the app — flash the "Processing
+        // playback action…" placeholder notification. Started paths that require
+        // foreground (widget actions, media buttons) are promoted in onStartCommand,
+        // which runs right after onCreate and well within the FGS grace window.
+>>>>>>> origin/main
         temporaryForegroundStartedInOnCreate = consumePendingTemporaryForegroundStart()
         if (temporaryForegroundStartedInOnCreate) {
             startTemporaryForegroundForCommand()
@@ -701,6 +726,85 @@ class MusicService : MediaSessionService() {
                 return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
             }
 
+<<<<<<< HEAD
+=======
+            override fun onGetLibraryRoot(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                params: MediaLibraryService.LibraryParams?
+            ): ListenableFuture<LibraryResult<MediaItem>> {
+                val rootItem = MediaItem.Builder()
+                    .setMediaId(LOCAL_LIBRARY_ROOT_ID)
+                    .setMediaMetadata(
+                        androidx.media3.common.MediaMetadata.Builder()
+                            .setTitle("Material Music")
+                            .setIsBrowsable(true)
+                            .setIsPlayable(false)
+                            .setMediaType(androidx.media3.common.MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                            .build()
+                    )
+                    .build()
+                return Futures.immediateFuture(LibraryResult.ofItem(rootItem, params))
+            }
+
+            override fun onGetChildren(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                parentId: String,
+                page: Int,
+                pageSize: Int,
+                params: MediaLibraryService.LibraryParams?
+            ): ListenableFuture<LibraryResult<com.google.common.collect.ImmutableList<MediaItem>>> {
+                return Futures.immediateFuture(LibraryResult.ofItemList(emptyList(), params))
+            }
+
+            override fun onGetItem(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                mediaId: String
+            ): ListenableFuture<LibraryResult<MediaItem>> {
+                return serviceScope.future {
+                    try {
+                        val item = resolveMediaItemsByIds(
+                            requestedItems = listOf(MediaItem.Builder().setMediaId(mediaId).build()),
+                            exposeInternalArtwork = browser.packageName == packageName
+                        )
+                            .mediaItems
+                            .firstOrNull()
+                        if (item != null) {
+                            grantArtworkUriPermissions(browser.packageName, listOf(item))
+                            LibraryResult.ofItem(item, null)
+                        } else {
+                            LibraryResult.ofError(SessionError.ERROR_BAD_VALUE)
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).e(e, "onGetItem failed for mediaId=$mediaId")
+                        LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
+                    }
+                }
+            }
+
+            override fun onSearch(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                query: String,
+                params: MediaLibraryService.LibraryParams?
+            ): ListenableFuture<LibraryResult<Void>> {
+                return Futures.immediateFuture(LibraryResult.ofVoid())
+            }
+
+            override fun onGetSearchResult(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                query: String,
+                page: Int,
+                pageSize: Int,
+                params: MediaLibraryService.LibraryParams?
+            ): ListenableFuture<LibraryResult<com.google.common.collect.ImmutableList<MediaItem>>> {
+                return Futures.immediateFuture(LibraryResult.ofItemList(emptyList(), params))
+            }
+
+>>>>>>> origin/main
             override fun onAddMediaItems(
                 mediaSession: MediaSession,
                 controller: MediaSession.ControllerInfo,
@@ -1436,9 +1540,31 @@ class MusicService : MediaSessionService() {
             return null
         }
 
+<<<<<<< HEAD
         val snapshotItems = playbackSnapshotItemCache.getOrBuild {
             buildPlaybackSnapshotItems(mediaItemCount) { index ->
                 fullQueue?.get(index) ?: player.getMediaItemAt(index)
+=======
+        val snapshotItems = ArrayList<PlaybackQueueItemSnapshot>(mediaItemCount)
+        for (index in 0 until mediaItemCount) {
+            val mediaItem = player.getMediaItemAt(index)
+            val metadata = mediaItem.mediaMetadata
+            val playerUri = mediaItem.localConfiguration?.uri?.toString()
+            val originalContentUri = metadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_CONTENT_URI)
+            // A cloud item that resolved through a local stream proxy carries a loopback
+            // URL (http://127.0.0.1:{port}/{secret}/...) whose port and secret die with
+            // this process. Persist the original cloud URI from the extras instead so a
+            // restored queue re-resolves against the live proxy instead of failing with
+            // a source error.
+            val uri = when {
+                playerUri == null -> originalContentUri
+                isEphemeralLoopbackUri(playerUri) && !originalContentUri.isNullOrBlank() -> originalContentUri
+                else -> playerUri
+            }
+
+            if (mediaItem.mediaId.isBlank() || uri.isNullOrBlank()) {
+                continue
+>>>>>>> origin/main
             }
         }
 
@@ -1478,6 +1604,7 @@ class MusicService : MediaSessionService() {
         )
     }
 
+<<<<<<< HEAD
     private fun buildPlaybackSnapshotItems(
         mediaItemCount: Int,
         mediaItemAt: (Int) -> MediaItem,
@@ -1508,6 +1635,13 @@ class MusicService : MediaSessionService() {
             )
         }
         return snapshotItems
+=======
+    private fun isEphemeralLoopbackUri(uriString: String): Boolean {
+        val uri = runCatching { Uri.parse(uriString) }.getOrNull() ?: return false
+        val scheme = uri.scheme?.lowercase()
+        if (scheme != "http" && scheme != "https") return false
+        return uri.host == "127.0.0.1" || uri.host == "localhost"
+>>>>>>> origin/main
     }
 
     private suspend fun restorePlaybackQueueSnapshotIfNeeded() {
@@ -1609,7 +1743,11 @@ class MusicService : MediaSessionService() {
         val restoredArtworkUri = MediaItemBuilder.externalControllerArtworkUri(
             context = this,
             rawArtworkUri = snapshotItem.artworkUri
+<<<<<<< HEAD
         )
+=======
+        ) ?: MediaItemBuilder.artworkUri(snapshotItem.artworkUri)
+>>>>>>> origin/main
         restoredArtworkUri?.let { metadataBuilder.setArtworkUri(it) }
 
         val extras = Bundle().apply {
@@ -1813,6 +1951,7 @@ class MusicService : MediaSessionService() {
         }
         val isFavorite = isSongFavorite(mediaId)
         val queueItems = mutableListOf<com.material.music.data.model.QueueItem>()
+<<<<<<< HEAD
         // Follow the player's actual navigation order so shuffle and repeat-all previews match.
         if (!snapshotTimeline.isEmpty) {
             val window = Timeline.Window()
@@ -1827,6 +1966,32 @@ class MusicService : MediaSessionService() {
                             currentIndex,
                             repeatMode,
                             snapshotShuffleModeEnabled,
+=======
+        if (!snapshotTimeline.isEmpty) {
+            val window = Timeline.Window()
+
+            val startIndex = if (snapshotWindowIndex + 1 < snapshotTimeline.windowCount) snapshotWindowIndex + 1 else 0
+
+            val endIndex = (startIndex + 4).coerceAtMost(snapshotTimeline.windowCount)
+            for (i in startIndex until endIndex) {
+                snapshotTimeline.getWindow(i, window)
+                val mediaItem = window.mediaItem
+                val songId = mediaItem.mediaId.toLongOrNull()
+                if (songId != null) {
+                    val initialQueueArtworkUri = resolveWidgetArtworkUriCandidates(mediaItem.mediaMetadata)
+                        .firstOrNull()
+                    val queueArtworkUri = when {
+                        initialQueueArtworkUri == null -> resolveRepositoryArtworkUri(mediaItem.mediaId)
+                        initialQueueArtworkUri.scheme?.lowercase() == "content" &&
+                            initialQueueArtworkUri.authority == "$packageName.provider" ->
+                            resolveRepositoryArtworkUri(mediaItem.mediaId) ?: initialQueueArtworkUri
+                        else -> initialQueueArtworkUri
+                    }
+                    queueItems.add(
+                        com.material.music.data.model.QueueItem(
+                            id = songId,
+                            albumArtUri = queueArtworkUri?.toString()
+>>>>>>> origin/main
                         )
                     }
                 },

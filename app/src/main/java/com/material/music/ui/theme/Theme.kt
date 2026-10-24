@@ -24,13 +24,19 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+<<<<<<< HEAD
 import com.material.music.data.preferences.ThemePreset
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import androidx.core.graphics.ColorUtils
 
 val LocalMaterialMusicDarkTheme = staticCompositionLocalOf { false }
+<<<<<<< HEAD
 val LocalMaterialMusicAmoledTheme = staticCompositionLocalOf { false }
 val LocalShowScrollbar = staticCompositionLocalOf { true }
+=======
+>>>>>>> origin/main
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
@@ -186,10 +192,14 @@ fun MaterialMusicTheme(
         navigationColor = finalColorScheme.background
     )
 
+<<<<<<< HEAD
     CompositionLocalProvider(
         LocalMaterialMusicDarkTheme provides (darkTheme || isAmoled),
         LocalMaterialMusicAmoledTheme provides isAmoled
     ) {
+=======
+    CompositionLocalProvider(LocalMaterialMusicDarkTheme provides darkTheme) {
+>>>>>>> origin/main
         MaterialTheme(
             colorScheme = finalColorScheme,
             motionScheme = MotionScheme.expressive(),

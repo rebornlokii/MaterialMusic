@@ -1,5 +1,6 @@
 package com.material.music.presentation.components
 
+<<<<<<< HEAD
 import android.graphics.Matrix
 import android.graphics.RectF
 import androidx.compose.foundation.shape.CircleShape
@@ -18,11 +19,22 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
+=======
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+>>>>>>> origin/main
 import com.material.music.data.preferences.CollagePattern
 import com.material.music.utils.shapes.RoundedStarShape
 
 @Stable
+<<<<<<< HEAD
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
+=======
+>>>>>>> origin/main
 fun buildCollageConfigs(
     pattern: CollagePattern,
     min: Dp,
@@ -33,6 +45,7 @@ fun buildCollageConfigs(
     CollagePattern.VINYL_STACK -> vinylStackConfigs(min, boxMaxHeight)
     CollagePattern.PIXEL_MOSAIC -> pixelMosaicConfigs(min, boxMaxHeight)
     CollagePattern.STARDUST_SCATTER -> stardustScatterConfigs(min, boxMaxHeight)
+<<<<<<< HEAD
     CollagePattern.SOFT_ORBIT -> softOrbitConfigs(min, boxMaxHeight)
     CollagePattern.ARROW_FANFARE -> arrowFanfareConfigs(min, boxMaxHeight)
     CollagePattern.SUNNY_BLOOM -> sunnyBloomConfigs(min, boxMaxHeight)
@@ -75,6 +88,10 @@ private class MaterialPolygonShape(polygon: RoundedPolygon) : Shape {
 
 private fun RoundedPolygon.asShape(): Shape = MaterialPolygonShape(this)
 
+=======
+}
+
+>>>>>>> origin/main
 /** Original pattern — preserved exactly as-is. */
 private fun cosmicSwirlConfigs(min: Dp, boxMaxHeight: Dp): List<Config> = listOf(
     Config(size = min * 0.8f, width = min * 0.48f, height = min * 0.8f, align = Alignment.Center, rot = 45f, shape = RoundedCornerShape(percent = 50), offsetX = 0.dp, offsetY = 0.dp),
@@ -119,6 +136,7 @@ private fun stardustScatterConfigs(min: Dp, boxMaxHeight: Dp): List<Config> = li
     Config(size = min * 0.5f, width = min * 0.5f, height = min * 0.5f, align = Alignment.CenterEnd, rot = -15f, shape = RoundedStarShape(sides = 8, curve = 0.04, rotation = 0f), offsetX = -(300.dp * 0.04f), offsetY = 0.dp),
     Config(size = min * 0.5f, width = min * 0.5f, height = min * 0.42f, align = Alignment.BottomStart, rot = 25f, shape = RoundedCornerShape(percent = 50), offsetX = (300.dp * 0.06f), offsetY = -(boxMaxHeight * 0.03f))
 )
+<<<<<<< HEAD
 
 /** Soft rounded pieces that feel like artwork drifting in a calm orbit. */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -174,3 +192,5 @@ private fun heartGardenConfigs(min: Dp, boxMaxHeight: Dp): List<Config> = listOf
     Config(size = min * 0.30f, width = min * 0.30f, height = min * 0.18f, align = Alignment.CenterEnd, rot = 0f, shape = MaterialShapes.Oval.asShape(), offsetX = 0.dp, offsetY = 0.dp),
     Config(size = min * 0.30f, width = min * 0.30f, height = min * 0.30f, align = Alignment.Center, rot = 0f, shape = MaterialShapes.Diamond.asShape(), offsetX = 0.dp, offsetY = 0.dp),
 )
+=======
+>>>>>>> origin/main

@@ -1,27 +1,39 @@
 package com.material.music.data.repository
 
+<<<<<<< HEAD
 import android.content.Context
+=======
+>>>>>>> origin/main
 import com.material.music.data.database.MusicDao
 import com.material.music.data.network.deezer.DeezerApiService
 import com.material.music.data.network.deezer.DeezerArtist
 import com.material.music.data.network.deezer.DeezerSearchResponse
 import com.material.music.data.preferences.UserPreferencesRepository
+<<<<<<< HEAD
 import com.material.music.utils.AlbumArtUtils
 import com.material.music.utils.FolderArtistArtUtils
+=======
+>>>>>>> origin/main
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+<<<<<<< HEAD
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import java.io.File
+=======
+>>>>>>> origin/main
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.flowOf
+<<<<<<< HEAD
 import kotlinx.coroutines.flow.MutableStateFlow
+=======
+>>>>>>> origin/main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -47,7 +59,11 @@ class ArtistImageRepositoryTest {
     fun `cancelled prefetch does not mark artist as failed for the session`() = runTest {
         val deezerApiService = mockk<DeezerApiService>()
         val musicDao = mockk<MusicDao>()
+<<<<<<< HEAD
         val repository = ArtistImageRepository(deezerApiService, musicDao, userPreferencesRepository(), mockk())
+=======
+        val repository = ArtistImageRepository(deezerApiService, musicDao, userPreferencesRepository())
+>>>>>>> origin/main
         val firstAttemptStarted = CompletableDeferred<Unit>()
         val searchAttempts = AtomicInteger(0)
         val rawUrl = "https://cdn-images.dzcdn.net/images/artist/250x250-000000-80-0-0.jpg"
@@ -97,8 +113,12 @@ class ArtistImageRepositoryTest {
         val repository = ArtistImageRepository(
             deezerApiService,
             musicDao,
+<<<<<<< HEAD
             userPreferencesRepository(externalArtistImagesEnabled = false),
             mockk()
+=======
+            userPreferencesRepository(externalArtistImagesEnabled = false)
+>>>>>>> origin/main
         )
 
         val imageUrl = repository.getArtistImageUrl("Artist Name", 42L)
@@ -107,6 +127,7 @@ class ArtistImageRepositoryTest {
         coVerify(exactly = 0) { deezerApiService.searchArtist(any(), any()) }
     }
 
+<<<<<<< HEAD
     @Test
     fun `folder portrait is preferred even with third party artist images disabled`() = runTest {
         val deezerApiService = mockk<DeezerApiService>()
@@ -222,6 +243,11 @@ class ArtistImageRepositoryTest {
         return mockk {
             every { this@mockk.externalArtistImagesEnabledFlow } returns flowOf(externalArtistImagesEnabled)
             every { this@mockk.useFolderAlbumArtFlow } returns flowOf(folderArtworkEnabled)
+=======
+    private fun userPreferencesRepository(externalArtistImagesEnabled: Boolean = true): UserPreferencesRepository {
+        return mockk {
+            every { this@mockk.externalArtistImagesEnabledFlow } returns flowOf(externalArtistImagesEnabled)
+>>>>>>> origin/main
         }
     }
 }

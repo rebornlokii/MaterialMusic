@@ -1,6 +1,7 @@
 package com.material.music.data.preferences
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+<<<<<<< HEAD
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -13,6 +14,12 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+=======
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.Assertions.assertEquals
+>>>>>>> origin/main
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
@@ -20,6 +27,7 @@ import java.nio.file.Files
 class UserPreferencesRepositoryTest {
 
     @Test
+<<<<<<< HEAD
     fun `keep screen awake while playing is opt-in and persists`() = runTest {
         val tempDir = Files.createTempDirectory("user-preferences-repository-test")
         try {
@@ -42,6 +50,8 @@ class UserPreferencesRepositoryTest {
     }
 
     @Test
+=======
+>>>>>>> origin/main
     fun `clearPreferencesExceptKeys preserves initial setup completion`() = runTest {
         val tempDir = Files.createTempDirectory("user-preferences-repository-test")
         try {
@@ -158,6 +168,7 @@ class UserPreferencesRepositoryTest {
             tempDir.toFile().deleteRecursively()
         }
     }
+<<<<<<< HEAD
 
     @Test
     fun `playback speed persists exact hundredths and clamps out of range values`() = runTest {
@@ -631,4 +642,6 @@ class UserPreferencesRepositoryTest {
 
     private suspend fun UserPreferencesRepository.storedLibraryTabsOrder(): List<String>? =
         libraryTabsOrderFlow.first()?.let { Json.decodeFromString<List<String>>(it) }
+=======
+>>>>>>> origin/main
 }

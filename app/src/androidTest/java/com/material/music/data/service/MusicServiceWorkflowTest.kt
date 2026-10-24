@@ -19,6 +19,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import com.material.music.data.database.AlbumEntity
 import com.material.music.data.database.ArtistEntity
+<<<<<<< HEAD
 import com.material.music.data.database.MIGRATION_1_2
 import com.material.music.data.database.MIGRATION_2_3
 import com.material.music.data.database.MIGRATION_3_4
@@ -27,6 +28,14 @@ import com.material.music.data.database.MIGRATION_5_6
 import com.material.music.data.database.MusicDao
 import com.material.music.data.database.MaterialMusicDatabase
 import com.material.music.data.database.SongEntity
+=======
+import com.material.music.data.database.MusicDao
+import com.material.music.data.database.SongEntity
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
+>>>>>>> origin/main
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before

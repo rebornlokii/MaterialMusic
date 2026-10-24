@@ -105,7 +105,7 @@ fun RecentlyPlayedScreen(
     navController: NavController
 ) = traceSection("RecentlyPlayedScreen.Composition") {
     val context = LocalContext.current
-    val queueRecentlyPlayed = stringResource(R.string.presentation_batch_b_queue_recently_played)
+    val queueRecentlyPlayed = stringResource(R.string.recently_played_queue_name)
     val shuffleLabel = stringResource(R.string.shortcut_shuffle_short)
     val playbackHistory by playerViewModel.playbackHistory.collectAsStateWithLifecycle()
     val currentSongId by remember(playerViewModel.stablePlayerState) {
@@ -195,7 +195,7 @@ fun RecentlyPlayedScreen(
             ) {
                 item(key = "recently_played_header") {
                     ExpressiveRecentlyPlayedHeader(
-                        title = stringResource(R.string.presentation_batch_b_recently_played_title),
+                        title = stringResource(R.string.recently_played_title),
                         songs = recentlyPlayedSongs,
                         selectedRange = selectedRange,
                         scrollState = lazyListState
@@ -493,7 +493,7 @@ private fun RecentlyPlayedActions(
                 modifier = Modifier.size(ButtonDefaults.IconSize)
             )
             Spacer(Modifier.width(ButtonDefaults.IconSpacing))
-            Text(stringResource(R.string.presentation_batch_b_play_latest))
+            Text(stringResource(R.string.play_latest))
         }
 
         FilledTonalButton(
@@ -631,14 +631,14 @@ private fun RecentlyPlayedEmptyState(
         ) {
             Text(
                 text = stringResource(
-                    R.string.presentation_batch_b_recent_empty_title,
+                    R.string.recently_played_empty_title,
                     range.displayName.lowercase()
                 ),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
-                text = stringResource(R.string.presentation_batch_b_recent_empty_subtitle),
+                text = stringResource(R.string.recently_played_empty_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -745,14 +745,14 @@ private fun resolveTimestampBucket(
         date == nowDate -> {
             TimestampBucket(
                 key = date.toString(),
-                label = context.getString(R.string.presentation_batch_b_date_today),
+                label = context.getString(R.string.date_today),
                 isHourBucket = false
             )
         }
         date == nowDate.minusDays(1) -> {
             TimestampBucket(
                 key = date.toString(),
-                label = context.getString(R.string.presentation_batch_b_date_yesterday),
+                label = context.getString(R.string.recently_played_date_yesterday),
                 isHourBucket = false
             )
         }

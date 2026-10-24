@@ -25,11 +25,16 @@ concurrency:
 
 jobs:
   build-and-release:
+<<<<<<< HEAD
     runs-on: blacksmith-4vcpu-ubuntu-2404
+=======
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+>>>>>>> origin/main
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Compute alpha version
         id: version
@@ -45,13 +50,13 @@ jobs:
           echo "tag=v$ALPHA_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.4.0
 
       # The shared CI keystore lives in the CI_KEYSTORE_B64 + CI_KEYSTORE_PASSWORD
       # repo secrets so every workflow signs with the same stable key and builds
@@ -64,24 +69,24 @@ jobs:
         run: |
           if [ -n "$CI_KEYSTORE_B64" ] && [ -n "$CI_KEYSTORE_PASSWORD" ]; then
             KEYSTORE_PASSWORD="$CI_KEYSTORE_PASSWORD"
-            printf '%s' "$CI_KEYSTORE_B64" | base64 -d > pixelplayeross-ci.jks
+            printf '%s' "$CI_KEYSTORE_B64" | base64 -d > materialmusic-ci.jks
           else
             KEYSTORE_PASSWORD="$(openssl rand -hex 24)"
-            keytool -genkey -v -keystore pixelplayeross-ci.jks -alias pixelplayeross-ci-key -keyalg RSA -keysize 4096 -validity 10000 \
+            keytool -genkey -v -keystore materialmusic-ci.jks -alias materialmusic-ci-key -keyalg RSA -keysize 4096 -validity 10000 \
               -storepass "$KEYSTORE_PASSWORD" -keypass "$KEYSTORE_PASSWORD" \
               -dname "CN=MaterialMusic CI Throwaway, OU=Dev, O=MaterialMusic, L=World, S=World, C=US"
           fi
           {
-            echo "storeFile=pixelplayeross-ci.jks"
+            echo "storeFile=materialmusic-ci.jks"
             echo "storePassword=$KEYSTORE_PASSWORD"
-            echo "keyAlias=pixelplayeross-ci-key"
+            echo "keyAlias=materialmusic-ci-key"
             echo "keyPassword=$KEYSTORE_PASSWORD"
           } > keystore.properties
 
       - name: Build alpha release APKs
         run: >
           ./gradlew :app:assembleRelease
-          -Ppixelplayer.enableAbiSplits=true
+          -Pmaterialmusic.enableAbiSplits=true
           -PAPP_VERSION_NAME=${{ steps.version.outputs.name }}
           -PAPP_VERSION_CODE=${{ steps.version.outputs.code }}
 
@@ -103,5 +108,9 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}"
           --prerelease
           --generate-notes
+<<<<<<< HEAD
           --title "MaterialMusic ${{ steps.version.outputs.name }}"
+=======
+          --title "Material Music ${{ steps.version.outputs.name }}"
+>>>>>>> origin/main
           release-apks/*.apk

@@ -74,8 +74,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.material.music.R
 import com.material.music.data.model.Song
+<<<<<<< HEAD
 import com.material.music.data.offline.CloudOfflineRepository
 import com.material.music.data.offline.OfflineDownloadStatus
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.subcomps.AutoSizingTextToFill
 import com.material.music.utils.formatDuration
 import com.material.music.utils.shapes.RoundedStarShape
@@ -83,7 +86,10 @@ import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.material.music.data.media.CoverArtUpdate
+<<<<<<< HEAD
 import com.material.music.data.media.CustomMetadataChanges
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.SongInfoBottomSheetViewModel
 import com.material.music.presentation.viewmodel.SongInfoBottomSheetViewModel.ToneTarget
 import kotlinx.coroutines.launch

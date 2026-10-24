@@ -5,9 +5,13 @@ import android.util.AtomicFile
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
+<<<<<<< HEAD
 import com.material.music.R
 import com.material.music.data.model.Song
 import com.material.music.utils.GenreParser
+=======
+import com.material.music.data.model.Song
+>>>>>>> origin/main
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileNotFoundException

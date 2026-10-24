@@ -35,10 +35,14 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.mp3.Mp3Extractor
 import androidx.media3.extractor.flac.FlacExtractor
+<<<<<<< HEAD
 import com.material.music.data.model.AudioOutputMode
 import com.material.music.data.model.TransitionSettings
 import com.material.music.data.offline.CloudOfflineRepository
 import com.material.music.utils.MediaItemBuilder
+=======
+import com.material.music.data.model.TransitionSettings
+>>>>>>> origin/main
 import com.material.music.utils.envelope
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
@@ -233,8 +237,12 @@ internal fun shouldDisableAudioOffloadOnEarlyBuffering(
 class DualPlayerEngine @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val navidromeStreamProxy: NavidromeStreamProxy,
+<<<<<<< HEAD
     private val jellyfinStreamProxy: com.material.music.data.jellyfin.JellyfinStreamProxy,
     private val cloudOfflineRepository: CloudOfflineRepository
+=======
+    private val jellyfinStreamProxy: com.material.music.data.jellyfin.JellyfinStreamProxy
+>>>>>>> origin/main
 ) {
     private companion object {
         // A local file reaches READY in ~100ms with a working output path, so 1.5s of
@@ -1484,7 +1492,10 @@ class DualPlayerEngine @Inject constructor(
     fun performTransition(settings: TransitionSettings) {
         transitionJob?.cancel()
         if (volumeBeforeTransition == null) volumeBeforeTransition = playerA.volume
+<<<<<<< HEAD
         val transitionRunId = transitionRunTracker.start()
+=======
+>>>>>>> origin/main
         transitionRunning = true
         auxiliaryPlayerPresented = false
         transitionJob = scope.launch {
@@ -1499,6 +1510,12 @@ class DualPlayerEngine @Inject constructor(
                     setPauseAtEndOfMediaItems(false)
                     playerB?.stop()
                 }
+<<<<<<< HEAD
+=======
+                restoreVolumeBeforeTransition()
+                setPauseAtEndOfMediaItems(false)
+                playerB?.stop()
+>>>>>>> origin/main
             } finally {
                 if (transitionRunTracker.isCurrent(transitionRunId)) {
                     transitionJob = null
@@ -1520,11 +1537,20 @@ class DualPlayerEngine @Inject constructor(
         }
 
         if (auxiliaryPlayer.playbackState == Player.STATE_IDLE) auxiliaryPlayer.prepare()
+<<<<<<< HEAD
         // READY can also mean that no audio track can be decoded. Do not fade into silence.
         if (!awaitPlayerReady(auxiliaryPlayer, 3000L)) {
             restoreVolumeBeforeTransition()
             setPauseAtEndOfMediaItems(false)
             return
+=======
+        if (auxiliaryPlayer.playbackState == Player.STATE_BUFFERING) {
+            if (!awaitPlayerReady(auxiliaryPlayer, 3000L)) {
+                restoreVolumeBeforeTransition()
+                setPauseAtEndOfMediaItems(false)
+                return
+            }
+>>>>>>> origin/main
         }
 
         val outgoingStartVolume = (volumeBeforeTransition ?: playerA.volume).coerceIn(0f, 1f)

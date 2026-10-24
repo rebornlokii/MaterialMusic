@@ -407,7 +407,7 @@ private fun ResultItemCard(
                 }
                 Text(
                     text = stringResource(
-                        R.string.presentation_batch_g_list_song_artist_album,
+                        R.string.lyrics_artist_album_line,
                         result.record.artistName,
                         result.record.albumName
                     ),

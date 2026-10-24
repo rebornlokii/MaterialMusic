@@ -1056,7 +1056,11 @@ class PlaylistViewModel @Inject constructor(
                     musicDir.mkdirs()
                 }
 
+<<<<<<< HEAD
                 val exportDir = File(musicDir, "MaterialMusic Exports")
+=======
+                val exportDir = File(musicDir, "Material Music Exports")
+>>>>>>> origin/main
                 if (!exportDir.exists()) {
                     exportDir.mkdirs()
                 }

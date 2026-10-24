@@ -164,14 +164,18 @@ import com.material.music.data.backup.model.BackupSection
 import com.material.music.data.backup.model.BackupTransferProgressUpdate
 import com.material.music.data.backup.model.ModuleRestoreDetail
 import com.material.music.data.backup.model.RestorePlan
+<<<<<<< HEAD
 import com.material.music.data.model.AudioOutputMode
 import com.material.music.data.preferences.AppLanguage
+=======
+>>>>>>> origin/main
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.CollagePattern
 import com.material.music.data.preferences.CarouselStyle
 import com.material.music.data.preferences.LaunchTab
 import com.material.music.data.preferences.LibraryNavigationMode
 import com.material.music.data.preferences.NavBarStyle
+<<<<<<< HEAD
 import com.material.music.data.preferences.PreviousButtonBehavior
 import com.material.music.data.preferences.ThemePreference
 import com.material.music.data.preferences.ThemePreset
@@ -190,6 +194,20 @@ import com.material.music.presentation.viewmodel.M3uSyncViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
 import com.material.music.presentation.viewmodel.SmartMixViewModel
+=======
+import com.material.music.data.preferences.ThemePreference
+import com.material.music.data.model.Song
+import com.material.music.data.model.LyricsSourcePreference
+import com.material.music.presentation.components.CollapsibleCommonTopBar
+import com.material.music.presentation.components.ExpressiveTopBarContent
+import com.material.music.presentation.components.FileExplorerDialog
+import com.material.music.presentation.components.MiniPlayerHeight
+import com.material.music.presentation.model.SettingsCategory
+import com.material.music.presentation.navigation.Screen
+import com.material.music.presentation.viewmodel.LyricsRefreshProgress
+import com.material.music.presentation.viewmodel.PlayerViewModel
+import com.material.music.presentation.viewmodel.SettingsViewModel
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.presentation.components.rememberModalSheetState
 import kotlinx.collections.immutable.ImmutableList
@@ -208,9 +226,13 @@ fun SettingsCategoryScreen(
     navController: NavController,
     playerViewModel: PlayerViewModel,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
+<<<<<<< HEAD
     m3uSyncViewModel: M3uSyncViewModel = hiltViewModel(),
     statsViewModel: com.material.music.presentation.viewmodel.StatsViewModel = hiltViewModel(),
     smartMixViewModel: SmartMixViewModel = hiltViewModel(),
+=======
+    statsViewModel: com.material.music.presentation.viewmodel.StatsViewModel = hiltViewModel(),
+>>>>>>> origin/main
     onBackClick: () -> Unit
 ) {
     val category = SettingsCategory.fromId(categoryId) ?: return
@@ -845,6 +867,24 @@ fun SettingsCategoryScreen(
                             }
 
                             SettingsSubsection(title = stringResource(R.string.setcat_lyrics_screen)) {
+                                var lyricsSizeDraft by remember(uiState.lyricsFontSizeMultiplier) {
+                                    mutableStateOf(uiState.lyricsFontSizeMultiplier)
+                                }
+
+                                SliderSettingsItem(
+                                    label = stringResource(R.string.lyrics_size),
+                                    value = lyricsSizeDraft,
+                                    valueRange = 0.7f..1.8f,
+                                    steps = 21,
+                                    onValueChange = { lyricsSizeDraft = it },
+                                    onValueChangeFinished = {
+                                        if (lyricsSizeDraft != uiState.lyricsFontSizeMultiplier) {
+                                            settingsViewModel.setLyricsFontSizeMultiplier(lyricsSizeDraft)
+                                        }
+                                    },
+                                    valueText = { value -> "${(value * 100).toInt()}%" }
+                                )
+
                                 SwitchSettingItem(
                                     title = stringResource(R.string.setcat_immersive_lyrics_title),
                                     subtitle = stringResource(R.string.setcat_immersive_lyrics_subtitle),
@@ -1301,8 +1341,8 @@ fun SettingsCategoryScreen(
                                 addBottomSpace = false
                             ) {
                                 SettingsItem(
-                                    title = stringResource(R.string.setcat_about_pixelplayer_title),
-                                    subtitle = stringResource(R.string.setcat_about_pixelplayer_subtitle),
+                                    title = stringResource(R.string.setcat_about_materialmusic_title),
+                                    subtitle = stringResource(R.string.setcat_about_materialmusic_subtitle),
                                     leadingIcon = { Icon(Icons.Outlined.Info, null, tint = MaterialTheme.colorScheme.secondary) },
                                     trailingIcon = { Icon(Icons.Rounded.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
                                     modifier = Modifier.settingHighlight("item_about_app", highlightKey),
@@ -2240,7 +2280,7 @@ private fun BackupTransferProgressDialog(progress: BackupTransferProgressUpdate)
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = stringResource(R.string.presentation_batch_f_percent, progressPercent),
+                        text = stringResource(R.string.percent, progressPercent),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontSize = MaterialTheme.typography.labelLarge.fontSize * 1.4f
                         ),
@@ -2268,7 +2308,7 @@ private fun BackupTransferProgressDialog(progress: BackupTransferProgressUpdate)
                 )
 
                 Text(
-                    text = stringResource(R.string.presentation_batch_f_status_bullet_step, statusText, stepText),
+                    text = stringResource(R.string.watch_transfer_bullet_step, statusText, stepText),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -2529,7 +2569,7 @@ private fun BackupHistoryCard(
     onSelect: () -> Unit,
     onRemove: () -> Unit
 ) {
-    val unknownShort = stringResource(R.string.presentation_batch_f_unknown_short)
+    val unknownShort = stringResource(R.string.unknown_short)
     val dateText = remember(entry.createdAt) {
         val sdf = java.text.SimpleDateFormat("MMM d, yyyy 'at' h:mm a", java.util.Locale.getDefault())
         sdf.format(java.util.Date(entry.createdAt))
@@ -2588,7 +2628,7 @@ private fun BackupHistoryCard(
                     Text(
                         text = dateText +
                             if (sizeText.isNotEmpty()) {
-                                stringResource(R.string.presentation_batch_f_dot_space_suffix, sizeText)
+                                stringResource(R.string.dot_space_suffix, sizeText)
                             } else {
                                 ""
                             },

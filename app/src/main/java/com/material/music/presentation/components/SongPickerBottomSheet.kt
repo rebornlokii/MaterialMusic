@@ -90,7 +90,10 @@ import com.material.music.presentation.screens.TabAnimation
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
 import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.ShapeCache
 import kotlinx.coroutines.flow.map
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape

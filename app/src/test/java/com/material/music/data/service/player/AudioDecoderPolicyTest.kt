@@ -1,6 +1,7 @@
 package com.material.music.data.service.player
 
 import androidx.media3.common.MimeTypes
+<<<<<<< HEAD
 import com.material.music.data.model.AudioOutputMode
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
@@ -15,31 +16,60 @@ class AudioDecoderPolicyTest {
         val decoders = listOf("c2.qti.alac.decoder", "c2.android.alac.decoder")
 
         val selected = AudioDecoderPolicy.selectPlatformDecoders(MimeTypes.AUDIO_ALAC, decoders, outputMode)
+=======
+import com.google.common.truth.Truth.assertThat
+import org.junit.jupiter.api.Test
+
+class AudioDecoderPolicyTest {
+
+    @Test
+    fun selectPlatformDecoders_routesAlacToExtensionRenderer() {
+        val decoders = listOf("c2.qti.alac.decoder", "c2.android.alac.decoder")
+
+        val selected = AudioDecoderPolicy.selectPlatformDecoders(MimeTypes.AUDIO_ALAC, decoders)
+>>>>>>> origin/main
 
         assertThat(selected).isEmpty()
     }
 
+<<<<<<< HEAD
     @ParameterizedTest
     @EnumSource(AudioOutputMode::class)
     fun selectPlatformDecoders_routesMidiToExtensionRenderer(outputMode: AudioOutputMode) {
         val decoders = listOf("platform-midi-decoder")
 
         val selected = AudioDecoderPolicy.selectPlatformDecoders(MimeTypes.AUDIO_EXOPLAYER_MIDI, decoders, outputMode)
+=======
+    @Test
+    fun selectPlatformDecoders_routesMidiToExtensionRenderer() {
+        val decoders = listOf("platform-midi-decoder")
+
+        val selected = AudioDecoderPolicy.selectPlatformDecoders(MimeTypes.AUDIO_EXOPLAYER_MIDI, decoders)
+>>>>>>> origin/main
 
         assertThat(selected).isEmpty()
     }
 
+<<<<<<< HEAD
     @ParameterizedTest
     @EnumSource(AudioOutputMode::class)
     fun selectPlatformDecoders_preservesMedia3OrderForCoreFormats(outputMode: AudioOutputMode) {
         val decoders = listOf("c2.android.aac.decoder", "c2.qti.aac.decoder")
 
         val selected = AudioDecoderPolicy.selectPlatformDecoders(MimeTypes.AUDIO_AAC, decoders, outputMode)
+=======
+    @Test
+    fun selectPlatformDecoders_preservesMedia3OrderForCoreFormats() {
+        val decoders = listOf("c2.android.aac.decoder", "c2.qti.aac.decoder")
+
+        val selected = AudioDecoderPolicy.selectPlatformDecoders(MimeTypes.AUDIO_AAC, decoders)
+>>>>>>> origin/main
 
         assertThat(selected).containsExactlyElementsIn(decoders).inOrder()
     }
 
     @Test
+<<<<<<< HEAD
     fun selectPlatformDecoders_routesFlacToExtensionRendererForFloatOutput() {
         val decoders = listOf("c2.qti.flac.decoder", "c2.android.flac.decoder")
 
@@ -70,6 +100,8 @@ class AudioDecoderPolicyTest {
     }
 
     @Test
+=======
+>>>>>>> origin/main
     fun isLikelyHardwareDecoder_marksSoftwareRenderersAsSoftware() {
         assertThat(AudioDecoderPolicy.isLikelyHardwareDecoder("OMX.google.aac.decoder")).isFalse()
         assertThat(AudioDecoderPolicy.isLikelyHardwareDecoder("c2.android.aac.decoder")).isFalse()

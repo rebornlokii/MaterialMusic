@@ -47,8 +47,11 @@ import androidx.compose.ui.res.stringResource
 import coil.size.Size
 import com.material.music.R
 import com.material.music.data.model.Album
+<<<<<<< HEAD
 import com.material.music.presentation.components.subcomps.AutoSizingTextToFill
 import com.material.music.presentation.components.subcomps.TightWrapText
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -87,9 +90,17 @@ fun AlbumMultiSelectionOptionSheet(
 
                 Spacer(modifier = Modifier.width(10.dp))
 
+<<<<<<< HEAD
                 Column {
                     AutoSizingTextToFill(
                         text = stringResource(R.string.presentation_batch_g_album_sel_count, selectedAlbums.size),
+=======
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.album_sel_count, selectedAlbums.size),
+>>>>>>> origin/main
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         fontFamily = RoundedSans,
@@ -99,7 +110,7 @@ fun AlbumMultiSelectionOptionSheet(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = stringResource(R.string.presentation_batch_g_album_sel_selected),
+                        text = stringResource(R.string.album_sel_selected),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontFamily = RoundedSans,
@@ -112,12 +123,12 @@ fun AlbumMultiSelectionOptionSheet(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.presentation_batch_g_album_sel_queue_hint),
+                text = stringResource(R.string.multi_selection_albums_queue_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = stringResource(R.string.presentation_batch_g_album_sel_limit, maxSelection),
+                text = stringResource(R.string.album_sel_limit, maxSelection),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

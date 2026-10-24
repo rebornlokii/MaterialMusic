@@ -2,6 +2,7 @@ package com.material.music.presentation.viewmodel
 
 import android.content.Context
 import android.os.PowerManager
+<<<<<<< HEAD
 import android.os.SystemClock
 import com.material.music.MainCoroutineExtension
 import com.material.music.data.model.PlaybackQueueItemSnapshot
@@ -23,11 +24,24 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import io.mockk.verifyOrder
 import java.util.IdentityHashMap
+=======
+import com.material.music.MainCoroutineExtension
+import com.material.music.data.model.PlaybackQueueItemSnapshot
+import com.material.music.data.model.PlaybackQueueSnapshot
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.service.player.DualPlayerEngine
+import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.mockk
+>>>>>>> origin/main
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+<<<<<<< HEAD
 import kotlinx.coroutines.flow.first
+=======
+>>>>>>> origin/main
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -39,6 +53,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+<<<<<<< HEAD
+=======
+import androidx.media3.common.Player
+>>>>>>> origin/main
 import androidx.media3.session.MediaController
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -51,9 +69,13 @@ class PlaybackStateHolderTest {
     private val appContext: Context = mockk(relaxed = true)
     private val powerManager: PowerManager = mockk(relaxed = true)
 
+<<<<<<< HEAD
     private fun createHolder(
         queueStateHolder: QueueStateHolder = this.queueStateHolder
     ) = PlaybackStateHolder(
+=======
+    private fun createHolder() = PlaybackStateHolder(
+>>>>>>> origin/main
         dualPlayerEngine = dualPlayerEngine,
         userPreferencesRepository = userPreferencesRepository,
         queueStateHolder = queueStateHolder,
@@ -194,6 +216,7 @@ class PlaybackStateHolderTest {
         assertEquals(0L, holder.currentPosition.value)
     }
 
+<<<<<<< HEAD
     // --- Auto-play on skip and Previous ---
 
     private fun connectedController(
@@ -401,12 +424,30 @@ class PlaybackStateHolderTest {
         }
     }
 
+=======
+>>>>>>> origin/main
     // --- Owner-scoped teardown ---
 
     // Separate Job so each owner has its own identity, while still running on the test
     // dispatcher that advanceTimeBy drives.
     private fun TestScope.ownerScope(): CoroutineScope = CoroutineScope(coroutineContext + Job())
 
+<<<<<<< HEAD
+=======
+    private fun connectedController(
+        playWhenReady: Boolean = false,
+        positionMs: Long = 5_000L,
+        state: Int = Player.STATE_READY
+    ): MediaController = mockk<MediaController>(relaxed = true).also { controller ->
+        every { controller.isConnected } returns true
+        every { controller.playWhenReady } returns playWhenReady
+        every { controller.currentPosition } returns positionMs
+        every { controller.playbackState } returns state
+        every { controller.mediaItemCount } returns 3
+        every { controller.currentMediaItem } returns null
+    }
+
+>>>>>>> origin/main
     /** A playing controller whose reported position is read from [positionMs] on every tick. */
     private fun playingController(positionMs: () -> Long): MediaController =
         connectedController(playWhenReady = true).also { controller ->
@@ -419,9 +460,12 @@ class PlaybackStateHolderTest {
         vararg owners: CoroutineScope,
         controller: MediaController
     ): PlaybackStateHolder {
+<<<<<<< HEAD
         every { userPreferencesRepository.autoplayOnSkipFlow } returns flowOf(true)
         every { userPreferencesRepository.previousButtonBehaviorFlow } returns
             flowOf(PreviousButtonBehavior.RESTART_TRACK)
+=======
+>>>>>>> origin/main
         coEvery { userPreferencesRepository.getPlaybackQueueSnapshotOnce() } returns null
         return createHolder().also { holder ->
             owners.forEach(holder::initialize)
@@ -471,6 +515,7 @@ class PlaybackStateHolderTest {
         assertEquals(5_000L, holder.currentPosition.value)
         owner.cancel()
     }
+<<<<<<< HEAD
 
     @Test
     fun `current owner clearing moves progress updates to the surviving owner`() = runTest {
@@ -768,4 +813,6 @@ class PlaybackStateHolderTest {
             verify(exactly = 0) { queue.controller.setMediaItems(any(), any(), any()) }
         }
     }
+=======
+>>>>>>> origin/main
 }

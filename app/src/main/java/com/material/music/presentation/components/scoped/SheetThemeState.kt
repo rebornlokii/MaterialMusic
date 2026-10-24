@@ -19,7 +19,10 @@ import androidx.compose.ui.util.lerp
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.ThemePreference
 import com.material.music.presentation.viewmodel.ColorSchemePair
+<<<<<<< HEAD
 import com.material.music.ui.theme.withAmoledSurfaces
+=======
+>>>>>>> origin/main
 
 /**
  * Theme state for the player sheet.

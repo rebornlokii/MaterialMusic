@@ -4,6 +4,7 @@ package com.material.music.presentation.screens
 
 import com.material.music.presentation.navigation.navigateSafely
 import com.material.music.presentation.navigation.navigateSafelyReplacing
+<<<<<<< HEAD
 import com.material.music.presentation.components.DetailHeroArtistChip
 import com.material.music.presentation.components.DetailHeroFloatingLayer
 import com.material.music.presentation.components.DetailHeroPinnedActionsHeight
@@ -14,6 +15,8 @@ import com.material.music.presentation.components.rememberDetailHeroDock
 import com.material.music.presentation.components.rememberSongCollectionMenuActions
 import com.material.music.presentation.screens.search.components.GenreTypography
 import com.material.music.presentation.utils.getSegmentedItemShape
+=======
+>>>>>>> origin/main
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -87,7 +90,10 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
 import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.MaterialMusicStatusBarStyle
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -99,7 +105,10 @@ import coil.compose.AsyncImagePainter
 import coil.size.Size
 import com.material.music.R
 import com.material.music.data.model.Album
+<<<<<<< HEAD
 import com.material.music.data.offline.CloudOfflineRepository
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.CollapsibleCommonTopBar
 import com.material.music.presentation.components.ExpressiveScrollBar
 import com.material.music.presentation.components.MiniPlayerHeight
@@ -112,7 +121,10 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.viewmodel.AlbumDetailViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistViewModel
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import com.material.music.utils.formatSongCount
 import com.material.music.utils.shapes.RoundedStarShape
 import kotlinx.coroutines.launch
@@ -721,7 +733,15 @@ private fun AlbumHeaderBackdrop(
     onHeaderArtworkState: ((AsyncImagePainter.State) -> Unit)? = null,
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
+<<<<<<< HEAD
     val expandedContentAlpha = 1f - (collapseFraction * 2f).coerceIn(0f, 1f)
+=======
+    val statusBarColor =
+        if (LocalMaterialMusicDarkTheme.current) Color.Black.copy(alpha = 0.6f)
+        else Color.White.copy(alpha = 0.4f)
+    val solidAlpha = (collapseFraction * 2f).coerceIn(0f, 1f)
+    val expandedContentAlpha = 1f - solidAlpha
+>>>>>>> origin/main
     val headerOverlayBrush = remember(surfaceColor, expandedContentAlpha) {
         Brush.verticalGradient(
             colors = listOf(
@@ -789,6 +809,12 @@ private fun SharedAlbumTopBarProbe(
     val fallbackStatusBarColor = remember(expandedStatusBarFallback, surfaceColor, solidAlpha) {
         lerpColor(expandedStatusBarFallback, surfaceColor, solidAlpha)
     }
+<<<<<<< HEAD
+=======
+    val titleVerticalBias = lerp(1f, -1f, collapseFraction)
+    val shuffleAlignment = BiasAlignment(horizontalBias = 1f, verticalBias = titleVerticalBias)
+
+>>>>>>> origin/main
     MaterialMusicStatusBarStyle(color = fallbackStatusBarColor)
 
     Box(

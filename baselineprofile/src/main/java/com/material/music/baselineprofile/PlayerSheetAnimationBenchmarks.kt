@@ -396,6 +396,7 @@ class PlayerSheetAnimationBenchmarks {
         private var libraryRebuiltForThisRun = false
         private const val BENCHMARK_REBUILD_DATABASE_EXTRA = "benchmark_rebuild_database"
 
+<<<<<<< HEAD
         // Test tags of the sheet card, exposed as its resource id (PLAYER_SHEET_*_TEST_TAG in the
         // app's PlayerSheetSemantics.kt). Unlike the card's content description, they are the same
         // in every app language.
@@ -408,6 +409,14 @@ class PlayerSheetAnimationBenchmarks {
         )
         private val COLLAPSED_PLAYER_ANCHOR_PATTERN = pattern(
             "Album art of|Car[aá]tula de|Anterior|Pausar|Reproducir|Siguiente"
+=======
+        private val SHEET_COLLAPSED_PATTERN = pattern("Material Music player sheet collapsed")
+        private val SHEET_EXPANDED_PATTERN = pattern(
+            "Material Music player sheet expanded|Collapse player|Contraer reproductor|Now Playing|Reproduciendo"
+        )
+        private val COLLAPSED_PLAYER_ANCHOR_PATTERN = pattern(
+            "Material Music player sheet collapsed|Album art of|Car[aá]tula de|Anterior|Pausar|Reproducir|Siguiente"
+>>>>>>> origin/main
         )
         private val HOME_TAB_PATTERN = pattern("Home|Inicio")
         private val BACK_PATTERN = exactPattern("Back|Atr[aá]s")

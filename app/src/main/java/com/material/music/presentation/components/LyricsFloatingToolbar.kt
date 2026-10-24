@@ -127,7 +127,11 @@ fun LyricsFloatingToolbar(
                 inactiveContentColor = onBackgroundColor,
                 activeCornerRadius = 50.dp,
                 onClick = { onShowSyncedLyricsChange(true) },
+<<<<<<< HEAD
                 text = stringResource(R.string.presentation_batch_g_lyrics_mode_synced),
+=======
+                text = stringResource(R.string.lyrics_mode_synced),
+>>>>>>> origin/main
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -142,7 +146,11 @@ fun LyricsFloatingToolbar(
                 inactiveContentColor = onBackgroundColor,
                 activeCornerRadius = 50.dp,
                 onClick = { onShowSyncedLyricsChange(false) },
+<<<<<<< HEAD
                 text = stringResource(R.string.presentation_batch_g_lyrics_mode_static),
+=======
+                text = stringResource(R.string.lyrics_mode_static),
+>>>>>>> origin/main
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -159,7 +167,7 @@ fun LyricsFloatingToolbar(
         ) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
-                contentDescription = stringResource(R.string.presentation_batch_g_lyrics_cd_options),
+                contentDescription = stringResource(R.string.lyrics_options),
                 tint = onBackgroundColor
             )
         }

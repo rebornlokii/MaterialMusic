@@ -3,7 +3,10 @@ package com.material.music.data.backup
 import android.content.Context
 import android.net.Uri
 import com.material.music.data.backup.format.BackupReader
+<<<<<<< HEAD
 import com.material.music.data.backup.format.BackupFormatDetector
+=======
+>>>>>>> origin/main
 import com.material.music.data.backup.format.BackupWriter
 import com.material.music.data.backup.history.BackupHistoryRepository
 import com.material.music.data.backup.model.BackupManifest
@@ -162,7 +165,7 @@ class BackupManagerTest {
                 deviceInfo = DeviceInfo(),
                 modules = modules
             ),
-            backupUri = "content://pixelplayer/test-backup",
+            backupUri = "content://materialmusic/test-backup",
             availableModules = selectedModules,
             selectedModules = selectedModules,
             moduleDetails = selectedModules.associateWith {

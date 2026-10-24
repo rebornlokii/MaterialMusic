@@ -1,27 +1,37 @@
 package com.material.music.presentation.components
 
+<<<<<<< HEAD
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.view.ViewTreeObserver
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableFloatState
+=======
+>>>>>>> origin/main
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+<<<<<<< HEAD
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.captureToImage
+=======
+import androidx.compose.ui.semantics.SemanticsProperties
+>>>>>>> origin/main
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+<<<<<<< HEAD
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.abs
+=======
+>>>>>>> origin/main
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,7 +39,11 @@ import org.junit.runner.RunWith
 /**
  * Regression coverage for the slider losing track of playback position: it must follow the current
  * value provider even when the caller swaps the state object behind it, which happens when a caller
+<<<<<<< HEAD
  * keys its remember on the current song. Also covers the slider going idle once playback pauses.
+=======
+ * keys its remember on the current song.
+>>>>>>> origin/main
  */
 @RunWith(AndroidJUnit4::class)
 class WavySliderExpressiveTest {
@@ -83,6 +97,7 @@ class WavySliderExpressiveTest {
         assertThat(reportedProgress()).isWithin(TOLERANCE).of(0f)
     }
 
+<<<<<<< HEAD
     /**
      * Pausing must leave the wave flat and the slider idle. When the indicator was fed the animated
      * amplitude it settled on a tiny residual wave after a pause, and its wave offset animation then
@@ -255,5 +270,10 @@ class WavySliderExpressiveTest {
         const val FRAME_DRAW_WAIT_MS = 20L
         const val SETTLE_WAIT_MS = 100L
         const val PIXEL_NOISE = 24
+=======
+    private companion object {
+        const val LABEL = "Playback position"
+        const val TOLERANCE = 0.02f
+>>>>>>> origin/main
     }
 }

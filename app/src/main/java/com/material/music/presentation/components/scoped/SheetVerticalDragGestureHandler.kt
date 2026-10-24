@@ -3,10 +3,15 @@ package com.material.music.presentation.components.scoped
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector1D
+<<<<<<< HEAD
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+=======
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+>>>>>>> origin/main
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -20,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+<<<<<<< HEAD
 /** Fraction of the off-screen travel the finger must cover to commit a downward dismiss. */
 private const val COLLAPSED_DISMISS_COMMIT_FRACTION = 0.38f
 
@@ -33,6 +39,11 @@ private const val COLLAPSED_DISMISS_FLING_VELOCITY = 900f
  * [collapsedDismissEnabledProvider] reports true — the "swipe to change song" mode, where the
  * horizontal swipe is taken over by track skipping — a downward drag on the *collapsed* mini
  * player is rerouted to a dismiss instead of rubber-banding against the collapsed stop.
+=======
+/**
+ * Encapsulates vertical drag gesture state and target resolution for the player sheet.
+ * Behavior is kept identical to the previous inline implementation.
+>>>>>>> origin/main
  */
 internal class SheetVerticalDragGestureHandler(
     private val scope: CoroutineScope,
@@ -54,18 +65,23 @@ internal class SheetVerticalDragGestureHandler(
         initialVelocity: Float
     ) -> Unit,
     private val onExpandSheetState: () -> Unit,
+<<<<<<< HEAD
     private val onCollapseSheetState: () -> Unit,
     private val dismissOffsetY: Animatable<Float, AnimationVector1D>,
     private val collapsedDismissEnabledProvider: () -> Boolean,
     private val collapsedDismissTravelPxProvider: () -> Float,
     private val onCollapsedDismissStarted: () -> Unit,
     private val onCollapsedDismissCommitted: () -> Unit
+=======
+    private val onCollapseSheetState: () -> Unit
+>>>>>>> origin/main
 ) {
     private var initialFractionOnDragStart = 0f
     private var initialYOnDragStart = 0f
     private var accumulatedDragYSinceStart = 0f
     private var dragSnapJob: Job? = null
 
+<<<<<<< HEAD
     /** Resolved once per gesture: whether a downward drag may turn into a dismiss. */
     private var collapsedDismissCandidate = false
 
@@ -73,6 +89,8 @@ internal class SheetVerticalDragGestureHandler(
     private var collapsedDismissActive = false
     private var dismissJob: Job? = null
 
+=======
+>>>>>>> origin/main
     fun onDragStart() {
         dragSnapJob?.cancel()
         dragSnapJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
@@ -84,6 +102,7 @@ internal class SheetVerticalDragGestureHandler(
         initialFractionOnDragStart = playerContentExpansionFraction.value
         initialYOnDragStart = currentSheetTranslationY.value
         accumulatedDragYSinceStart = 0f
+<<<<<<< HEAD
         collapsedDismissCandidate = collapsedDismissEnabledProvider() &&
             currentSheetStateProvider() == PlayerSheetState.COLLAPSED &&
             playerContentExpansionFraction.value < 0.01f
@@ -94,6 +113,8 @@ internal class SheetVerticalDragGestureHandler(
                 dismissOffsetY.stop()
             }
         }
+=======
+>>>>>>> origin/main
     }
 
     fun onVerticalDrag(
@@ -102,12 +123,15 @@ internal class SheetVerticalDragGestureHandler(
         dragAmount: Float
     ) {
         accumulatedDragYSinceStart += dragAmount
+<<<<<<< HEAD
 
         if (collapsedDismissCandidate) {
             onCollapsedCandidateDrag(uptimeMillis, position)
             return
         }
 
+=======
+>>>>>>> origin/main
         val dragFrame = computeSheetVerticalDragFrame(
             currentTranslationY = currentSheetTranslationY.value,
             dragAmount = dragAmount,
@@ -127,6 +151,7 @@ internal class SheetVerticalDragGestureHandler(
         velocityTracker.addPosition(uptimeMillis, position)
     }
 
+<<<<<<< HEAD
     /**
      * Drag frame for a collapsed mini player that may be dismissed downwards.
      *
@@ -196,25 +221,35 @@ internal class SheetVerticalDragGestureHandler(
         collapsedDismissCandidate = false
         collapsedDismissActive = false
 
+=======
+    fun onDragEnd() {
+>>>>>>> origin/main
         dragSnapJob?.cancel()
         dragSnapJob = null
         onDraggingChange(false)
         onDraggingPlayerAreaChange(false)
 
         val verticalVelocity = velocityTracker.calculateVelocity().y
+<<<<<<< HEAD
 
         if (dismissWasActive) {
             finishCollapsedDismiss(accumulatedDragY, verticalVelocity, cancelled)
             return
         }
 
+=======
+>>>>>>> origin/main
         val currentFraction = playerContentExpansionFraction.value
         val minDragThresholdPx = with(densityProvider()) { 5.dp.toPx() }
         val velocityThreshold = 150f
 
         val targetState = resolveVerticalSheetTargetState(
             currentSheetContentState = currentSheetStateProvider(),
+<<<<<<< HEAD
             accumulatedDragY = accumulatedDragY,
+=======
+            accumulatedDragY = accumulatedDragYSinceStart,
+>>>>>>> origin/main
             minDragThresholdPx = minDragThresholdPx,
             verticalVelocity = verticalVelocity,
             velocityThreshold = velocityThreshold,
@@ -253,6 +288,7 @@ internal class SheetVerticalDragGestureHandler(
                 onCollapseSheetState()
             }
         }
+<<<<<<< HEAD
     }
 
     /**
@@ -296,6 +332,14 @@ internal class SheetVerticalDragGestureHandler(
                 )
             }
         }
+=======
+
+        accumulatedDragYSinceStart = 0f
+    }
+
+    fun onDragCancel() {
+        onDragEnd()
+>>>>>>> origin/main
     }
 }
 

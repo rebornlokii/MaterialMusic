@@ -51,6 +51,7 @@ import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Dataset
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,7 +89,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.material.music.R
 import com.material.music.data.model.MusicFolder
+<<<<<<< HEAD
 import com.material.music.data.model.StorageFilter
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import java.io.File
 import androidx.compose.ui.res.stringResource
@@ -141,7 +145,11 @@ fun LibraryActionRow(
     onNavigateBack: () -> Unit,
     isShuffleEnabled: Boolean = false,
     showStorageFilterButton: Boolean = false,
+<<<<<<< HEAD
     currentStorageFilter: StorageFilter = StorageFilter.ALL,
+=======
+    currentStorageFilter: com.material.music.data.model.StorageFilter = com.material.music.data.model.StorageFilter.ALL,
+>>>>>>> origin/main
     onStorageFilterClick: () -> Unit = {}
 ) {
     // Animate complete arrangements so departing controls keep their tab's labels and width.
@@ -410,6 +418,7 @@ private fun LibraryActionRowContent(
                     exit = slideOutHorizontally(targetOffsetX = { it / 2 }) + fadeOut()
                 ) {
                      val finalIcon = when(currentStorageFilter) {
+<<<<<<< HEAD
                          StorageFilter.ALL -> Icons.Rounded.Dataset
                          StorageFilter.ONLINE -> Icons.Rounded.Cloud
                          StorageFilter.OFFLINE -> Icons.Rounded.PhoneAndroid
@@ -418,6 +427,16 @@ private fun LibraryActionRowContent(
                          StorageFilter.ALL -> stringResource(R.string.library_storage_filter_all_songs)
                          StorageFilter.ONLINE -> stringResource(R.string.library_storage_filter_online)
                          StorageFilter.OFFLINE -> stringResource(R.string.library_storage_filter_offline)
+=======
+                         com.material.music.data.model.StorageFilter.ALL -> Icons.Rounded.Dataset
+                         com.material.music.data.model.StorageFilter.ONLINE -> Icons.Rounded.Cloud
+                         com.material.music.data.model.StorageFilter.OFFLINE -> Icons.Rounded.PhoneAndroid
+                     }
+                     val tooltipText = when(currentStorageFilter) {
+                         com.material.music.data.model.StorageFilter.ALL -> stringResource(R.string.library_storage_filter_all_songs)
+                         com.material.music.data.model.StorageFilter.ONLINE -> stringResource(R.string.library_storage_filter_online)
+                         com.material.music.data.model.StorageFilter.OFFLINE -> stringResource(R.string.library_storage_filter_offline)
+>>>>>>> origin/main
                      }
                      val tooltipState = rememberTooltipState()
 
@@ -578,6 +597,7 @@ fun Breadcrumbs(
         FilledTonalIconButton(
             onClick = onNavigateBack,
             modifier = Modifier.size(36.dp),
+<<<<<<< HEAD
             enabled = !isAtRoot
         ) {
             if (isAtRoot) {
@@ -585,6 +605,15 @@ fun Breadcrumbs(
             } else {
                 Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.auth_cd_back))
             }
+=======
+            enabled = true
+        ) {
+            val icon = if (currentFolder == null) Icons.Rounded.Home else Icons.AutoMirrored.Rounded.ArrowBack
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(R.string.auth_cd_back)
+            )
+>>>>>>> origin/main
         }
         Spacer(Modifier.width(8.dp))
 

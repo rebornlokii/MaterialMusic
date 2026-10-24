@@ -67,6 +67,28 @@ data class AudioMetadataArtwork(
     val mimeType: String?
 )
 
+/**
+ * Normalizes values read from repeated metadata fields without changing their source order.
+ *
+ * Vorbis comments and some ID3 writers can store ARTIST more than once. Keeping this helper
+ * format-agnostic lets both TagLib's property map and JAudioTagger's field list use the exact
+ * same case-insensitive de-duplication policy.
+ */
+internal fun normalizeArtistMetadataValues(
+    vararg sources: Iterable<String>?
+): List<String> {
+    val result = mutableListOf<String>()
+    sources.forEach { source ->
+        source?.forEach { value ->
+            val normalized = value.trim()
+            if (normalized.isNotEmpty() && result.none { it.equals(normalized, ignoreCase = true) }) {
+                result += normalized
+            }
+        }
+    }
+    return result
+}
+
 object AudioMetadataReader {
 
     private const val TAG = "AudioMetadataReader"
@@ -178,6 +200,7 @@ object AudioMetadataReader {
                     null
                 }
 
+<<<<<<< HEAD
                 // Custom metadata always goes through JAudioTagger, but only a TagLib gap counts as
                 // a fallback in the performance report.
                 val tagLibIncomplete = title == null || artist == null || (readArtwork && artwork == null)
@@ -193,6 +216,13 @@ object AudioMetadataReader {
                         readArtwork = readArtwork,
                         readCustomMetadata = readCustomMetadata
                     )
+=======
+                val fallback = if (title == null || artist == null || (readArtwork && artwork == null)) {
+                    if (VERBOSE_LOGGING) {
+                        Timber.tag(TAG).d("TagLib incomplete for ${file.name}, trying JAudioTagger fallback...")
+                    }
+                    readWithJAudioTagger(file, readArtwork = readArtwork)
+>>>>>>> origin/main
                 } else null
 
                 val resolvedArtists = artists.ifEmpty { fallback?.artists.orEmpty() }
@@ -232,15 +262,25 @@ object AudioMetadataReader {
 
     /**
      * Fallback reader using JAudioTagger for files where TagLib can't map ID3 frames.
+<<<<<<< HEAD
      * Called when TagLib leaves key metadata or requested artwork unresolved, or when custom
      * metadata is requested. Artwork is decoded only when [readArtwork] is set, so library scans
      * do not allocate multi-megabyte covers for poorly tagged files.
+=======
+     * Called when TagLib leaves key metadata or requested artwork unresolved. Artwork is decoded
+     * only when [readArtwork] is set, so library scans do not allocate multi-megabyte covers for
+     * poorly tagged files.
+>>>>>>> origin/main
      */
     @VisibleForTesting
     internal fun readWithJAudioTagger(
         file: File,
+<<<<<<< HEAD
         readArtwork: Boolean,
         readCustomMetadata: Boolean = false
+=======
+        readArtwork: Boolean
+>>>>>>> origin/main
     ): AudioMetadata? {
         return try {
             java.util.logging.Logger.getLogger("org.jaudiotagger").level = java.util.logging.Level.OFF

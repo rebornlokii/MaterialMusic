@@ -17,13 +17,21 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
  * @property serverUrl The base URL of the Navidrome server (e.g., "https://music.example.com")
  * @property username The username for authentication
  * @property password The password (stored securely, used to generate tokens)
+<<<<<<< HEAD
  * @property clientId The client identifier sent to the server (default: "MaterialMusic")
+=======
+ * @property clientId The client identifier sent to the server (default: "Material Music")
+>>>>>>> origin/main
  */
 data class NavidromeCredentials(
     val serverUrl: String,
     val username: String,
     val password: String,
+<<<<<<< HEAD
     val clientId: String = "MaterialMusic"
+=======
+    val clientId: String = "Material Music"
+>>>>>>> origin/main
 ) {
     companion object {
         /**
@@ -38,7 +46,11 @@ data class NavidromeCredentials(
             serverUrl = "",
             username = "",
             password = "",
+<<<<<<< HEAD
             clientId = "MaterialMusic"
+=======
+            clientId = "Material Music"
+>>>>>>> origin/main
         )
     }
 

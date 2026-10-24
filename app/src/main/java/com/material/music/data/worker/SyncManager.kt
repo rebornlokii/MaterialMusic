@@ -10,8 +10,11 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.material.music.data.preferences.UserPreferencesRepository
+<<<<<<< HEAD
 import com.material.music.utils.mediaStoreGenerationsChanged
 import com.material.music.utils.readExternalMediaStoreGenerations
+=======
+>>>>>>> origin/main
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

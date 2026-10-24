@@ -7,9 +7,15 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+<<<<<<< HEAD
 import com.material.music.data.model.Album
 import com.material.music.data.model.Artist
 import com.material.music.data.model.Genre
+=======
+import androidx.compose.ui.graphics.toArgb
+import com.material.music.data.model.Album
+import com.material.music.data.model.Artist
+>>>>>>> origin/main
 import com.material.music.data.model.LibraryTabId
 import com.material.music.data.model.MusicFolder
 import com.material.music.data.model.Song
@@ -190,12 +196,43 @@ class LibraryStateHolder @Inject constructor(
         .flatMapLatest { filter -> musicRepository.getFavoriteSongCountFlow(filter) }
         .flowOn(Dispatchers.IO)
 
+<<<<<<< HEAD
     // Genre already carries its colors and song count, so equal lists can be dropped here.
     val genres: kotlinx.coroutines.flow.Flow<ImmutableList<Genre>> =
         musicRepository.getGenres()
             .distinctUntilChanged()
             .map { genres -> genres.toImmutableList() }
             .flowOn(Dispatchers.Default)
+=======
+    val genres: kotlinx.coroutines.flow.Flow<ImmutableList<com.material.music.data.model.Genre>> =
+        musicRepository.getGenres()
+        .map { genres ->
+            genres.map { genre ->
+                GenreSeed(
+                    id = genre.id,
+                    name = genre.name
+                )
+            }
+        }
+        .distinctUntilChanged()
+        .map { seeds ->
+            seeds.map { seed ->
+                val lightThemeColor = com.material.music.ui.theme.GenreThemeUtils.getGenreThemeColor(seed.id, isDark = false)
+                val darkThemeColor = com.material.music.ui.theme.GenreThemeUtils.getGenreThemeColor(seed.id, isDark = true)
+
+                com.material.music.data.model.Genre(
+                    id = seed.id,
+                    name = seed.name,
+                    lightColorHex = lightThemeColor.container.toHexString(),
+                    onLightColorHex = lightThemeColor.onContainer.toHexString(),
+                    darkColorHex = darkThemeColor.container.toHexString(),
+                    onDarkColorHex = darkThemeColor.onContainer.toHexString()
+                )
+            }
+                .toImmutableList()
+        }
+        .flowOn(Dispatchers.Default)
+>>>>>>> origin/main
 
 
     private var scope: CoroutineScope? = null
@@ -231,6 +268,7 @@ class LibraryStateHolder @Inject constructor(
     }
 
     fun onCleared(owner: CoroutineScope) {
+<<<<<<< HEAD
         // A stale PlayerViewModel clearing leaves the newer binding alone; the current one
         // clearing hands the holder back to the previous live PlayerViewModel. Going scope-less
         // instead would make sorting and library loading silently no-op until process restart.
@@ -241,6 +279,14 @@ class LibraryStateHolder @Inject constructor(
             cancelLibraryObservers()
             if (scope != null) startObservingLibraryData()
         }
+=======
+        // Only the scope that currently owns the binding may sever it. A stale
+        // PlayerViewModel clearing after a newer instance already re-initialized this
+        // singleton must not leave it scope-less (sorting and library loading would
+        // silently no-op until process restart).
+        if (scope !== owner) return
+        scope = null
+>>>>>>> origin/main
     }
 
     private var songsJob: Job? = null

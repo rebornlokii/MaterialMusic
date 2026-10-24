@@ -23,6 +23,7 @@ import com.material.music.data.database.FavoritesDao
 import com.material.music.data.database.LyricsDao
 import com.material.music.data.database.LocalPlaylistDao
 import com.material.music.data.database.ListenBrainzDao
+<<<<<<< HEAD
 import com.material.music.data.database.AudioBookmarkDao
 import com.material.music.data.database.MIGRATION_1_2
 import com.material.music.data.database.MIGRATION_2_3
@@ -31,6 +32,11 @@ import com.material.music.data.database.MIGRATION_4_5
 import com.material.music.data.database.MIGRATION_5_6
 import com.material.music.data.database.MusicDao
 import com.material.music.data.database.OfflineTrackDao
+=======
+import com.material.music.data.database.MIGRATION_1_2
+import com.material.music.data.database.MIGRATION_2_3
+import com.material.music.data.database.MusicDao
+>>>>>>> origin/main
 import com.material.music.data.database.MaterialMusicDatabase
 import com.material.music.data.database.SearchHistoryDao
 import com.material.music.data.database.TransitionDao
@@ -41,8 +47,11 @@ import com.material.music.data.media.SongMetadataEditor
 import com.material.music.data.network.deezer.DeezerApiService
 import com.material.music.data.network.lyrics.LrcLibApiService
 import com.material.music.data.repository.ArtistImageRepository
+<<<<<<< HEAD
 import com.material.music.data.repository.AudioBookmarkRepository
 import com.material.music.data.repository.AudioBookmarkRepositoryImpl
+=======
+>>>>>>> origin/main
 import com.material.music.data.repository.LyricsRepository
 import com.material.music.data.repository.LyricsRepositoryImpl
 import com.material.music.data.repository.MediaStoreSongRepository
@@ -130,6 +139,7 @@ object AppModule {
         val builder = Room.databaseBuilder(
             context.applicationContext,
             MaterialMusicDatabase::class.java,
+<<<<<<< HEAD
             "pixelplayer_database"
         )
             .addCallback(MaterialMusicDatabase.createRuntimeArtifactsCallback())
@@ -140,6 +150,12 @@ object AppModule {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
             )
+=======
+            "materialmusic_database"
+        )
+            .addCallback(MaterialMusicDatabase.createRuntimeArtifactsCallback())
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+>>>>>>> origin/main
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
 
         if (BuildConfig.DEBUG) {

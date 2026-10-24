@@ -1,8 +1,11 @@
 package com.material.music.data.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
+<<<<<<< HEAD
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+=======
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 class SortOptionTest {
@@ -54,6 +57,7 @@ class SortOptionTest {
 
         assertEquals(SortOption.SongArtist, resolved)
     }
+<<<<<<< HEAD
 
     @Test
     fun `from storage key still resolves the legacy english display name after localization`() {
@@ -164,4 +168,6 @@ class SortOptionTest {
     private val allOptions: List<SortOption>
         get() = SortOption.SONGS + SortOption.ALBUMS + SortOption.ARTISTS +
             SortOption.PLAYLISTS + SortOption.FOLDERS + SortOption.FOLDER_SONGS + SortOption.LIKED
+=======
+>>>>>>> origin/main
 }

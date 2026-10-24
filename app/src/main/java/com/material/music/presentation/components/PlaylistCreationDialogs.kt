@@ -88,6 +88,10 @@ import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.material.music.R
+<<<<<<< HEAD
+=======
+import androidx.compose.ui.text.style.TextOverflow
+>>>>>>> origin/main
 
 @Composable
 fun PlaylistCreationTypeDialog(
@@ -132,7 +136,7 @@ fun PlaylistCreationTypeDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(R.string.presentation_batch_e_create_playlist_title),
+                        text = stringResource(R.string.playlist_creation_create_playlist_title),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontFamily = RoundedSans,
@@ -140,15 +144,15 @@ fun PlaylistCreationTypeDialog(
                         )
                     )
                     Text(
-                        text = stringResource(R.string.presentation_batch_e_create_playlist_subtitle),
+                        text = stringResource(R.string.playlist_creation_create_playlist_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                     )
                 }
 
                 CreationModeCard(
-                    title = stringResource(R.string.presentation_batch_e_creation_mode_manual),
-                    subtitle = stringResource(R.string.presentation_batch_e_creation_mode_manual_subtitle),
+                    title = stringResource(R.string.playlist_creation_mode_manual),
+                    subtitle = stringResource(R.string.playlist_creation_mode_manual_subtitle),
                     icon = {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.PlaylistAdd,

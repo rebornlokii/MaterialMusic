@@ -28,7 +28,10 @@ import com.material.music.data.preferences.PlaylistPreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.stream.BulkSyncResult
 import com.material.music.data.stream.CloudMusicUtils
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -1054,7 +1057,10 @@ fun NavidromeSong.toSong(): Song {
         sampleRate = null,
         year = year,
         trackNumber = trackNumber,
+<<<<<<< HEAD
         discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
+=======
+>>>>>>> origin/main
         dateAdded = dateAddedOr(System.currentTimeMillis()),
         isFavorite = false,
         navidromeId = id

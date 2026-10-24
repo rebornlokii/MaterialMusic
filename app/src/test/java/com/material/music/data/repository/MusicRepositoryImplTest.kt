@@ -1,20 +1,29 @@
 package com.material.music.data.repository
 
 import android.content.Context
+<<<<<<< HEAD
 import com.material.music.data.database.GenreSongCountRow
+=======
+>>>>>>> origin/main
 import com.material.music.data.database.MusicDao
 import com.material.music.data.database.SearchHistoryDao
 import com.material.music.data.database.SongEntity
 import com.material.music.data.database.AlbumEntity
 import com.material.music.data.database.ArtistEntity
+<<<<<<< HEAD
 import com.material.music.data.model.Playlist
 import com.material.music.data.model.SearchFilterType
 import com.material.music.data.model.SearchResultItem
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.PlaylistPreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.database.FavoritesDao
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

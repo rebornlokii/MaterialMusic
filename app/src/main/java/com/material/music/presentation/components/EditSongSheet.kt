@@ -86,9 +86,12 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.Player
 import com.material.music.data.media.AudioMetadataReader
 import com.material.music.data.media.CoverArtUpdate
+<<<<<<< HEAD
 import com.material.music.data.media.CustomMetadataChanges
 import com.material.music.data.media.CustomMetadataField
 import com.material.music.data.media.buildCustomMetadataChanges
+=======
+>>>>>>> origin/main
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import java.io.ByteArrayOutputStream
 import java.util.Locale

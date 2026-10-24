@@ -20,7 +20,10 @@ import android.content.Intent.EXTRA_STREAM
 import androidx.media3.common.util.UnstableApi
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.ThemePreferencesRepository
+<<<<<<< HEAD
 import com.material.music.data.preferences.ThemePreset
+=======
+>>>>>>> origin/main
 import javax.inject.Inject
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -57,7 +60,11 @@ class ExternalPlayerActivity : ComponentActivity() {
                 AppThemeMode.LIGHT -> false
                 else -> systemDarkTheme
             }
+<<<<<<< HEAD
             MaterialMusicTheme(darkTheme = useDarkTheme, themePreset = themePreset) {
+=======
+            MaterialMusicTheme(darkTheme = useDarkTheme) {
+>>>>>>> origin/main
                 ExternalPlayerOverlay(
                     playerViewModel = playerViewModel,
                     onDismiss = { finish() },

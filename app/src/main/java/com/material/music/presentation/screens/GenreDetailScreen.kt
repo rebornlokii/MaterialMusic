@@ -57,27 +57,39 @@ import coil.request.ImageRequest
 import com.material.music.R
 import com.material.music.data.model.Artist
 import com.material.music.data.model.Song
+<<<<<<< HEAD
 import com.material.music.data.offline.CloudOfflineRepository
 import com.material.music.data.preferences.AlbumArtPaletteStyle
 import com.material.music.presentation.components.AutoScrollingTextOnDemand
 import com.material.music.presentation.components.EditMultipleSongsSheet
+=======
+import com.material.music.data.preferences.AlbumArtPaletteStyle
+import com.material.music.presentation.components.AutoScrollingTextOnDemand
+>>>>>>> origin/main
 import com.material.music.presentation.components.ExpressiveTopBarContent
 import com.material.music.presentation.components.ExpressiveScrollBar
 import com.material.music.presentation.components.GenreSortBottomSheet
 import com.material.music.presentation.components.MiniPlayerHeight
+<<<<<<< HEAD
 import com.material.music.presentation.components.MultiSelectionBottomSheet
 import com.material.music.presentation.components.PlayerSheetAwareBackHandler
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.SmartImageCompactListTargetSize
 import com.material.music.presentation.components.SmartImage
 import com.material.music.presentation.components.SongInfoBottomSheet
 import com.material.music.presentation.components.extractFastScrollGlyph
 import com.material.music.presentation.components.subcomps.EnhancedSongListItem
+<<<<<<< HEAD
 import com.material.music.presentation.components.subcomps.SelectionActionRow
 import com.material.music.presentation.components.subcomps.SelectionCountPill
 import com.material.music.presentation.screens.QuickFillDialog
 import com.material.music.presentation.selection.dragToSelect
 import com.material.music.presentation.selection.rememberDragToSelectState
 import com.material.music.presentation.viewmodel.CloudDownloadsViewModel
+=======
+import com.material.music.presentation.screens.QuickFillDialog
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.GenreDetailListItem
 import com.material.music.presentation.viewmodel.GenreDetailViewModel
 import com.material.music.presentation.viewmodel.SortOption
@@ -85,6 +97,7 @@ import com.material.music.presentation.viewmodel.SectionData
 import com.material.music.presentation.viewmodel.AlbumData
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.StablePlayerState
+<<<<<<< HEAD
 import com.material.music.presentation.viewmodel.UNKNOWN_GENRE_ID
 import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 import com.material.music.ui.theme.LocalShowScrollbar
@@ -92,6 +105,11 @@ import com.material.music.utils.GenreParser
 import com.material.music.utils.formatDuration
 import com.material.music.utils.formatSongCount
 import kotlinx.collections.immutable.ImmutableList
+=======
+import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
+import com.material.music.utils.formatDuration
+import com.material.music.utils.formatSongCount
+>>>>>>> origin/main
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -109,8 +127,12 @@ fun GenreDetailScreen(
     decodedGenreId: String = java.net.URLDecoder.decode(genreId, "UTF-8"),
     playerViewModel: PlayerViewModel,
     viewModel: GenreDetailViewModel = hiltViewModel(),
+<<<<<<< HEAD
     playlistViewModel: com.material.music.presentation.viewmodel.PlaylistViewModel = hiltViewModel(),
     cloudDownloadsViewModel: CloudDownloadsViewModel = hiltViewModel()
+=======
+    playlistViewModel: com.material.music.presentation.viewmodel.PlaylistViewModel = hiltViewModel()
+>>>>>>> origin/main
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val stablePlayerState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
@@ -290,7 +312,7 @@ fun GenreDetailScreen(
             }
     }
     val genreDisplayName = themeGenre?.name ?: uiState.genre?.name ?: initialDisplayName
-    val genreShuffleLabel = stringResource(R.string.presentation_batch_b_genre_shuffle_label, genreDisplayName)
+    val genreShuffleLabel = stringResource(R.string.genre_shuffle_label, genreDisplayName)
     val genreFastScrollLabelProvider = remember(uiState.flattenedItems, uiState.sortOption) {
         { index: Int ->
             genreFastScrollLabel(
@@ -668,6 +690,19 @@ fun GenreDetailScreen(
                         removeFromListTrigger = {}
                     )
                 }
+<<<<<<< HEAD
+=======
+
+                if (showPlaylistBottomSheet) {
+                    com.material.music.presentation.components.PlaylistBottomSheet(
+                        playlistUiState = playlistUiState,
+                        songs = persistentListOf(song),
+                        onDismiss = { showPlaylistBottomSheet = false },
+                        bottomBarHeight = 0.dp,
+                        playerViewModel = playerViewModel
+                    )
+                }
+>>>>>>> origin/main
             }
 
             // Shared by the single-song options sheet and the multi-selection sheet.

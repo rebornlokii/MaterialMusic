@@ -26,7 +26,10 @@ import com.material.music.data.preferences.PlaylistPreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.stream.BulkSyncResult
 import com.material.music.data.stream.CloudMusicUtils
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers

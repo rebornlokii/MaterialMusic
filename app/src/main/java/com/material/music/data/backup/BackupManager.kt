@@ -3,11 +3,15 @@ package com.material.music.data.backup
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+<<<<<<< HEAD
 import com.material.music.data.backup.format.BackupCrypto
 import com.material.music.data.backup.format.BackupEncryptedException
 import com.material.music.data.backup.format.BackupFormatDetector
 import com.material.music.data.backup.format.BackupReader
 import com.material.music.data.backup.format.BackupWrongPassphraseException
+=======
+import com.material.music.data.backup.format.BackupReader
+>>>>>>> origin/main
 import com.material.music.data.backup.format.BackupWriter
 import com.material.music.data.backup.history.BackupHistoryRepository
 import com.material.music.data.backup.model.BackupHistoryEntry
@@ -22,7 +26,10 @@ import com.material.music.data.backup.model.RestoreResult
 import com.material.music.data.backup.module.BackupModuleHandler
 import com.material.music.data.backup.restore.RestoreExecutor
 import com.material.music.data.backup.restore.RestorePlanner
+<<<<<<< HEAD
 import com.material.music.data.backup.validation.BackupFileValidator
+=======
+>>>>>>> origin/main
 import com.material.music.data.backup.validation.ValidationPipeline
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -111,7 +118,11 @@ class BackupManager @Inject constructor(
             backupWriter.write(uri, manifest, modulePayloads, passphrase = passphrase).getOrThrow()
 
             reportProgress(onProgress, BackupOperationType.EXPORT, ++step, totalSteps,
+<<<<<<< HEAD
                 "Backup complete", "Your MaterialMusic backup was created successfully.")
+=======
+                "Backup complete", "Your Material Music backup was created successfully.")
+>>>>>>> origin/main
         }
     }
 

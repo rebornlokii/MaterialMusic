@@ -74,7 +74,7 @@ fun SyncProgressBar(
                 )
 
                 Text(
-                    text = stringResource(R.string.presentation_batch_g_sync_percent, percentage),
+                    text = stringResource(R.string.sync_percent, percentage),
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = RoundedSans,
                     fontWeight = FontWeight.Bold,
@@ -185,7 +185,7 @@ fun CompactSyncProgressIndicator(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = stringResource(R.string.presentation_batch_g_sync_percent, (animatedProgress * 100).roundToInt()),
+            text = stringResource(R.string.sync_percent, (animatedProgress * 100).roundToInt()),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

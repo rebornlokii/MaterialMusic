@@ -2,7 +2,10 @@ package com.material.music.data.navidrome.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+<<<<<<< HEAD
 import org.junit.jupiter.api.Assertions.assertNotNull
+=======
+>>>>>>> origin/main
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -77,6 +80,7 @@ class NavidromeCredentialsTest {
             credentials.connectionValidationError()
         )
     }
+<<<<<<< HEAD
 
     @Test
     fun `connectionValidationError rejects http for public ipv6 literals`() {
@@ -147,4 +151,6 @@ class NavidromeCredentialsTest {
             NavidromeCredentials("  ", "user", "pass").connectionValidationError()
         )
     }
+=======
+>>>>>>> origin/main
 }

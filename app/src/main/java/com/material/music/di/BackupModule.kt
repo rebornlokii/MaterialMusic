@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder
 import com.material.music.data.backup.format.BackupFormatDetector
 import com.material.music.data.backup.model.BackupSection
 import com.material.music.data.backup.module.ArtistImagesModuleHandler
+<<<<<<< HEAD
 import com.material.music.data.backup.module.AudioBookmarksModuleHandler
+=======
+>>>>>>> origin/main
 import com.material.music.data.backup.module.BackupModuleHandler
 import com.material.music.data.backup.module.EngagementStatsModuleHandler
 import com.material.music.data.backup.module.EqualizerModuleHandler

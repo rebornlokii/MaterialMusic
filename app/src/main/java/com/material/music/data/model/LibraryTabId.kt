@@ -1,12 +1,17 @@
 package com.material.music.data.model
 
+<<<<<<< HEAD
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.material.music.R
+=======
+import androidx.compose.runtime.Immutable
+>>>>>>> origin/main
 
 @Immutable
 enum class LibraryTabId(
     val storageKey: String,
+<<<<<<< HEAD
     @StringRes val titleRes: Int,
     val defaultSort: SortOption
 ) {
@@ -17,6 +22,17 @@ enum class LibraryTabId(
     FOLDERS("FOLDERS", R.string.library_tab_folders, SortOption.FolderNameAZ),
     LIKED("LIKED", R.string.library_tab_liked, SortOption.LikedSongDateLiked),
     GENRES("GENRES", R.string.library_tab_genres, SortOption.GenreNameAZ);
+=======
+    val title: String,
+    val defaultSort: SortOption
+) {
+    SONGS("SONGS", "SONGS", SortOption.SongTitleAZ),
+    ALBUMS("ALBUMS", "ALBUMS", SortOption.AlbumTitleAZ),
+    ARTISTS("ARTIST", "ARTIST", SortOption.ArtistNameAZ),
+    PLAYLISTS("PLAYLISTS", "PLAYLISTS", SortOption.PlaylistNameAZ),
+    FOLDERS("FOLDERS", "FOLDERS", SortOption.FolderNameAZ),
+    LIKED("LIKED", "LIKED", SortOption.LikedSongDateLiked);
+>>>>>>> origin/main
 
     companion object {
         fun fromStorageKey(key: String): LibraryTabId =

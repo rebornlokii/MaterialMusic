@@ -1,7 +1,10 @@
 package com.material.music.presentation.viewmodel
 
 import android.content.Context
+<<<<<<< HEAD
 import android.content.IntentSender
+=======
+>>>>>>> origin/main
 import android.net.Uri
 import android.os.Bundle
 import app.cash.turbine.test
@@ -23,12 +26,14 @@ import io.mockk.*
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,12 +60,18 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import com.material.music.MainCoroutineExtension
+<<<<<<< HEAD
 import com.material.music.R
+=======
+>>>>>>> origin/main
 import com.material.music.data.service.player.DualPlayerEngine
 import com.material.music.data.worker.SyncManager
 import com.material.music.utils.AppShortcutManager
 import com.material.music.utils.MediaItemBuilder
+<<<<<<< HEAD
 import com.material.music.utils.MediaStorePermissionHelper
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.*
 import app.cash.turbine.Turbine
 
@@ -422,6 +433,7 @@ class PlayerViewModelTest {
     }
 
     @Test
+<<<<<<< HEAD
     fun `playlist playback keeps playlist id on the initial media item and the original order`() = runTest {
         mockkStatic(Uri::class)
         mockkConstructor(Bundle::class)
@@ -429,6 +441,21 @@ class PlayerViewModelTest {
         every { Uri.parse(any()) } returns playbackUri
         every { playbackUri.scheme } returns "content"
         every { anyConstructed<Bundle>().putString(any(), any()) } just Runs
+=======
+    fun `playlist playback keeps the playlist id on the initial media item`() = runTest {
+        mockkStatic(Uri::class)
+        mockkConstructor(Bundle::class)
+        every { anyConstructed<Bundle>().putString(any(), any()) } returns Unit
+        val playbackUri = mockk<Uri>(relaxed = true)
+        every { Uri.parse(any()) } returns playbackUri
+        every { playbackUri.scheme } returns "content"
+        mockkObject(MediaItemBuilder)
+        every { MediaItemBuilder.build(any()) } returns MediaItem.Builder()
+            .setMediaId("playlist-song")
+            .setUri("file:///tmp/test.mp3")
+            .setMediaMetadata(MediaMetadata.Builder().setTitle("Playlist Song").build())
+            .build()
+>>>>>>> origin/main
         val player = mockk<Player>(relaxed = true)
         every { mockDualPlayerEngine.masterPlayer } returns player
         val song = Song(
@@ -446,6 +473,10 @@ class PlayerViewModelTest {
             bitrate = null,
             sampleRate = null,
         )
+<<<<<<< HEAD
+=======
+        advanceUntilIdle()
+>>>>>>> origin/main
 
         playerViewModel.playSongs(
             songsToPlay = listOf(song),
@@ -455,9 +486,15 @@ class PlayerViewModelTest {
         )
         advanceUntilIdle()
 
+<<<<<<< HEAD
         verify { anyConstructed<Bundle>().putString("playlistId", "playlist-42") }
         verify { player.setMediaItem(any(), 0L) }
         verify { mockQueueStateHolder.setOriginalQueueOrder(listOf(song), listOf("playlist-42")) }
+=======
+        // The service reads the playlist id off the item to pick the playlist's transition rule.
+        verify { anyConstructed<Bundle>().putString("playlistId", "playlist-42") }
+        verify { player.setMediaItem(any(), 0L) }
+>>>>>>> origin/main
     }
 
     @Test
@@ -951,6 +988,192 @@ class PlayerViewModelTest {
                 assertSame(restoreIntentSender, awaitItem())
                 expectNoEvents()
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("Palette during skip bursts")
+    inner class PaletteSkipBurstTests {
+
+        private val queue = List(5) { index ->
+            Song(
+                id = "palette-$index",
+                title = "Palette Song $index",
+                artist = "Artist",
+                artistId = 1L,
+                album = "Album $index",
+                albumId = index + 1L,
+                path = "/storage/emulated/0/Music/palette-$index.mp3",
+                contentUriString = "content://media/external/audio/media/$index",
+                albumArtUriString = "content://media/external/audio/albumart/$index",
+                duration = 180_000L,
+                mimeType = "audio/mpeg",
+                bitrate = null,
+                sampleRate = null
+            )
+        }
+
+        private fun artworkOf(index: Int): String = queue[index].albumArtUriString!!
+
+        @BeforeEach
+        fun mockUriParsing() {
+            mockkStatic(Uri::class)
+            every { Uri.parse(any()) } returns mockk(relaxed = true)
+        }
+
+        /** Starts playback of [songs] so the view model's playback queue holds them. */
+        private fun TestScope.startPlaybackOf(songs: List<Song>) {
+            mockkObject(MediaItemBuilder)
+            every { MediaItemBuilder.build(any()) } returns MediaItem.Builder()
+                .setMediaId("test")
+                .setUri("file:///tmp/test.mp3")
+                .build()
+            val playbackUri = mockk<Uri>(relaxed = true)
+            every { playbackUri.scheme } returns "file"
+            every { MediaItemBuilder.playbackUri(any<Song>()) } returns playbackUri
+            // Let the controller connection read its (empty) timeline first, or that read lands
+            // after playSongs and clears the queue again.
+            advanceUntilIdle()
+
+            playerViewModel.playSongs(songsToPlay = songs, startSong = songs.first())
+            advanceUntilIdle()
+        }
+
+        private fun moveToQueueIndex(index: Int) {
+            stablePlayerStateFlow.value = StablePlayerState(currentMediaItemIndex = index)
+        }
+
+        @Test
+        fun `skipping past a song cancels its unfinished palette extraction`() = runTest {
+            var skippedExtractionCancelled = false
+            coEvery {
+                mockThemeStateHolder.extractAndGenerateColorScheme(any(), artworkOf(0), any())
+            } coAnswers {
+                try {
+                    awaitCancellation()
+                } finally {
+                    skippedExtractionCancelled = true
+                }
+            }
+            advanceUntilIdle()
+
+            stablePlayerStateFlow.value = StablePlayerState(currentSong = queue[0])
+            runCurrent()
+            stablePlayerStateFlow.value = StablePlayerState(currentSong = queue[1])
+            runCurrent()
+
+            assertTrue(skippedExtractionCancelled)
+            coVerify(exactly = 1) {
+                mockThemeStateHolder.extractAndGenerateColorScheme(any(), artworkOf(1), false)
+            }
+        }
+
+        @Test
+        fun `neighbour palettes are preloaded only once the queue index holds still`() = runTest {
+            startPlaybackOf(queue)
+
+            moveToQueueIndex(2)
+            runCurrent()
+            advanceTimeBy(PALETTE_NEIGHBOR_PRELOAD_DEBOUNCE_MS - 1)
+            runCurrent()
+
+            verify(exactly = 0) { mockThemeStateHolder.ensureAlbumColorScheme(any()) }
+
+            advanceTimeBy(1)
+            runCurrent()
+
+            verify(exactly = 1) { mockThemeStateHolder.ensureAlbumColorScheme(artworkOf(1)) }
+            verify(exactly = 1) { mockThemeStateHolder.ensureAlbumColorScheme(artworkOf(3)) }
+            verify(exactly = 2) { mockThemeStateHolder.ensureAlbumColorScheme(any()) }
+        }
+
+        @Test
+        fun `a burst of skips only preloads the neighbours of the song it lands on`() = runTest {
+            startPlaybackOf(queue)
+
+            listOf(1, 2, 3).forEach { index ->
+                moveToQueueIndex(index)
+                runCurrent()
+                advanceTimeBy(PALETTE_NEIGHBOR_PRELOAD_DEBOUNCE_MS / 2)
+            }
+            advanceTimeBy(PALETTE_NEIGHBOR_PRELOAD_DEBOUNCE_MS)
+            runCurrent()
+
+            verify(exactly = 1) { mockThemeStateHolder.ensureAlbumColorScheme(artworkOf(2)) }
+            verify(exactly = 1) { mockThemeStateHolder.ensureAlbumColorScheme(artworkOf(4)) }
+            verify(exactly = 2) { mockThemeStateHolder.ensureAlbumColorScheme(any()) }
+        }
+    }
+
+    @Nested
+    @DisplayName("Locate current song")
+    inner class LocateCurrentSongTests {
+
+        private val currentSong = Song(id = "42", title = "Song 42", artist = "Artist", genre = "Rock", albumArtUriString = null, artistId = 1L, albumId = 1L, contentUriString = "content://dummy/42", duration = 180000L, bitrate = null, sampleRate = null, album = "Album", path = "/music/42.mp3", mimeType = "audio/mpeg")
+
+        // The song sits at a different position in each list: 3 among all songs, 1 among favorites.
+        private fun stubListOrders() {
+            coEvery { mockMusicRepository.getSongIdsSorted(any(), any()) } returns listOf(1L, 2L, 3L, 42L)
+            coEvery { mockMusicRepository.getFavoriteSongIdsSorted(any(), any()) } returns listOf(7L, 42L)
+            stablePlayerStateFlow.value = StablePlayerState(currentSong = currentSong)
+        }
+
+        @Test
+        fun `a Liked locate emits the favorites-order index tagged for Liked`() = runTest {
+            advanceUntilIdle()
+            stubListOrders()
+            val favoriteSort = playerViewModel.playerUiState.value.currentFavoriteSortOption
+
+            playerViewModel.scrollToIndexEvent.test {
+                playerViewModel.requestLocateCurrentSong(LibraryTabId.LIKED)
+                advanceUntilIdle()
+
+                assertEquals(LocateScrollRequest(tab = LibraryTabId.LIKED, index = 1), awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+            coVerify { mockMusicRepository.getFavoriteSongIdsSorted(favoriteSort, any()) }
+            coVerify(exactly = 0) { mockMusicRepository.getSongIdsSorted(any(), any()) }
+        }
+
+        @Test
+        fun `a Songs locate emits the full library index tagged for Songs`() = runTest {
+            advanceUntilIdle()
+            stubListOrders()
+            val songSort = playerViewModel.playerUiState.value.currentSongSortOption
+
+            playerViewModel.scrollToIndexEvent.test {
+                playerViewModel.requestLocateCurrentSong(LibraryTabId.SONGS)
+                advanceUntilIdle()
+
+                assertEquals(LocateScrollRequest(tab = LibraryTabId.SONGS, index = 3), awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+            coVerify { mockMusicRepository.getSongIdsSorted(songSort, any()) }
+            coVerify(exactly = 0) { mockMusicRepository.getFavoriteSongIdsSorted(any(), any()) }
+        }
+    }
+
+    @Nested
+    @DisplayName("Clearing the view model")
+    inner class ClearingTests {
+
+        @Test
+        fun `clearing does not stop progress updates outside the playback holder's owner check`() = runTest {
+            advanceUntilIdle()
+            val boundScope = slot<CoroutineScope>()
+            verify { mockPlaybackStateHolder.initialize(capture(boundScope)) }
+            // Only the calls made while clearing matter; keep the stubs.
+            clearMocks(mockPlaybackStateHolder, answers = false)
+
+            PlayerViewModel::class.java.getDeclaredMethod("onCleared")
+                .apply { isAccessible = true }
+                .invoke(playerViewModel)
+
+            // A stale view model stopping progress here would freeze a newer owner's seek bar.
+            verify(exactly = 0) { mockPlaybackStateHolder.stopProgressUpdates() }
+            val clearedScope = slot<CoroutineScope>()
+            verify(exactly = 1) { mockPlaybackStateHolder.onCleared(capture(clearedScope)) }
+            assertSame(boundScope.captured, clearedScope.captured)
         }
     }
 

@@ -14,10 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+<<<<<<< HEAD
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+=======
+import androidx.compose.ui.unit.Density
+>>>>>>> origin/main
 import androidx.compose.ui.util.lerp
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +32,7 @@ import kotlin.math.sign
 
 private enum class MiniDismissDragPhase { IDLE, TENSION, SNAPPING, FREE_DRAG }
 
+<<<<<<< HEAD
 internal enum class MiniPlayerGestureOutcome {
     None,
     Previous,
@@ -93,6 +98,11 @@ internal fun resolveMiniPlayerGestureOutcome(
 
 /**
  * Keeps mini-player transport and dismiss gestures isolated from the sheet host.
+=======
+/**
+ * Keeps mini-player dismiss gesture behavior isolated from the sheet host.
+ * Logic is unchanged; this only centralizes gesture transitions and animation dispatch.
+>>>>>>> origin/main
  */
 internal class MiniPlayerDismissGestureHandler(
     private val scope: CoroutineScope,
@@ -100,21 +110,32 @@ internal class MiniPlayerDismissGestureHandler(
     private val hapticFeedback: HapticFeedback,
     private val offsetAnimatable: Animatable<Float, AnimationVector1D>,
     private val screenWidthPx: Float,
+<<<<<<< HEAD
     private val layoutDirection: LayoutDirection,
     private val onDismissPlaylistAndShowUndo: () -> Unit,
     private val onDismissStarted: () -> Unit = {},
     private val onPrevious: () -> Unit,
     private val onNext: () -> Unit
+=======
+    private val onDismissPlaylistAndShowUndo: () -> Unit,
+    private val onDismissStarted: () -> Unit = {}
+>>>>>>> origin/main
 ) {
     private var dragPhase: MiniDismissDragPhase = MiniDismissDragPhase.IDLE
     private var accumulatedDragX: Float = 0f
     private var offsetJob: Job? = null
+<<<<<<< HEAD
     private var hasPerformedGestureHaptic = false
+=======
+>>>>>>> origin/main
 
     fun onDragStart() {
         dragPhase = MiniDismissDragPhase.TENSION
         accumulatedDragX = 0f
+<<<<<<< HEAD
         hasPerformedGestureHaptic = false
+=======
+>>>>>>> origin/main
         offsetJob?.cancel()
         offsetJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
             offsetAnimatable.stop()
@@ -142,7 +163,10 @@ internal class MiniPlayerDismissGestureHandler(
 
             MiniDismissDragPhase.SNAPPING -> {
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+<<<<<<< HEAD
                 hasPerformedGestureHaptic = true
+=======
+>>>>>>> origin/main
                 offsetJob?.cancel()
                 offsetJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
                     offsetAnimatable.animateTo(
@@ -173,6 +197,7 @@ internal class MiniPlayerDismissGestureHandler(
         }
     }
 
+<<<<<<< HEAD
     fun onDragEnd(velocityX: Float) {
         val completedDragX = accumulatedDragX
         val outcome = resolveMiniPlayerGestureOutcome(
@@ -246,6 +271,36 @@ internal class MiniPlayerDismissGestureHandler(
                     stiffness = Spring.StiffnessMedium
                 )
             )
+=======
+    fun onDragEnd() {
+        dragPhase = MiniDismissDragPhase.IDLE
+        offsetJob?.cancel()
+        val dismissThreshold = screenWidthPx * 0.4f
+        if (abs(accumulatedDragX) > dismissThreshold) {
+            onDismissStarted()
+            val targetDismissOffset = if (accumulatedDragX < 0) -screenWidthPx else screenWidthPx
+            offsetJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
+                offsetAnimatable.animateTo(
+                    targetValue = targetDismissOffset,
+                    animationSpec = tween(
+                        durationMillis = 200,
+                        easing = FastOutSlowInEasing
+                    )
+                )
+                onDismissPlaylistAndShowUndo()
+                offsetAnimatable.snapTo(0f)
+            }
+        } else {
+            offsetJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
+                offsetAnimatable.animateTo(
+                    targetValue = 0f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    )
+                )
+            }
+>>>>>>> origin/main
         }
     }
 }
@@ -258,6 +313,7 @@ internal fun rememberMiniPlayerDismissGestureHandler(
     offsetAnimatable: Animatable<Float, AnimationVector1D>,
     screenWidthPx: Float,
     onDismissPlaylistAndShowUndo: () -> Unit,
+<<<<<<< HEAD
     onDismissStarted: () -> Unit,
     onPrevious: () -> Unit,
     onNext: () -> Unit
@@ -268,21 +324,34 @@ internal fun rememberMiniPlayerDismissGestureHandler(
     val onPreviousState = rememberUpdatedState(onPrevious)
     val onNextState = rememberUpdatedState(onNext)
     return remember(scope, density, hapticFeedback, offsetAnimatable, screenWidthPx, layoutDirection) {
+=======
+    onDismissStarted: () -> Unit
+): MiniPlayerDismissGestureHandler {
+    val onDismissPlaylistAndShowUndoState = rememberUpdatedState(onDismissPlaylistAndShowUndo)
+    val onDismissStartedState = rememberUpdatedState(onDismissStarted)
+    return remember(scope, density, hapticFeedback, offsetAnimatable, screenWidthPx) {
+>>>>>>> origin/main
         MiniPlayerDismissGestureHandler(
             scope = scope,
             density = density,
             hapticFeedback = hapticFeedback,
             offsetAnimatable = offsetAnimatable,
             screenWidthPx = screenWidthPx,
+<<<<<<< HEAD
             layoutDirection = layoutDirection,
             onDismissPlaylistAndShowUndo = { onDismissPlaylistAndShowUndoState.value() },
             onDismissStarted = { onDismissStartedState.value() },
             onPrevious = { onPreviousState.value() },
             onNext = { onNextState.value() }
+=======
+            onDismissPlaylistAndShowUndo = { onDismissPlaylistAndShowUndoState.value() },
+            onDismissStarted = { onDismissStartedState.value() }
+>>>>>>> origin/main
         )
     }
 }
 
+<<<<<<< HEAD
 /**
  * Single pointer-input node for the collapsed mini player's horizontal gesture.
  *
@@ -328,5 +397,21 @@ internal fun Modifier.miniPlayerHorizontalGesture(
                 onDragCancel = { dismissHandler.onDragCancel() }
             )
         }
+=======
+internal fun Modifier.miniPlayerDismissHorizontalGesture(
+    enabled: Boolean,
+    handler: MiniPlayerDismissGestureHandler
+): Modifier {
+    if (!enabled) return this
+    return this.pointerInput(enabled, handler) {
+        detectHorizontalDragGestures(
+            onDragStart = { handler.onDragStart() },
+            onHorizontalDrag = { change, dragAmount ->
+                change.consume()
+                handler.onHorizontalDrag(dragAmount)
+            },
+            onDragEnd = { handler.onDragEnd() }
+        )
+>>>>>>> origin/main
     }
 }

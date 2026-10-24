@@ -10,7 +10,10 @@ import androidx.glance.color.ColorProviders
 import androidx.glance.color.colorProviders
 import androidx.glance.unit.ColorProvider
 import com.material.music.data.model.PlayerInfo
+<<<<<<< HEAD
 import com.material.music.data.model.WidgetThemeColors
+=======
+>>>>>>> origin/main
 
 object AlbumArtBitmapCache {
     private const val CACHE_SIZE_BYTES = 4 * 1024 * 1024

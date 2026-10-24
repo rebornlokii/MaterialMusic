@@ -185,7 +185,11 @@ object ZipShareHelper {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "application/zip"
             putExtra(Intent.EXTRA_STREAM, zipUri)
+<<<<<<< HEAD
             putExtra(Intent.EXTRA_SUBJECT, "MaterialMusic: $songCount Songs")
+=======
+            putExtra(Intent.EXTRA_SUBJECT, "Material Music: $songCount Songs")
+>>>>>>> origin/main
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         

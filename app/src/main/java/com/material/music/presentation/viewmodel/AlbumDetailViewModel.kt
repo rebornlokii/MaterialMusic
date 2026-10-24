@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.material.music.data.model.Album
 import com.material.music.data.model.Song
 import com.material.music.data.repository.MusicRepository
+<<<<<<< HEAD
 import com.material.music.data.offline.CloudOfflineRepository
+=======
+>>>>>>> origin/main
 import com.material.music.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

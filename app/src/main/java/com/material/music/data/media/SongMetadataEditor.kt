@@ -19,7 +19,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
+<<<<<<< HEAD
 import com.material.music.R
+=======
+>>>>>>> origin/main
 import com.material.music.data.database.ArtistEntity
 import com.material.music.data.database.MusicDao
 import com.material.music.data.database.SongArtistCrossRef
@@ -29,6 +32,10 @@ import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.worker.collectArtistNames
 import com.material.music.utils.AlbumArtUtils
 import com.material.music.utils.LocalArtworkUri
+<<<<<<< HEAD
+=======
+import com.material.music.utils.MediaStorePermissionHelper
+>>>>>>> origin/main
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -373,10 +380,71 @@ class SongMetadataEditor(
                         errorMessage = context.getString(R.string.metadata_edit_write_still_pending)
                     )
                 }
+<<<<<<< HEAD
             ) {
                 val extension = finalFilePath.substringAfterLast('.', "").lowercase(Locale.ROOT)
                 val detectedContainer = if (finalFilePath.isNotBlank() && File(finalFilePath).exists()) {
                     detectContainerFormat(finalFilePath)
+=======
+                detectedContainer != DetectedContainer.UNKNOWN &&
+                    detectedContainer.canonicalExtension != extension -> {
+                    Timber.tag(TAG).w(
+                        "METADATA_EDIT: Extension mismatch — filename has .$extension but magic bytes " +
+                            "indicate ${detectedContainer.name}. Routing write as .${detectedContainer.canonicalExtension} " +
+                            "via temp-file swap to avoid container corruption."
+                    )
+                    detectedContainer.canonicalExtension
+                }
+                else -> extension
+            }
+            val needsExtensionSwap =
+                effectiveExtension != extension && detectedContainer != DetectedContainer.OGG_OPUS
+            val flacAnalysis = isProblematicFlacFile(finalFilePath)
+            val isHighResFlac = flacAnalysis is FlacAnalysisResult.Problematic
+            val useVorbisJavaPrimary = effectiveExtension == "opus"
+            val useJAudioTaggerPrimary = effectiveExtension in setOf("wav", "ogg") || isHighResFlac
+            val fileExists = finalFilePath.isNotBlank() && File(finalFilePath).exists()
+            // Without File API write access (scoped storage after MediaStore write consent),
+            // the tag writers cannot open the original path; edit a copy and stream it back
+            // through the ContentResolver instead.
+            val needsContentResolverWriteBack = fileExists && !File(finalFilePath).canWrite()
+
+            val runPipeline: (String) -> Boolean = { path ->
+                if (useVorbisJavaPrimary) {
+                    Timber.tag(TAG).d("METADATA_EDIT: Using VorbisJava Opus writer for $effectiveExtension: $path")
+                    updateFileMetadataWithVorbisJava(
+                        filePath = path,
+                        newTitle = newTitle,
+                        newArtist = newArtist,
+                        newAlbum = newAlbum,
+                        newAlbumArtist = newAlbumArtist,
+                        newComposer = newComposer,
+                        newGenre = trimmedGenre,
+                        newLyrics = trimmedLyrics,
+                        newTrackNumber = newTrackNumber,
+                        newDiscNumber = newDiscNumber,
+                        replayGainTrackUpdate = replayGainTrackUpdate,
+                        replayGainAlbumUpdate = replayGainAlbumUpdate,
+                        coverArtUpdate = coverArtUpdate
+                    )
+                } else if (useJAudioTaggerPrimary) {
+                    Timber.tag(TAG).d("METADATA_EDIT: Using JAudioTagger as primary for $effectiveExtension: $path")
+                    updateFileMetadataWithJAudioTagger(
+                        filePath = path,
+                        newTitle = newTitle,
+                        newArtist = newArtist,
+                        newAlbum = newAlbum,
+                        newAlbumArtist = newAlbumArtist,
+                        newComposer = newComposer,
+                        newGenre = trimmedGenre,
+                        newLyrics = trimmedLyrics,
+                        newTrackNumber = newTrackNumber,
+                        newDiscNumber = newDiscNumber,
+                        replayGainTrackUpdate = replayGainTrackUpdate,
+                        replayGainAlbumUpdate = replayGainAlbumUpdate,
+                        coverArtUpdate = coverArtUpdate
+                    )
+>>>>>>> origin/main
                 } else {
                     DetectedContainer.UNKNOWN
                 }
@@ -538,7 +606,32 @@ class SongMetadataEditor(
                     )
                 }
             }
+<<<<<<< HEAD
             if (fileWriteFailure != null) return@withContext fileWriteFailure
+=======
+
+            val fileUpdateSuccess = if (!fileExists) {
+                Timber.tag(TAG).e("METADATA_EDIT: File does not exist: $finalFilePath")
+                false
+            } else if (needsExtensionSwap || needsContentResolverWriteBack) {
+                // Without File API write access (scoped storage after MediaStore write consent),
+                // the tag writers cannot open the original path; edit a copy and stream it back
+                // through the ContentResolver instead.
+                writeMetadataViaExtensionSwap(songId, finalFilePath, effectiveExtension, runPipeline)
+            } else {
+                runPipeline(finalFilePath)
+            }
+
+            if (!fileUpdateSuccess) {
+                Timber.tag(TAG).e("Failed to update file metadata for songId: $songId")
+                return@withContext SongMetadataEditResult(
+                    success = false,
+                    updatedAlbumArtUri = null,
+                    error = MetadataEditError.TAGLIB_ERROR,
+                    errorMessage = "Failed to write metadata to file"
+                )
+            }
+>>>>>>> origin/main
 
             val mediaStoreSuccess = updateMediaStoreMetadata(
                 songId = songId,
@@ -634,9 +727,13 @@ class SongMetadataEditor(
      * bytes back into the original location. The original filename/extension are preserved so
      * MediaStore URIs stay valid; only the file's byte content is replaced. When the original
      * is not writable through the File API, the bytes go back through the song's MediaStore
+<<<<<<< HEAD
      * URI opened in "rwt" mode. If the original was truncated but not fully rewritten, the
      * edited copy stays pending in [pendingWriteBacks] and [MetadataWriteInterruptedException]
      * is thrown.
+=======
+     * URI opened in "rwt" mode.
+>>>>>>> origin/main
      */
     private fun writeMetadataViaExtensionSwap(
         songId: Long,
@@ -662,10 +759,16 @@ class SongMetadataEditor(
                 Timber.tag(TAG).e("METADATA_EDIT: Writer failed on temp file ${tempFile.absolutePath}")
                 return false
             }
+<<<<<<< HEAD
             val editedBytes = tempFile.length()
             if (originalFile.canWrite()) {
                 replaceFileContentSafely(tempFile, originalFile, song)
             } else if (!writeBackViaContentResolver(song, tempFile, originalFile)) {
+=======
+            if (originalFile.canWrite()) {
+                replaceFileContentSafely(tempFile, originalFile)
+            } else if (!writeBackViaContentResolver(songId, tempFile)) {
+>>>>>>> origin/main
                 return false
             }
             Timber.tag(TAG).d(
@@ -685,6 +788,7 @@ class SongMetadataEditor(
         }
     }
 
+<<<<<<< HEAD
     private fun writeBackViaContentResolver(song: WriteBackTarget, source: File, original: File): Boolean {
         // The row is looked up by the path that was edited and must still be this song's, so the
         // bytes can only go back into the file they were read from.
@@ -712,6 +816,27 @@ class SongMetadataEditor(
             }
             is WriteBackResult.FailedAfterTruncate -> throw interruptedOrIoException(result, original)
         }
+=======
+    private fun writeBackViaContentResolver(songId: Long, source: File): Boolean {
+        val uri = MediaStorePermissionHelper.getMediaStoreUri(context, songId)
+        if (uri == null) {
+            Timber.tag(TAG).e("METADATA_EDIT: Cannot write back: file is not writable and no MediaStore URI resolved")
+            return false
+        }
+        val pfd = context.contentResolver.openFileDescriptor(uri, "rwt")
+        if (pfd == null) {
+            Timber.tag(TAG).e("METADATA_EDIT: ContentResolver returned no descriptor for $uri")
+            return false
+        }
+        pfd.use {
+            FileOutputStream(it.fileDescriptor).use { out ->
+                source.inputStream().use { input -> input.copyTo(out) }
+                out.fd.sync()
+            }
+        }
+        Timber.tag(TAG).d("METADATA_EDIT: Wrote edited bytes back via ContentResolver (rwt)")
+        return true
+>>>>>>> origin/main
     }
 
     /**

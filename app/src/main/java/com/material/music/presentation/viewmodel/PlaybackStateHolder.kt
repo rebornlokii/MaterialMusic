@@ -8,9 +8,13 @@ import androidx.media3.common.Player
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import com.material.music.data.service.player.DualPlayerEngine
+<<<<<<< HEAD
 import com.material.music.data.preferences.PreviousButtonBehavior
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.preferences.shouldRestartCurrentTrack
+=======
+import com.material.music.data.preferences.UserPreferencesRepository
+>>>>>>> origin/main
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -1053,6 +1057,7 @@ class PlaybackStateHolder @Inject constructor(
     }
 
     fun onCleared(owner: CoroutineScope) {
+<<<<<<< HEAD
         // A stale PlayerViewModel clearing leaves the newer binding alone; the current one
         // (e.g. ExternalPlayerActivity's) clearing hands the holder back to the previous live
         // PlayerViewModel instead of leaving it scope-less.
@@ -1069,6 +1074,17 @@ class PlaybackStateHolder @Inject constructor(
         if (progressScope === owner) {
             if (scope != null) startProgressUpdates() else stopProgressUpdates()
         }
+=======
+        // Only the scope that currently owns the binding may sever it. A stale
+        // PlayerViewModel (e.g. ExternalPlayerActivity's) clearing after a newer instance
+        // re-initialized this singleton must not cancel that instance's progress updates or
+        // leave it scope-less (the seek bar would freeze until another PlayerViewModel binds it).
+        if (scope !== owner) return
+        stopProgressUpdates()
+        shuffleToggleJob?.cancel()
+        shuffleToggleJob = null
+        scope = null
+>>>>>>> origin/main
     }
 
 }

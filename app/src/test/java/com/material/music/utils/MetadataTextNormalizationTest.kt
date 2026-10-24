@@ -31,6 +31,7 @@ class MetadataTextNormalizationTest {
     }
 
     @Test
+<<<<<<< HEAD
     fun cannotRecoverTitlesAlreadyDamagedByTheOldNormalizer() {
         // The lost byte is gone, so stored titles only heal by re-reading the source tags.
         val damaged = "Ch\uFFFDteau"
@@ -40,6 +41,8 @@ class MetadataTextNormalizationTest {
     }
 
     @Test
+=======
+>>>>>>> origin/main
     fun leavesAsciiAndReplacementCharactersAlone() {
         assertThat("Plain Title".normalizeMetadataText()).isEqualTo("Plain Title")
         assertThat("Broken � tag".normalizeMetadataText()).isEqualTo("Broken � tag")

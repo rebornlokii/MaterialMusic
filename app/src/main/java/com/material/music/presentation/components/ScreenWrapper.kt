@@ -28,6 +28,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
+=======
+import androidx.lifecycle.compose.currentStateAsState
+>>>>>>> origin/main
 import com.material.music.presentation.navigation.isMainRootRoute
 
 

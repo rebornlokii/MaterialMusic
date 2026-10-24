@@ -1,5 +1,6 @@
 package com.material.music.utils
 
+<<<<<<< HEAD
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -20,10 +21,15 @@ import java.io.ByteArrayInputStream
 import kotlin.io.path.createTempDirectory
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+=======
+import com.google.common.truth.Truth.assertThat
+import kotlin.io.path.createTempDirectory
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 class AlbumArtUtilsTest {
 
+<<<<<<< HEAD
     @BeforeEach
     fun setUp() {
         // Android's decoder is stubbed on the JVM. A leading 7 represents a decoded image;
@@ -68,6 +74,8 @@ class AlbumArtUtilsTest {
         verify { ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) }
     }
 
+=======
+>>>>>>> origin/main
     @Test
     fun findExternalAlbumArtFile_returnsExplicitCoverFromDedicatedAlbumFolder() {
         val root = createTempDirectory("album-art-test").toFile()
@@ -119,6 +127,7 @@ class AlbumArtUtilsTest {
         assertThat(resolved).isNull()
         root.deleteRecursively()
     }
+<<<<<<< HEAD
 
     @Test
     fun readExternalAlbumArtBytes_returnsCoverBytesWhenEnabled() {
@@ -322,4 +331,6 @@ class AlbumArtUtilsTest {
             root.deleteRecursively()
         }
     }
+=======
+>>>>>>> origin/main
 }

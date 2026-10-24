@@ -5,7 +5,10 @@ import com.material.music.data.navidrome.model.NavidromeArtist
 import com.material.music.data.navidrome.model.NavidromeMusicFolder
 import com.material.music.data.navidrome.model.NavidromePlaylist
 import com.material.music.data.navidrome.model.NavidromeSong
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import org.json.JSONObject
 import timber.log.Timber
 

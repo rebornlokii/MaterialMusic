@@ -3,9 +3,13 @@ package com.material.music.presentation.viewmodel
 import android.content.Context
 import android.net.Uri
 import com.material.music.data.media.CoverArtUpdate
+<<<<<<< HEAD
 import com.material.music.data.media.CustomMetadataChanges
 import com.material.music.data.media.ImageCacheManager
 import com.material.music.data.media.InterruptedSaveResumeResult
+=======
+import com.material.music.data.media.ImageCacheManager
+>>>>>>> origin/main
 import com.material.music.data.media.MetadataEditError
 import com.material.music.data.media.SongMetadataEditor
 import com.material.music.data.model.Lyrics

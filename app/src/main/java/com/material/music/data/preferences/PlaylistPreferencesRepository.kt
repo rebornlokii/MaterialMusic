@@ -1,13 +1,19 @@
 package com.material.music.data.preferences
 
 import com.material.music.data.database.LocalPlaylistDao
+<<<<<<< HEAD
 import com.material.music.data.database.TransitionDao
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.Playlist
 import com.material.music.data.database.toEntity
 import com.material.music.data.database.toPlaylist
 import com.material.music.data.model.isSmartPlaylist
 import com.material.music.data.model.SortOption
+<<<<<<< HEAD
 import com.material.music.data.playlist.mergeVisiblePlaylistOrder
+=======
+>>>>>>> origin/main
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

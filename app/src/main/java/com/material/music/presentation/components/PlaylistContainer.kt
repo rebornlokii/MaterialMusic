@@ -94,17 +94,25 @@ import com.material.music.data.model.Song
 import com.material.music.data.model.SortOption
 import com.material.music.presentation.components.subcomps.SineWaveLine
 import com.material.music.presentation.navigation.Screen
+<<<<<<< HEAD
 import com.material.music.presentation.utils.SegmentedItemShapeDefaults
 import com.material.music.presentation.utils.getSegmentedItemShape
 import com.material.music.presentation.utils.seamlessSelectionScale
+=======
+import com.material.music.presentation.screens.PlayerSheetCollapsedCornerRadius
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistUiState
 import com.material.music.presentation.viewmodel.PlaylistSelectionStateHolder
 import com.material.music.utils.formatSongCount
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
 import com.material.music.ui.theme.LocalShowScrollbar
 import kotlinx.coroutines.flow.distinctUntilChanged
+=======
+>>>>>>> origin/main
 import androidx.compose.foundation.combinedClickable
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -172,12 +180,12 @@ fun PlaylistContainer(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        stringResource(R.string.presentation_batch_e_no_playlist_created),
+                        stringResource(R.string.playlist_container_no_playlist_created),
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        stringResource(R.string.presentation_batch_e_new_playlist_hint),
+                        stringResource(R.string.playlist_container_new_playlist_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -707,7 +715,7 @@ fun PlaylistItem(
                     } else {
                         Icon(
                             imageVector = Icons.Rounded.CheckCircle,
-                            contentDescription = stringResource(R.string.presentation_batch_g_cd_selected),
+                            contentDescription = stringResource(R.string.cd_selected),
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(16.dp)
                         )

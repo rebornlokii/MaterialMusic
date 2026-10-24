@@ -3,12 +3,18 @@ package com.material.music.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.material.music.data.model.Song
+<<<<<<< HEAD
 import com.material.music.data.repository.ArtistImageRepository
+=======
+>>>>>>> origin/main
 import com.material.music.data.repository.MusicRepository
 import com.material.music.data.stats.PlaybackStatsRepository
 import com.material.music.data.stats.PlaybackStatsRepository.PlaybackStatsSummary
 import com.material.music.data.stats.StatsTimeRange
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException

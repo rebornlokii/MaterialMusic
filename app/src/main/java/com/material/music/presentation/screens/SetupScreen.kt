@@ -147,7 +147,10 @@ import com.material.music.R
 import com.material.music.data.backup.model.BackupSection
 import com.material.music.data.backup.model.BackupTransferProgressUpdate
 import com.material.music.data.backup.model.RestorePlan
+<<<<<<< HEAD
 import com.material.music.data.preferences.AppLanguage
+=======
+>>>>>>> origin/main
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.presentation.components.PermissionIconCollage
 import com.material.music.presentation.components.BackupModuleSelectionDialog
@@ -160,10 +163,14 @@ import com.material.music.presentation.viewmodel.SetupUiState
 import com.material.music.presentation.viewmodel.SetupViewModel
 import com.material.music.ui.theme.ExpTitleTypography
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
 import com.material.music.utils.AppLocaleManager
 import com.material.music.utils.StorageInfo
 import com.material.music.utils.isIgnoringBatteryOptimizations
 import com.material.music.utils.openBatteryOptimizationSettings
+=======
+import com.material.music.utils.StorageInfo
+>>>>>>> origin/main
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch

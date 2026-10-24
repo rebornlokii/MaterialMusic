@@ -19,7 +19,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
 import com.material.music.data.database.FavoritesDao
+<<<<<<< HEAD
 import com.material.music.data.database.GenreSongCountRow
+=======
+>>>>>>> origin/main
 import com.material.music.data.database.MusicDao
 import com.material.music.data.database.SearchHistoryDao
 import com.material.music.data.database.SearchHistoryEntity
@@ -44,7 +47,10 @@ import com.material.music.data.preferences.PlaylistPreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.ui.theme.GenreThemeUtils
 import com.material.music.utils.DirectoryFilterUtils
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import com.material.music.utils.LogUtils
 import com.material.music.utils.StorageType
 import com.material.music.utils.StorageUtils
@@ -457,7 +463,18 @@ class MusicRepositoryImpl @Inject constructor(
         // MusicDao.getSongsByAlbumId already orders by disc, then track; re-sorting by track
         // alone would interleave the discs of a multi-disc album.
         return musicDao.getSongsByAlbumId(albumId).map { entities ->
+<<<<<<< HEAD
             entities.map { it.toSong() }
+=======
+            // Sort by disc first, then track — a Kotlin trackNumber-only sort would
+            // interleave the discs of a multi-disc album (issue #162). Unknown or
+            // non-positive disc/track numbers sort last, matching the SQL above.
+            entities.map { it.toSong() }.sortedWith(
+                compareBy<Song> { it.discNumber?.takeIf { d -> d > 0 } ?: Int.MAX_VALUE }
+                    .thenBy { if (it.trackNumber > 0) it.trackNumber else Int.MAX_VALUE }
+                    .thenBy { it.title.lowercase() }
+            )
+>>>>>>> origin/main
         }.flowOn(Dispatchers.IO)
     }
 
@@ -665,10 +682,22 @@ class MusicRepositoryImpl @Inject constructor(
                             candidates.filter { GenreParser.split(it.genre).isEmpty() }
                         }
                     } else {
+<<<<<<< HEAD
                         // A song stored as "Alternative; Indie Rock" belongs to both genres, so
                         // the LIKE query only narrows the rows and the split genres decide.
                         musicDao.getSongsWithGenreLike(
                             pattern = GenreParser.likePattern(genreName),
+=======
+                        // getSongsByGenreContaining uses a LIKE query so that a song stored as
+                        // "Rock, Pop" is returned when browsing either "Rock" or "Pop".
+                        musicDao.getSongsByGenreContaining(
+                            genreName = genreName,
+                            genrePrefix = "$genreName,%",          // "Rock,..." / "Rock, ..."
+                            genreSuffixWithSpace = "%, $genreName", // "..., Rock"
+                            genreSuffix = "%,$genreName",          // "...,Rock"
+                            genreMiddleWithSpace = "%, $genreName,%", // "..., Rock,..."
+                            genreMiddle = "%,$genreName,%",        // "...,Rock,..."
+>>>>>>> origin/main
                             allowedParentDirs = allowedParentDirs,
                             applyDirectoryFilter = applyDirectoryFilter
                         ).map { candidates ->
@@ -836,10 +865,39 @@ class MusicRepositoryImpl @Inject constructor(
                 val (allowedParentDirs, applyDirectoryFilter) =
                     computeAllowedDirs(allowedDirs, blockedDirs)
                 emit(
+<<<<<<< HEAD
                     musicDao.getGenreSongCounts(
                         allowedParentDirs = allowedParentDirs,
                         applyDirectoryFilter = applyDirectoryFilter
                     ).map(::buildGenres)
+=======
+                    combine(
+                        musicDao.getUniqueGenres(
+                            allowedParentDirs = allowedParentDirs,
+                            applyDirectoryFilter = applyDirectoryFilter
+                        ),
+                        musicDao.hasUnknownGenre(
+                            allowedParentDirs = allowedParentDirs,
+                            applyDirectoryFilter = applyDirectoryFilter
+                        )
+                    ) { genreNames, hasUnknown ->
+                        val knownGenres = genreNames
+                            .asSequence()
+                            .flatMap { raw -> raw.split(",") } // split "Rock, Pop" → ["Rock", "Pop"]
+                            .map { it.trim() }
+                            .filter { it.isNotBlank() }
+                            .map { buildGenre(it) }
+                            .distinctBy { it.id }
+                            .sortedBy { it.name.lowercase() }
+                            .toList()
+                        val unknownAlreadyPresent = knownGenres.any { it.id == UNKNOWN_GENRE_ID }
+                        if (hasUnknown && !unknownAlreadyPresent) {
+                            knownGenres + buildGenre(UNKNOWN_GENRE_NAME)
+                        } else {
+                            knownGenres
+                        }
+                    }
+>>>>>>> origin/main
                 )
             }.flatMapLatest { it }
         }.conflate().flowOn(Dispatchers.IO)

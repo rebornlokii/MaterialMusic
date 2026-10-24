@@ -57,7 +57,10 @@ import com.material.music.presentation.components.resolveNavBarOccupiedHeight
 import com.material.music.presentation.utils.GenreIconProvider
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
+<<<<<<< HEAD
 import com.material.music.utils.formatSongCount
+=======
+>>>>>>> origin/main
 import androidx.compose.ui.res.stringResource
 import com.material.music.R
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape

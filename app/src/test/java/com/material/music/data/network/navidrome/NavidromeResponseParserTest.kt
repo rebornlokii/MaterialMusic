@@ -1,7 +1,10 @@
 package com.material.music.data.network.navidrome
 
 import com.google.common.truth.Truth.assertThat
+<<<<<<< HEAD
 import org.json.JSONArray
+=======
+>>>>>>> origin/main
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
 
@@ -35,6 +38,7 @@ class NavidromeResponseParserTest {
         assertThat(NavidromeResponseParser.parseSong(song(null)).created).isEqualTo(0L)
         assertThat(NavidromeResponseParser.parseSong(song("not-a-date")).created).isEqualTo(0L)
     }
+<<<<<<< HEAD
 
     @Test
     fun `song disc and track numbers are parsed`() {
@@ -72,4 +76,6 @@ class NavidromeResponseParserTest {
         assertThat(NavidromeResponseParser.parseSong(emptyList).genre).isEqualTo("Jazz")
         assertThat(NavidromeResponseParser.parseSong(song(null)).genre).isNull()
     }
+=======
+>>>>>>> origin/main
 }

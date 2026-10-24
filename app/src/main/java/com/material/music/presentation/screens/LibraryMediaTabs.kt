@@ -57,8 +57,11 @@ import com.material.music.data.model.Song
 import com.material.music.data.model.SortOption
 import com.material.music.data.model.StorageFilter
 import com.material.music.presentation.components.ExpressiveScrollBar
+<<<<<<< HEAD
 import com.material.music.presentation.components.animatedScrollbarInset
 import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.PlaylistContainer
 import com.material.music.presentation.components.albumFastScrollLabel
@@ -650,8 +653,12 @@ fun LibraryPlaylistsTab(
     selectedPlaylistIds: Set<String> = emptySet(),
     onPlaylistLongPress: (com.material.music.data.model.Playlist) -> Unit = {},
     onPlaylistSelectionToggle: (com.material.music.data.model.Playlist) -> Unit = {},
+<<<<<<< HEAD
     onPlaylistOptionsClick: () -> Unit = {},
     isGridView: Boolean = false
+=======
+    onPlaylistOptionsClick: () -> Unit = {}
+>>>>>>> origin/main
 ) {
     PlaylistContainer(
         playlistUiState = playlistUiState,

@@ -14,47 +14,61 @@ import com.material.music.R
 
 
 @OptIn(ExperimentalTextApi::class)
-val MontserratFamily = FontFamily(
+val GoogleSansFlexFamily = FontFamily(
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.Black,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Black.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Black.weight)
+        )
     ),
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.ExtraBold,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.ExtraBold.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.ExtraBold.weight)
+        )
     ),
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.Bold,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Bold.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Bold.weight)
+        )
     ),
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.SemiBold,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.SemiBold.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.SemiBold.weight)
+        )
     ),
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.Medium,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Medium.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Medium.weight)
+        )
     ),
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.Normal,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Normal.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Normal.weight)
+        )
     ),
     androidx.compose.ui.text.font.Font(
         resId = R.font.gflex_variable,
         weight = FontWeight.Light,
-        variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Light.weight))
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Light.weight)
+        )
     ),
 )
 
 val ExpTitleTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = MontserratFamily,
+        fontFamily = GoogleSansFlexFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 60.sp,
         textGeometricTransform = TextGeometricTransform(scaleX = 1.5f),
@@ -63,7 +77,7 @@ val ExpTitleTypography = Typography(
         platformStyle = PlatformTextStyle(includeFontPadding = false)
     ),
     displayMedium = TextStyle(
-        fontFamily = MontserratFamily,
+        fontFamily = GoogleSansFlexFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 50.sp,
         letterSpacing = (-0.02).em,
@@ -71,7 +85,7 @@ val ExpTitleTypography = Typography(
         platformStyle = PlatformTextStyle(includeFontPadding = false)
     ),
     titleMedium = TextStyle(
-        fontFamily = MontserratFamily,
+        fontFamily = GoogleSansFlexFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         textGeometricTransform = TextGeometricTransform(scaleX = 1.3f),

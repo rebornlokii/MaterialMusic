@@ -97,8 +97,8 @@ fun QuickFillContent(
                 title = {
                     AnimatedContent(targetState = step, label = "Title") { s ->
                         Text(
-                            if (s == 0) stringResource(R.string.presentation_batch_b_quick_fill_select_songs)
-                            else stringResource(R.string.presentation_batch_b_quick_fill_choose_genre),
+                            if (s == 0) stringResource(R.string.quick_fill_select_songs)
+                            else stringResource(R.string.quick_fill_choose_genre),
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = RoundedSans,
@@ -145,7 +145,7 @@ fun QuickFillContent(
                                modifier = Modifier
                                    .fillMaxWidth()
                                    .padding(16.dp),
-                               label = { Text(stringResource(R.string.presentation_batch_b_search_songs_label)) },
+                               label = { Text(stringResource(R.string.quick_fill_search_songs_placeholder)) },
                                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
                                trailingIcon = if (searchQuery.isNotEmpty()) {
                                    { IconButton(onClick = { searchQuery = "" }) { Icon(Icons.Rounded.Clear, null) } }
@@ -221,7 +221,7 @@ fun QuickFillContent(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             modifier = Modifier.fillMaxHeight()
                         ) {
-                            Text(stringResource(R.string.presentation_batch_b_select_all), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(stringResource(R.string.common_select_all), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                         
                         Spacer(modifier = Modifier.width(2.dp))
@@ -235,7 +235,7 @@ fun QuickFillContent(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             modifier = Modifier.fillMaxHeight()
                         ) {
-                            Text(stringResource(R.string.presentation_batch_b_clear), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(stringResource(R.string.clear), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     }
                     Spacer(modifier = Modifier.weight(1f))
@@ -245,9 +245,9 @@ fun QuickFillContent(
                         text = run {
                             val genre = selectedGenre
                             if (genre != null) {
-                                stringResource(R.string.presentation_batch_b_genre_label_format, genre)
+                                stringResource(R.string.quick_fill_select_genre_label_format, genre)
                             } else {
-                                stringResource(R.string.presentation_batch_b_select_a_genre)
+                                stringResource(R.string.quik_fill_select_a_genre_label)
                             }
                         },
                         style = MaterialTheme.typography.bodyMedium,
@@ -281,7 +281,7 @@ fun QuickFillContent(
                 ) {
                     Text(
                         text = if (step == 0) stringResource(R.string.cd_next_step)
-                        else stringResource(R.string.presentation_batch_b_quick_fill),
+                        else stringResource(R.string.quick_fill_action_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -307,12 +307,12 @@ fun GenreValidatorContent(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     var showCustomDialog by remember { mutableStateOf(false) }
-    val addCustomCd = stringResource(R.string.presentation_batch_b_add_custom_genre)
-    val newGenreLabel = stringResource(R.string.presentation_batch_b_new_genre)
-    val addCustomGenreTitle = stringResource(R.string.presentation_batch_b_add_custom_genre_title)
-    val genreNameLabel = stringResource(R.string.presentation_batch_b_genre_name_label)
-    val selectIconLabel = stringResource(R.string.presentation_batch_b_select_icon)
-    val addLabel = stringResource(R.string.presentation_batch_b_add)
+    val addCustomCd = stringResource(R.string.quick_fill_cd_add_custom_genre)
+    val newGenreLabel = stringResource(R.string.quick_fill_new_genre)
+    val addCustomGenreTitle = stringResource(R.string.quick_fill_add_custom_genre_title)
+    val genreNameLabel = stringResource(R.string.quick_fill_genre_name_placeholder)
+    val selectIconLabel = stringResource(R.string.quick_fill_select_icon)
+    val addLabel = stringResource(R.string.add)
 
     val allGenres = remember(customGenres) {
         (GenreIconProvider.DEFAULT_GENRES + customGenres.toList()).sorted()

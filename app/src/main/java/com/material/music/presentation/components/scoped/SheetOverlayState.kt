@@ -1,7 +1,13 @@
 package com.material.music.presentation.components.scoped
 
+<<<<<<< HEAD
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
+=======
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+>>>>>>> origin/main
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
@@ -10,12 +16,16 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+<<<<<<< HEAD
 import androidx.compose.runtime.rememberUpdatedState
+=======
+>>>>>>> origin/main
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.unit.Density
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+<<<<<<< HEAD
 
 private const val QUEUE_SCRIM_MAX_ALPHA = 0.45f
 private const val QUEUE_OCCLUDES_PLAYER_FRACTION = 0.08f
@@ -25,10 +35,15 @@ private const val QUEUE_OCCLUDES_PLAYER_FRACTION = 0.08f
  * drag or back gesture, so they must only be read in the layout or draw phase. Composition reads
  * the threshold flags instead, which flip only when the queue starts or stops covering the player.
  */
+=======
+import kotlin.math.max
+
+>>>>>>> origin/main
 internal data class SheetOverlayState(
     val internalIsKeyboardVisible: Boolean,
     val actuallyShowSheetContent: Boolean,
     val isQueueVisible: Boolean,
+<<<<<<< HEAD
     val queueVisualOpenFractionProvider: () -> Float,
     val queueScrimAlphaProvider: () -> Float,
     val showQueueScrim: Boolean,
@@ -53,6 +68,13 @@ internal fun computeQueueVisualOpenFraction(
     return dragFraction * (1f - predictiveBackProgress.coerceIn(0f, 1f))
 }
 
+=======
+    val queueVisualOpenFraction: Float,
+    val bottomSheetOpenFraction: Float,
+    val queueScrimAlpha: Float
+)
+
+>>>>>>> origin/main
 @Composable
 internal fun rememberSheetOverlayState(
     density: Density,
@@ -60,9 +82,13 @@ internal fun rememberSheetOverlayState(
     hideMiniPlayer: Boolean,
     showQueueSheet: Boolean,
     queueHiddenOffsetPx: Float,
+<<<<<<< HEAD
     screenHeightPx: Float,
     queueSheetOffset: Animatable<Float, AnimationVector1D>,
     queuePredictiveBackProgress: Animatable<Float, AnimationVector1D>
+=======
+    screenHeightPx: Float
+>>>>>>> origin/main
 ): SheetOverlayState {
     var internalIsKeyboardVisible by remember { mutableStateOf(false) }
 
@@ -93,6 +119,7 @@ internal fun rememberSheetOverlayState(
         }
     }
 
+<<<<<<< HEAD
     // Read through updated states so the derived fraction and the providers below keep one
     // identity across queue open/close, instead of handing new lambdas to the layers each time.
     val latestShowQueueSheet = rememberUpdatedState(showQueueSheet)
@@ -118,15 +145,35 @@ internal fun rememberSheetOverlayState(
     }
     val isQueueOccludingPlayer by remember(queueVisualOpenFraction) {
         derivedStateOf { queueVisualOpenFraction.value >= QUEUE_OCCLUDES_PLAYER_FRACTION }
+=======
+    val queueVisualOpenFraction by animateFloatAsState(
+        targetValue = if (showQueueSheet && screenHeightPx > 0f) 1f else 0f,
+        animationSpec = tween(durationMillis = 240, easing = FastOutSlowInEasing),
+        label = "queueVisualOpenFraction"
+    )
+
+    val bottomSheetOpenFraction by remember(queueVisualOpenFraction) {
+        derivedStateOf { queueVisualOpenFraction }
+    }
+
+    val queueScrimAlpha by remember(queueVisualOpenFraction) {
+        derivedStateOf { (queueVisualOpenFraction * 0.45f).coerceIn(0f, 0.45f) }
+>>>>>>> origin/main
     }
 
     return SheetOverlayState(
         internalIsKeyboardVisible = internalIsKeyboardVisible,
         actuallyShowSheetContent = actuallyShowSheetContent,
         isQueueVisible = isQueueVisible,
+<<<<<<< HEAD
         queueVisualOpenFractionProvider = queueVisualOpenFractionProvider,
         queueScrimAlphaProvider = queueScrimAlphaProvider,
         showQueueScrim = showQueueScrim,
         isQueueOccludingPlayer = isQueueOccludingPlayer
+=======
+        queueVisualOpenFraction = queueVisualOpenFraction,
+        bottomSheetOpenFraction = bottomSheetOpenFraction,
+        queueScrimAlpha = queueScrimAlpha
+>>>>>>> origin/main
     )
 }

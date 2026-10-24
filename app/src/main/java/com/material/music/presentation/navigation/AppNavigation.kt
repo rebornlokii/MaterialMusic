@@ -34,11 +34,14 @@ import androidx.navigation.navArgument
 import com.material.music.data.preferences.LaunchTab
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.presentation.screens.AlbumDetailScreen
+<<<<<<< HEAD
 import com.material.music.presentation.screens.AudioBookmarkFolderScreen
 import com.material.music.presentation.screens.AudioBookmarksScreen
 import com.material.music.presentation.screens.CloudDownloadsScreen
 import com.material.music.presentation.screens.UpdatesScreen
 import com.material.music.presentation.model.SettingsCategory
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.screens.AccountsScreen
 import com.material.music.presentation.screens.ArtistDetailScreen
 import com.material.music.presentation.screens.ArtistSettingsScreen
@@ -46,7 +49,10 @@ import com.material.music.presentation.screens.DailyMixScreen
 import com.material.music.presentation.screens.EditTransitionScreen
 import com.material.music.presentation.screens.EasterEggScreen
 import com.material.music.presentation.screens.ExperimentalSettingsScreen
+<<<<<<< HEAD
 import com.material.music.presentation.screens.LyricsSettingsScreen
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.screens.GenreDetailScreen
 import com.material.music.presentation.screens.HomeScreen
 import com.material.music.presentation.screens.LibraryScreen
@@ -57,7 +63,10 @@ import com.material.music.presentation.screens.PlaylistDetailScreen
 import com.material.music.presentation.screens.RecentlyPlayedScreen
 
 import com.material.music.presentation.screens.AboutScreen
+<<<<<<< HEAD
 import com.material.music.presentation.screens.LicensesScreen
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.screens.SearchScreen
 import com.material.music.presentation.screens.StatsScreen
 import com.material.music.presentation.screens.DuplicateSongsScreen
@@ -66,6 +75,7 @@ import com.material.music.presentation.screens.SettingsCategoryScreen
 import com.material.music.presentation.screens.EqualizerScreen
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistViewModel
+<<<<<<< HEAD
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -73,6 +83,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.material.music.presentation.screens.ExcludedDirectoriesScreen
 import com.material.music.presentation.components.ScreenWrapper
 import com.material.music.presentation.settings.search.ProvideSettingsHighlight
+=======
+import kotlinx.coroutines.flow.first
+import com.material.music.presentation.components.ScreenWrapper
+>>>>>>> origin/main
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnrememberedGetBackStackEntry")

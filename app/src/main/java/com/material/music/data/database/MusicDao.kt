@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 private val SONG_SEARCH_QUERY_TOKEN_REGEX = Regex("""[\p{L}\p{N}]+""")
-private const val EMPTY_SONG_SEARCH_MATCH_QUERY = "pixelplayeremptyquery*"
+private const val EMPTY_SONG_SEARCH_MATCH_QUERY = "materialmusicemptyquery*"
 
 private fun buildSongSearchMatchQuery(query: String): String {
     val tokens = SONG_SEARCH_QUERY_TOKEN_REGEX
@@ -1562,12 +1562,44 @@ interface MusicDao {
         applyDirectoryFilter: Boolean
     ): Flow<List<SongEntity>>
 
+<<<<<<< HEAD
     /**
      * Songs that may have no genre: no value, one made only of [noGenreCharacters] (pass
      * GenreParser.noGenreCharacters: separators, '&' and whitespace), an "unknown" placeholder,
      * or any value holding a NUL, which SQLite can neither trim nor LIKE-match past. Callers keep
      * the rows whose value splits into no genre at all.
      */
+=======
+    // Multi-genre aware query: matches songs where the genre column equals the name (case-
+    // insensitively, via LIKE), or contains it as part of a comma-separated list.
+    // SQLite LIKE is case-insensitive for ASCII letters by default, which is sufficient
+    // for genre names. All six arms use LIKE so that "rock" matches "Rock", "Rock,Pop",
+    // "Rock, Pop", "Pop,Rock", "Pop, Rock", and "Pop,Rock,Jazz".
+    @Query("""
+        SELECT * FROM songs
+        WHERE (:applyDirectoryFilter = 0 OR id < 0 OR parent_directory_path IN (:allowedParentDirs))
+        AND (
+            genre LIKE :genreName
+            OR genre LIKE :genrePrefix
+            OR genre LIKE :genreSuffixWithSpace
+            OR genre LIKE :genreSuffix
+            OR genre LIKE :genreMiddleWithSpace
+            OR genre LIKE :genreMiddle
+        )
+        ORDER BY title ASC
+    """)
+    fun getSongsByGenreContaining(
+        genreName: String,
+        genrePrefix: String,
+        genreSuffixWithSpace: String,
+        genreSuffix: String,
+        genreMiddleWithSpace: String,
+        genreMiddle: String,
+        allowedParentDirs: List<String>,
+        applyDirectoryFilter: Boolean
+    ): Flow<List<SongEntity>>
+
+>>>>>>> origin/main
     @Query("""
         SELECT * FROM songs
         WHERE (:applyDirectoryFilter = 0 OR id < 0 OR parent_directory_path IN (:allowedParentDirs))

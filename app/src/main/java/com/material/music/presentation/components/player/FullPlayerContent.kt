@@ -128,6 +128,10 @@ import com.material.music.presentation.components.subcomps.FetchLyricsDialog
 import com.material.music.presentation.viewmodel.LyricsSearchUiState
 import com.material.music.presentation.viewmodel.PlayerSheetState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
+=======
+import com.material.music.ui.theme.GoogleSansFlexFamily
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.AudioMetaUtils.mimeTypeToFormat
 import com.material.music.utils.LyricsImportFailureReason
@@ -251,6 +255,7 @@ fun FullPlayerContent(
     val showPlayerFileInfo = fullPlayerSlice.showPlayerFileInfo
     val immersiveLyricsEnabled = fullPlayerSlice.immersiveLyricsEnabled
     val immersiveLyricsTimeout = fullPlayerSlice.immersiveLyricsTimeout
+    val lyricsFontSizeMultiplier = fullPlayerSlice.lyricsFontSizeMultiplier
     val isImmersiveTemporarilyDisabled = fullPlayerSlice.isImmersiveTemporarilyDisabled
     val isExternalOutputActive = false
     val isBluetoothEnabled = fullPlayerSlice.isBluetoothEnabled
@@ -720,7 +725,7 @@ fun FullPlayerContent(
                                     if (currentSong != null && currentSong.contentUriString.startsWith("http")) {
                                         Icon(
                                             imageVector = androidx.compose.material.icons.Icons.Rounded.Cloud,
-                                            contentDescription = stringResource(R.string.presentation_batch_g_player_cd_cloud_stream),
+                                            contentDescription = stringResource(R.string.player_cd_cloud_stream),
                                             tint = LocalMaterialTheme.current.onPrimaryContainer.copy(alpha = 0.6f),
                                             modifier = Modifier.padding(start = 8.dp).size(16.dp)
                                         )
@@ -746,7 +751,7 @@ fun FullPlayerContent(
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.rounded_keyboard_arrow_down_24),
-                                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_collapse),
+                                    contentDescription = stringResource(R.string.player_cd_collapse),
                                     tint = playerAccentColor
                                 )
                             }
@@ -806,7 +811,7 @@ fun FullPlayerContent(
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.rounded_queue_music_24),
-                                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
+                                    contentDescription = stringResource(R.string.player_cd_queue),
                                     tint = playerAccentColor
                                 )
                             }
@@ -873,7 +878,8 @@ fun FullPlayerContent(
             onDismissLyricsSearch = { playerViewModel.resetLyricsSearchState() },
             lyricsSyncOffset = lyricsSyncOffset,
             onLyricsSyncOffsetChange = { currentSong?.id?.let { songId -> playerViewModel.setLyricsSyncOffset(songId, it) } },
-            lyricsTextStyle = MaterialTheme.typography.titleLarge,
+            lyricsTextStyle = MaterialTheme.typography.titleLarge.copy(fontFamily = GoogleSansFlexFamily),
+            lyricsFontSizeMultiplier = lyricsFontSizeMultiplier,
             colorScheme = LocalMaterialTheme.current,
             onBackClick = { showLyricsSheet = false },
             onSaveLyricsToFile = playerViewModel::saveLyricsToFile,
@@ -1480,7 +1486,7 @@ private fun SongMetadataDisplaySection(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.rounded_lyrics_24),
-                        contentDescription = stringResource(R.string.presentation_batch_g_player_cd_lyrics),
+                        contentDescription = stringResource(R.string.player_cd_lyrics),
                         tint = chipContentColor
                     )
                 }
@@ -1501,7 +1507,7 @@ private fun SongMetadataDisplaySection(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.rounded_queue_music_24),
-                        contentDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
+                        contentDescription = stringResource(R.string.player_cd_queue),
                         tint = chipContentColor
                     )
                 }
@@ -1518,7 +1524,7 @@ private fun SongMetadataDisplaySection(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.rounded_lyrics_24),
-                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_lyrics)
+                    contentDescription = stringResource(R.string.player_cd_lyrics)
                 )
             }
         }
@@ -2144,7 +2150,7 @@ private fun AlbumPlaceholder(
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Icon(
                 modifier = Modifier.size(86.dp),
-                painter = painterResource(R.drawable.pixelplayer_base_monochrome),
+                painter = painterResource(R.drawable.materialmusic_base_monochrome),
                 contentDescription = null,
                 tint = onColor
             )

@@ -93,9 +93,13 @@ import com.material.music.presentation.components.CollapsibleCommonTopBar
 import com.material.music.presentation.components.ExpressiveTopBarContent
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.model.SettingsCategory
+<<<<<<< HEAD
 import com.material.music.presentation.settings.search.SettingsFuzzySearchEngine
 import com.material.music.presentation.settings.search.SettingsRegistry
 import com.material.music.presentation.settings.search.SettingsSearchResultsContent
+=======
+import com.material.music.presentation.navigation.Screen
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
 import kotlin.math.roundToInt

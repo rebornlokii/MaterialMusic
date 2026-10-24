@@ -87,6 +87,7 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         db.addColumnIfMissing("songs", "mb_artist_id", "`mb_artist_id` TEXT")
     }
 }
+<<<<<<< HEAD
 
 /**
  * v3 -> v4: audio bookmarks — named position markers inside a track (audiobooks, DJ sets,
@@ -199,3 +200,5 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         )
     }
 }
+=======
+>>>>>>> origin/main

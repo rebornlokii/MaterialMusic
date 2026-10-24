@@ -146,8 +146,20 @@ fun LibrarySortBottomSheet(
             var secondaryTargetChosen by rememberSaveable { mutableStateOf(initiallyShowSecondary) }
             val showSecondaryTarget = hasSecondaryTarget && secondaryTargetChosen
 
+<<<<<<< HEAD
             if (hasSecondaryTarget) {
                 LibrarySheetSortTargetSwitcher(
+=======
+            if (shouldShowDirectionToggle && resolvedSelectedOption != null) {
+                val directionLabel = when (selectedDirection) {
+                    SortDirection.Descending -> stringResource(R.string.library_sort_descending)
+                    SortDirection.Ascending -> stringResource(R.string.library_sort_ascending)
+                    null -> stringResource(R.string.library_sort_original_order)
+                }
+                val isDescending = selectedDirection == SortDirection.Descending
+
+                LibrarySheetSortDirectionCard(
+>>>>>>> origin/main
                     modifier = Modifier.padding(bottom = 12.dp),
                     primaryLabel = primaryTargetLabel,
                     secondaryLabel = secondaryTargetLabel,
@@ -211,7 +223,7 @@ fun LibrarySortBottomSheet(
             if (sourceToggleContent != null) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = stringResource(R.string.presentation_batch_g_sort_source),
+                    text = stringResource(R.string.library_sort_source),
                     style = MaterialTheme.typography.headlineSmall,
                     fontFamily = RoundedSans,
                     fontWeight = FontWeight.Bold,
@@ -488,7 +500,7 @@ private fun LibrarySheetSortDirectionCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.presentation_batch_g_sort_order),
+                    text = stringResource(R.string.library_sort_order),
                     style = MaterialTheme.typography.labelLarge,
                     color = contentColor.copy(alpha = 0.82f)
                 )
@@ -562,7 +574,7 @@ internal fun LibrarySheetToggleCard(
                     {
                         Icon(
                             imageVector = Icons.Rounded.Check,
-                            contentDescription = stringResource(R.string.presentation_batch_g_cd_switch_on),
+                            contentDescription = stringResource(R.string.library_sort_cd_switch_on),
                             modifier = Modifier.size(SwitchDefaults.IconSize),
                         )
                     }

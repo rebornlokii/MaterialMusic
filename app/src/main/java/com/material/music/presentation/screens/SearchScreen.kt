@@ -28,7 +28,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+<<<<<<< HEAD
 import androidx.compose.foundation.lazy.LazyListState
+=======
+>>>>>>> origin/main
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import com.material.music.ui.theme.ShapeCache
@@ -65,7 +68,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+<<<<<<< HEAD
 import androidx.compose.ui.layout.Layout
+=======
+>>>>>>> origin/main
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,7 +95,10 @@ import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
+<<<<<<< HEAD
 import androidx.compose.runtime.withFrameNanos
+=======
+>>>>>>> origin/main
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.ime
@@ -109,7 +118,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import com.material.music.R
+<<<<<<< HEAD
 import com.material.music.data.diagnostics.AdvancedPerformanceDiagnostics
+=======
+>>>>>>> origin/main
 import com.material.music.data.repository.MusicRepository
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.PlaylistBottomSheet
@@ -118,8 +130,11 @@ import com.material.music.presentation.components.resolveMainScreenBottomGradien
 import com.material.music.presentation.components.resolveNavBarOccupiedHeight
 import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.screens.search.components.GenreCategoriesGrid
+<<<<<<< HEAD
 import com.material.music.presentation.selection.dragToSelect
 import com.material.music.presentation.selection.rememberDragToSelectState
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlaylistViewModel
 import com.material.music.utils.formatSongCount
 import kotlinx.collections.immutable.ImmutableList
@@ -134,6 +149,7 @@ import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import timber.log.Timber
 import com.material.music.presentation.components.subcomps.EnhancedSongListItem
 import androidx.compose.ui.res.stringResource
+<<<<<<< HEAD
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.border
@@ -158,14 +174,19 @@ import com.material.music.presentation.components.subcomps.SelectionCountPill
 import com.material.music.presentation.viewmodel.CloudDownloadsViewModel
 import androidx.compose.runtime.State
 import androidx.compose.ui.unit.Dp
+=======
+>>>>>>> origin/main
 
 private data class SearchUiSlice(
     val selectedSearchFilter: SearchFilterType = SearchFilterType.ALL,
     val searchResults: ImmutableList<SearchResultItem> = persistentListOf()
 )
 
+<<<<<<< HEAD
 private const val MAX_ALBUM_MULTI_SELECTION = 6
 
+=======
+>>>>>>> origin/main
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -174,10 +195,15 @@ fun SearchScreen(
     playerViewModel: PlayerViewModel = sharedPlayerViewModel(),
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     navController: NavHostController,
+<<<<<<< HEAD
     onSearchBarActiveChange: (Boolean) -> Unit = {},
     cloudDownloadsViewModel: CloudDownloadsViewModel = hiltViewModel()
 ) {
     val searchScreenEnteredAt = remember { android.os.SystemClock.elapsedRealtime() }
+=======
+    onSearchBarActiveChange: (Boolean) -> Unit = {}
+) {
+>>>>>>> origin/main
     var searchQuery by rememberSaveable { mutableStateOf(playerViewModel.searchQuery) }
     val statusBarTopInset = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
     val systemNavBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -185,6 +211,7 @@ fun SearchScreen(
     val bottomBarHeightDp = resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode)
     val bottomGradientHeight = resolveMainScreenBottomGradientHeight(navBarCompactMode)
     var showPlaylistBottomSheet by remember { mutableStateOf(false) }
+<<<<<<< HEAD
     var playlistSheetSongs by remember { mutableStateOf<ImmutableList<Song>>(persistentListOf()) }
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -250,6 +277,8 @@ fun SearchScreen(
             (selectedGenres + genre).toImmutableList()
         }
     }
+=======
+>>>>>>> origin/main
     val searchUiState by remember(playerViewModel) {
         playerViewModel.playerUiState
             .map { uiState ->
@@ -270,6 +299,7 @@ fun SearchScreen(
     val searchInputFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
+<<<<<<< HEAD
         AdvancedPerformanceDiagnostics.recordEventIfEnabled(
             type = AdvancedPerformanceDiagnostics.EventTypes.UI,
             name = "search_screen_entered",
@@ -286,6 +316,9 @@ fun SearchScreen(
                 "genreCount" to genres.size.toString(),
             )
         }
+=======
+        onSearchBarActiveChange(false)
+>>>>>>> origin/main
     }
 
     LaunchedEffect(playerViewModel, keyboardController) {
@@ -296,8 +329,12 @@ fun SearchScreen(
         }
     }
 
+<<<<<<< HEAD
     // A filter change re-runs the query inside the search holder, so only the query restarts it.
     LaunchedEffect(searchQuery) {
+=======
+    LaunchedEffect(searchQuery, currentFilter) {
+>>>>>>> origin/main
         playerViewModel.performSearch(searchQuery)
     }
     val searchResults = searchUiState.searchResults
@@ -451,7 +488,11 @@ fun SearchScreen(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.rounded_settings_24),
+<<<<<<< HEAD
                         contentDescription = stringResource(R.string.presentation_batch_d_open_settings_cd)
+=======
+                        contentDescription = stringResource(R.string.library_cd_open_settings)
+>>>>>>> origin/main
                     )
                 }
             }
@@ -474,6 +515,7 @@ fun SearchScreen(
                 label = "search_mode_transition"
             ) { isGenreMode ->
                 if (isGenreMode) {
+<<<<<<< HEAD
                     Column(modifier = Modifier.fillMaxSize()) {
                         if (isGenreSelectionMode) {
                             SelectionActionRow(
@@ -519,12 +561,26 @@ fun SearchScreen(
                             )
                         }
                     }
+=======
+                    GenreCategoriesGrid(
+                        genres = genres,
+                        onGenreClick = { genre ->
+                            Timber.tag("SearchScreen")
+                                .d("Genre clicked: ${genre.name} (ID: ${genre.id})")
+                            val encodedGenreId = java.net.URLEncoder.encode(genre.id, "UTF-8")
+                            navController.navigateSafely(Screen.GenreDetail.createRoute(encodedGenreId))
+                        },
+                        playerViewModel = playerViewModel,
+                        modifier = Modifier.padding(top = 12.dp)
+                    )
+>>>>>>> origin/main
                 } else {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
+<<<<<<< HEAD
                         val resultSelectionCount = when {
                             isSongSelectionMode -> selectedSongs.size
                             isPlaylistSelectionMode -> selectedPlaylists.size
@@ -658,6 +714,47 @@ fun SearchScreen(
                                     .zIndex(2f)
                                     .padding(top = 16.dp)
                             )
+=======
+                        FlowRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp, horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(0.dp)
+                        ) {
+                            SearchFilterChip(SearchFilterType.ALL, currentFilter, playerViewModel)
+                            SearchFilterChip(SearchFilterType.SONGS, currentFilter, playerViewModel)
+                            SearchFilterChip(SearchFilterType.ALBUMS, currentFilter, playerViewModel)
+                            SearchFilterChip(SearchFilterType.ARTISTS, currentFilter, playerViewModel)
+                            SearchFilterChip(SearchFilterType.PLAYLISTS, currentFilter, playerViewModel)
+                        }
+                        Crossfade(
+                            targetState = searchResults.isEmpty(),
+                            animationSpec = tween(durationMillis = 190),
+                            label = "search_results_fade"
+                        ) { isEmpty ->
+                            if (isEmpty) {
+                                EmptySearchResults(
+                                    searchQuery = searchQuery,
+                                    colorScheme = colorScheme
+                                )
+                            } else {
+                                SearchResultsList(
+                                    results = searchResults,
+                                    searchQuery = searchQuery,
+                                    playerViewModel = playerViewModel,
+                                    onItemSelected = {
+                                        if (searchQuery.isNotBlank()) {
+                                            playerViewModel.onSearchQuerySubmitted(searchQuery)
+                                        }
+                                    },
+                                    currentPlayingSongId = stablePlayerState.currentSong?.id,
+                                    isPlaying = stablePlayerState.isPlaying,
+                                    onSongMoreOptionsClick = handleSongMoreOptionsClick,
+                                    navController = navController
+                                )
+                            }
+>>>>>>> origin/main
                         }
                     }
                 }
@@ -708,8 +805,12 @@ fun SearchScreen(
                     showSongInfoBottomSheet = false
                 },
                 onAddToPlayList = {
+<<<<<<< HEAD
                     playlistSheetSongs = persistentListOf(currentSong)
                     showPlaylistBottomSheet = true
+=======
+                    showPlaylistBottomSheet = true;
+>>>>>>> origin/main
                 },
                 onDeleteFromDevice = playerViewModel::deleteFromDevice,
                 onNavigateToAlbum = {
@@ -739,7 +840,11 @@ fun SearchScreen(
                     }
                     showSongInfoBottomSheet = false
                 },
+<<<<<<< HEAD
                 onEditSong = { newTitle, newArtist, newAlbum, newAlbumArtist, newComposer, newGenre, newLyrics, newTrackNumber, newDiscNumber, replayGainTrackGainDb, replayGainAlbumGainDb, coverArtUpdate, customMetadataChanges ->
+=======
+                onEditSong = { newTitle, newArtist, newAlbum, newAlbumArtist, newComposer, newGenre, newLyrics, newTrackNumber, newDiscNumber, replayGainTrackGainDb, replayGainAlbumGainDb, coverArtUpdate ->
+>>>>>>> origin/main
                     playerViewModel.editSongMetadata(
                         currentSong,
                         newTitle,
@@ -753,6 +858,7 @@ fun SearchScreen(
                         newDiscNumber,
                         replayGainTrackGainDb,
                         replayGainAlbumGainDb,
+<<<<<<< HEAD
                         coverArtUpdate,
                         customMetadataChanges
                     )
@@ -981,6 +1087,25 @@ fun SearchScreen(
             }
         )
     }
+=======
+                        coverArtUpdate
+                    )
+                },
+            )
+            if (showPlaylistBottomSheet) {
+                val playlistUiState by playlistViewModel.uiState.collectAsStateWithLifecycle()
+
+                PlaylistBottomSheet(
+                    playlistUiState = playlistUiState,
+                    songs = persistentListOf(currentSong),
+                    onDismiss = { showPlaylistBottomSheet = false },
+                    bottomBarHeight = bottomBarHeightDp,
+                    playerViewModel = playerViewModel,
+                )
+            }
+        }
+    }
+>>>>>>> origin/main
 }
 
 @Composable
@@ -1124,12 +1249,16 @@ fun EmptySearchResults(searchQuery: String, colorScheme: ColorScheme) {
 fun SearchResultsList(
     results: ImmutableList<SearchResultItem>,
     searchQuery: String,
+<<<<<<< HEAD
     selectedFilter: SearchFilterType,
+=======
+>>>>>>> origin/main
     playerViewModel: PlayerViewModel,
     onItemSelected: () -> Unit,
     currentPlayingSongId: String?,
     isPlaying: Boolean,
     onSongMoreOptionsClick: (Song) -> Unit,
+<<<<<<< HEAD
     navController: NavHostController,
     isSongSelectionMode: Boolean = false,
     selectedSongIds: Set<String> = emptySet(),
@@ -1148,6 +1277,9 @@ fun SearchResultsList(
     getPlaylistSelectionIndex: (String) -> Int? = { null },
     onPlaylistLongPress: (Playlist) -> Unit = {},
     onPlaylistSelectionToggle: (Playlist) -> Unit = {}
+=======
+    navController: NavHostController
+>>>>>>> origin/main
 ) {
     val localDensity = LocalDensity.current
     val playerStableState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
@@ -1174,6 +1306,7 @@ fun SearchResultsList(
             }
         }
     }
+<<<<<<< HEAD
     // Another filter, or results with another set of sections, get a fresh scroll state and open
     // at the top. The old state would keep the previous first visible item in place: going from
     // Albums back to All opened at the Albums header, songs hidden above it. The filter is keyed
@@ -1184,6 +1317,8 @@ fun SearchResultsList(
     val listState = rememberSaveable(selectedFilter, sectionTypes, saver = LazyListState.Saver) {
         LazyListState()
     }
+=======
+>>>>>>> origin/main
     val songResultsQueue = remember(groupedResults) {
         buildList {
             groupedResults[SearchFilterType.SONGS]
@@ -1221,6 +1356,7 @@ fun SearchResultsList(
     val imePadding = WindowInsets.ime.getBottom(localDensity).dp
     val systemBarPaddingBottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() + 94.dp
 
+<<<<<<< HEAD
     val dragSelectState = rememberDragToSelectState<Song>()
     // Section headers, albums, artists and playlists share the list with the songs but are not
     // selectable, so each list index maps to its song, if any.
@@ -1245,6 +1381,8 @@ fun SearchResultsList(
         if (hasCurrentSong) bottomBarHeight + MiniPlayerHeight else bottomBarHeight
     )
 
+=======
+>>>>>>> origin/main
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -1253,6 +1391,7 @@ fun SearchResultsList(
                     topStart = 28.dp,
                     topEnd = 28.dp
                 )
+<<<<<<< HEAD
             )
             .dragToSelect(
                 state = dragSelectState,
@@ -1264,6 +1403,9 @@ fun SearchResultsList(
                 bottomInset = dragSelectBottomInset
             ),
         state = listState,
+=======
+            ),
+>>>>>>> origin/main
         contentPadding = PaddingValues(
             top = 8.dp,
             bottom = if (imePadding <= 8.dp) (MiniPlayerHeight + systemBarPaddingBottom) else imePadding
@@ -1274,7 +1416,19 @@ fun SearchResultsList(
 
             if (itemsForSection.isNotEmpty()) {
                 item(key = "header_${filterType.name}") {
+<<<<<<< HEAD
                     SearchResultSectionHeader(title = stringResource(searchFilterLabelRes(filterType)))
+=======
+                    SearchResultSectionHeader(
+                        title = when (filterType) {
+                            SearchFilterType.SONGS -> "Songs"
+                            SearchFilterType.ALBUMS -> "Albums"
+                            SearchFilterType.ARTISTS -> "Artists"
+                            SearchFilterType.PLAYLISTS -> "Playlists"
+                            else -> "Results"
+                        }
+                    )
+>>>>>>> origin/main
                 }
 
                 items(
@@ -1306,6 +1460,7 @@ fun SearchResultsList(
                                     isPlaying = isPlaying,
                                     isCurrentSong = currentPlayingSongId == item.song.id,
                                     onMoreOptionsClick = onSongMoreOptionsClick,
+<<<<<<< HEAD
                                     onClick = { onSongResultClick(item.song) },
                                     isSelected = item.song.id in selectedSongIds,
                                     selectionIndex = getSongSelectionIndex(item.song.id),
@@ -1314,6 +1469,9 @@ fun SearchResultsList(
                                         onSongLongPress(item.song)
                                         dragSelectState.onItemLongPressed(item.song)
                                     }
+=======
+                                    onClick = { onSongResultClick(item.song) }
+>>>>>>> origin/main
                                 )
                             }
 
@@ -1341,12 +1499,16 @@ fun SearchResultsList(
                                 SearchResultAlbumItem(
                                     album = item.album,
                                     onPlayClick = onPlayClick,
+<<<<<<< HEAD
                                     onOpenClick = onOpenClick,
                                     isSelected = item.album.id in selectedAlbumIds,
                                     selectionIndex = getAlbumSelectionIndex(item.album.id),
                                     isSelectionMode = isAlbumSelectionMode,
                                     onLongPress = { onAlbumLongPress(item.album) },
                                     onSelectionToggle = { onAlbumSelectionToggle(item.album) }
+=======
+                                    onOpenClick = onOpenClick
+>>>>>>> origin/main
                                 )
                             }
 
@@ -1413,12 +1575,16 @@ fun SearchResultsList(
                                     playlist = item.playlist,
                                     playlistSongs = playlistSongs,
                                     onPlayClick = onPlayClick,
+<<<<<<< HEAD
                                     onOpenClick = onOpenClick,
                                     isSelected = item.playlist.id in selectedPlaylistIds,
                                     selectionIndex = getPlaylistSelectionIndex(item.playlist.id),
                                     isSelectionMode = isPlaylistSelectionMode,
                                     onLongPress = { onPlaylistLongPress(item.playlist) },
                                     onSelectionToggle = { onPlaylistSelectionToggle(item.playlist) }
+=======
+                                    onOpenClick = onOpenClick
+>>>>>>> origin/main
                                 )
                             }
                         }
@@ -1434,12 +1600,16 @@ fun SearchResultsList(
 fun SearchResultAlbumItem(
     album: Album,
     onOpenClick: () -> Unit,
+<<<<<<< HEAD
     onPlayClick: () -> Unit,
     isSelected: Boolean = false,
     selectionIndex: Int? = null,
     isSelectionMode: Boolean = false,
     onLongPress: () -> Unit = {},
     onSelectionToggle: () -> Unit = {}
+=======
+    onPlayClick: () -> Unit
+>>>>>>> origin/main
 ) {
     val itemShape = remember {
         AbsoluteSmoothCornerShape(
@@ -1454,14 +1624,20 @@ fun SearchResultAlbumItem(
         )
     }
 
+<<<<<<< HEAD
     val selectionScale by animateSelectionScale(isSelected)
     val selectionBorderWidth by animateSelectionBorderWidth(isSelected)
 
     Card(
+=======
+    Card(
+        onClick = onOpenClick,
+>>>>>>> origin/main
         shape = itemShape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
+<<<<<<< HEAD
         modifier = Modifier
             .fillMaxWidth()
             .searchResultSelection(
@@ -1528,6 +1704,54 @@ fun SearchResultAlbumItem(
                     selectionIndex = selectionIndex,
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
+=======
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SmartImage(
+                model = album.albumArtUriString,
+                contentDescription = stringResource(R.string.cd_album_art_of, album.title),
+                targetSize = SmartImageListTargetSize,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(itemShape)
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = album.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = album.artist,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            FilledIconButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(40.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.cd_play_album), modifier = Modifier.size(24.dp))
+>>>>>>> origin/main
             }
         }
     }
@@ -1623,12 +1847,16 @@ fun SearchResultPlaylistItem(
     playlist: Playlist,
     playlistSongs: ImmutableList<Song>,
     onOpenClick: () -> Unit,
+<<<<<<< HEAD
     onPlayClick: () -> Unit,
     isSelected: Boolean = false,
     selectionIndex: Int? = null,
     isSelectionMode: Boolean = false,
     onLongPress: () -> Unit = {},
     onSelectionToggle: () -> Unit = {}
+=======
+    onPlayClick: () -> Unit
+>>>>>>> origin/main
 ) {
     val itemShape = remember {
         AbsoluteSmoothCornerShape(
@@ -1643,14 +1871,20 @@ fun SearchResultPlaylistItem(
         )
     }
 
+<<<<<<< HEAD
     val selectionScale by animateSelectionScale(isSelected)
     val selectionBorderWidth by animateSelectionBorderWidth(isSelected)
 
     Card(
+=======
+    Card(
+        onClick = onOpenClick,
+>>>>>>> origin/main
         shape = itemShape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
+<<<<<<< HEAD
         modifier = Modifier
             .fillMaxWidth()
             .searchResultSelection(
@@ -1709,11 +1943,52 @@ fun SearchResultPlaylistItem(
                     selectionIndex = selectionIndex,
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
+=======
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            PlaylistCover(
+                playlist = playlist,
+                playlistSongs = playlistSongs,
+                size = 56.dp
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = playlist.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = formatSongCount(playlist.songIds.size),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            FilledIconButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(40.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.cd_play_playlist), modifier = Modifier.size(24.dp))
+>>>>>>> origin/main
             }
         }
     }
 }
 
+<<<<<<< HEAD
 @Composable
 private fun animateSelectionScale(isSelected: Boolean): State<Float> = animateFloatAsState(
     targetValue = if (isSelected) 0.98f else 1f,
@@ -1771,6 +2046,8 @@ private fun SearchSelectionBadge(
     }
 }
 
+=======
+>>>>>>> origin/main
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -1786,7 +2063,11 @@ fun SearchFilterChip(
         checked = selected,
         onCheckedChange = { playerViewModel.updateSearchFilter(filterType) },
         modifier = modifier,
+<<<<<<< HEAD
         colors = ToggleButtonDefaults.toggleButtonColors(
+=======
+        colors = ToggleButtonDefaults.colors(
+>>>>>>> origin/main
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             checkedContainerColor = MaterialTheme.colorScheme.primary,
@@ -1796,11 +2077,16 @@ fun SearchFilterChip(
         if (selected) {
             Icon(
                 painter = painterResource(R.drawable.rounded_check_circle_24),
+<<<<<<< HEAD
                 contentDescription = stringResource(R.string.presentation_batch_g_cd_selected),
+=======
+                contentDescription = stringResource(R.string.cd_selected),
+>>>>>>> origin/main
                 modifier = Modifier.size(FilterChipDefaults.IconSize)
             )
             Spacer(Modifier.width(8.dp))
         }
+<<<<<<< HEAD
         Text(stringResource(searchFilterLabelRes(filterType)))
     }
 }
@@ -1846,3 +2132,8 @@ private fun searchFilterLabelRes(filterType: SearchFilterType): Int = when (filt
     SearchFilterType.ARTISTS -> R.string.library_tab_artists
     SearchFilterType.PLAYLISTS -> R.string.library_tab_playlists
 }
+=======
+        Text(filterType.name.lowercase().replaceFirstChar { it.titlecase() })
+    }
+}
+>>>>>>> origin/main

@@ -33,6 +33,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,9 +48,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+<<<<<<< HEAD
 import androidx.core.view.HapticFeedbackConstantsCompat
 import com.material.music.presentation.utils.LocalAppHapticsConfig
 import com.material.music.presentation.utils.performAppCompatHapticFeedback
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import kotlin.math.roundToInt
@@ -87,6 +91,17 @@ fun TimerOptionsBottomSheet(
     var counterSliderPosition by remember { mutableStateOf(1f) }
     var prevCounterValue by rememberSaveable { mutableIntStateOf(1) }
     var isTimerMode by remember { mutableStateOf(true) }
+
+    val timerSliderState = rememberSliderState(
+        value = timerSliderPosition,
+        steps = predefinedTimes.size - 2,
+        trackRange = 0f..(predefinedTimes.size - 1).toFloat()
+    )
+    val counterSliderState = rememberSliderState(
+        value = counterSliderPosition,
+        steps = 8,
+        trackRange = 1f..10f
+    )
 
     val boxBackgroundColor by animateColorAsState(
         targetValue = if (isSwitchEnabled) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -174,10 +189,17 @@ fun TimerOptionsBottomSheet(
                             )
                         )
                 ) {
+                    timerSliderState.value = timerSliderPosition
                     Slider(
+<<<<<<< HEAD
                         value = timerSliderPosition,
                         onValueChange = { newValue ->
                             timerSliderPosition = newValue
+=======
+                        state = timerSliderState,
+                        onValueChange = {
+                            timerSliderPosition = it
+>>>>>>> origin/main
                             isTimerMode = true
                             val roundedIndex = newValue.roundToInt().coerceIn(0, predefinedTimes.size - 1)
                             if (roundedIndex != prevTimerIndex) {
@@ -189,8 +211,6 @@ fun TimerOptionsBottomSheet(
                                 )
                             }
                         },
-                        valueRange = 0f..(predefinedTimes.size - 1).toFloat(),
-                        steps = predefinedTimes.size - 2,
                         enabled = isTimerMode || counterSliderPosition == 1f,
                         onValueChangeFinished = {
                             val selectedIndexOnFinish = timerSliderPosition.roundToInt()
@@ -264,10 +284,17 @@ fun TimerOptionsBottomSheet(
                             shape = RoundedCornerShape(18.dp)
                         )
                 ) {
+                    counterSliderState.value = counterSliderPosition
                     Slider(
+<<<<<<< HEAD
                         value = counterSliderPosition,
                         onValueChange = { newValue ->
                             counterSliderPosition = newValue
+=======
+                        state = counterSliderState,
+                        onValueChange = {
+                            counterSliderPosition = it
+>>>>>>> origin/main
                             isTimerMode = false
                             val roundedValue = newValue.roundToInt().coerceIn(1, 10)
                             if (roundedValue != prevCounterValue) {
@@ -279,8 +306,6 @@ fun TimerOptionsBottomSheet(
                                 )
                             }
                         },
-                        valueRange = 1f..10f,
-                        steps = 8,
                         enabled = !isTimerMode || timerSliderPosition == 0f,
                         onValueChangeFinished = {
                             onCancelTimer()

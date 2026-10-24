@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.material.music.data.model.Genre
 import com.material.music.data.model.Song
 import com.material.music.data.repository.MusicRepository
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

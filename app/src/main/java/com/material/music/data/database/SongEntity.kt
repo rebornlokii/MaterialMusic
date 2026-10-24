@@ -7,7 +7,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.material.music.data.model.ArtistRef
 import com.material.music.data.model.Song
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import com.material.music.utils.LocalArtworkUri
 import com.material.music.utils.normalizeMetadataText
 import com.material.music.utils.normalizeMetadataTextOrEmpty

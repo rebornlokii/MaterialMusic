@@ -21,15 +21,21 @@ import com.material.music.data.database.SongArtistCrossRef
 import com.material.music.data.database.SongEntity
 import com.material.music.data.database.SourceType
 import com.material.music.data.database.serializeArtistRefs
+<<<<<<< HEAD
 import com.material.music.data.diagnostics.AdvancedPerformanceDiagnostics
 import com.material.music.data.diagnostics.PerformanceMetrics
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.ArtistRef
 import com.material.music.data.media.AudioMetadataReader
 import com.material.music.data.media.normalizeArtistMetadataValues
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.repository.LyricsRepository
+<<<<<<< HEAD
 import com.material.music.data.repository.ArtistImageRepository
+=======
+>>>>>>> origin/main
 import com.material.music.data.service.PlaybackActivityTracker
 import com.material.music.utils.AlbumArtCacheManager
 import com.material.music.utils.AlbumArtUtils
@@ -43,6 +49,7 @@ import com.material.music.utils.traceAsyncSection
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.io.File
+import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -217,10 +224,13 @@ constructor(
                                 "metadataCharsetRepairPending=$metadataCharsetRepairPending"
                         )
 
+<<<<<<< HEAD
                     // Snapshot before the first MediaStore read: a change reported after this
                     // point may be missing from this run and gets a follow-up sync.
                     localLibraryChangeTracker.onLocalScanStarted()
 
+=======
+>>>>>>> origin/main
                     var hasUnindexedSongs = false
                     if (syncMode != SyncMode.REBUILD) {
                         val localSongIds = musicDao.getAllMediaStoreSongIds().toHashSet()
@@ -258,6 +268,7 @@ constructor(
                     // Newly visible files can retain timestamps older than the last sync.
                     // Reconcile missing IDs without forcing unchanged songs through metadata
                     // processing, so a partial album import can recover on the next scan.
+<<<<<<< HEAD
                     // The charset repair also reads without a cutoff, but leaves forceProcessAll
                     // alone, so rows whose stored text already matches the newly normalized
                     // MediaStore text are skipped by the per-row comparison.
@@ -275,6 +286,16 @@ constructor(
                         Timber.tag(TAG).i(
                             "Re-checking stored metadata text once without a timestamp cutoff (charset repair v$CURRENT_METADATA_CHARSET_REPAIR_VERSION)."
                         )
+=======
+                    val fetchTimestamp = if (!syncPlan.forceProcessAll && !hasUnindexedSongs) {
+                        incrementalFetchTimestampSeconds(lastSyncTimestamp)
+                    } else {
+                        0L
+>>>>>>> origin/main
+                    }
+
+                    if (hasUnindexedSongs && !syncPlan.forceProcessAll) {
+                        Timber.tag(TAG).i("Recovering unindexed MediaStore songs without a timestamp cutoff.")
                     }
 
                     Timber.tag(TAG)

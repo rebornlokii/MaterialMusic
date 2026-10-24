@@ -1,6 +1,10 @@
 # Privacy Policy
 
+<<<<<<< HEAD
 MaterialMusic is local-first and does not include analytics, advertising SDKs, Firebase, Crashlytics, or Google Play Services runtime dependencies.
+=======
+Material Music is local-first and does not include analytics, advertising SDKs, Firebase, Crashlytics, or Google Play Services runtime dependencies.
+>>>>>>> origin/main
 
 ## Data Stored On Device
 
@@ -21,7 +25,11 @@ Server credentials and preferences are stored locally. The app does not sell or 
 
 ## Files And Media
 
+<<<<<<< HEAD
 MaterialMusic requests media/file permissions to scan and play local music, read artwork, edit metadata, and export/import user backups. Optional Navidrome/Subsonic and Jellyfin downloads are stored in the app's private files area for offline playback and are excluded from Android cloud backup and device transfer.
+=======
+Material Music requests media/file permissions to scan and play local music, read artwork, edit metadata, and export/import user backups.
+>>>>>>> origin/main
 
 ## Crash Reports
 

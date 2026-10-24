@@ -1,5 +1,6 @@
 package com.material.music.data.media
 
+<<<<<<< HEAD
 import android.graphics.BitmapFactory
 import com.material.music.data.diagnostics.PerformanceMetrics
 import io.mockk.every
@@ -48,6 +49,13 @@ class AudioMetadataReaderTest {
         PerformanceMetrics.resetForTest()
     }
 
+=======
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+
+class AudioMetadataReaderTest {
+
+>>>>>>> origin/main
     @Test
     fun `normalizeArtistMetadataValues preserves repeated fields in source order`() {
         val values = normalizeArtistMetadataValues(
@@ -60,6 +68,7 @@ class AudioMetadataReaderTest {
             values
         )
     }
+<<<<<<< HEAD
 
     @Test
     fun `JAudioTagger fallback skips embedded artwork when artwork is not requested`() {
@@ -153,4 +162,6 @@ class AudioMetadataReaderTest {
 
         val COVER_BYTES = PNG_SIGNATURE + ByteArray(64) { it.toByte() }
     }
+=======
+>>>>>>> origin/main
 }

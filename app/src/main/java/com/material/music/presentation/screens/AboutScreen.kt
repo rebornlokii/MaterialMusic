@@ -49,7 +49,6 @@ import androidx.compose.material.icons.rounded.Balance
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -123,22 +122,42 @@ private data class Contributor(
     val contributions: Int? = null,
 )
 
-private val CoreMaintainer = Contributor(
+private val CurrentMaintainer = Contributor(
+    id = "rebornlokii",
+    displayName = "@rebornlokii",
+    role = "Maintainer",
+    detail = "Maintains Material Music. GitHub: @rebornlokii.",
+    avatarUrl = "https://github.com/rebornlokii.png",
+    iconRes = R.drawable.round_developer_board_24,
+    githubUrl = "https://github.com/rebornlokii",
+)
+
+private val OriginalFossMaintainer = Contributor(
     id = "lostf1sh",
     displayName = "@lostf1sh",
+<<<<<<< HEAD
     role = "FOSS Maintainer",
     detail = "Maintains MaterialMusic. GitHub and Telegram: @lostf1sh.",
+=======
+    role = "Original FOSS Maintainer",
+    detail = "Maintained PixelPlayerOSS, the free and open-source project Material Music is based on.",
+    badge = "Original project",
+>>>>>>> origin/main
     avatarUrl = "https://github.com/lostf1sh.png",
     iconRes = R.drawable.round_developer_board_24,
     githubUrl = "https://github.com/lostf1sh",
-    telegramUrl = "https://t.me/lostf1sh",
 )
 
-private val NonFossMaintainer = Contributor(
+private val OriginalAuthor = Contributor(
     id = "theovilardo",
     displayName = "@theovilardo",
+<<<<<<< HEAD
     role = "Author / Non-FOSS Maintainer",
     detail = "Author and maintainer of the original Google Play / non-FOSS MaterialMusic release.",
+=======
+    role = "Original Author",
+    detail = "Author and maintainer of the original Google Play / non-FOSS PixelPlayer release.",
+>>>>>>> origin/main
     badge = "Original app",
     avatarUrl = "https://github.com/theovilardo.png",
     iconRes = R.drawable.round_developer_board_24,
@@ -146,13 +165,18 @@ private val NonFossMaintainer = Contributor(
 )
 
 private val AboutMaintainers = listOf(
-    CoreMaintainer,
-    NonFossMaintainer,
+    CurrentMaintainer,
+    OriginalFossMaintainer,
+    OriginalAuthor,
 )
 
+<<<<<<< HEAD
 private const val SourceRepoUrl = "https://github.com/lostf1sh/MaterialMusic"
 private const val FDroidUrl = "https://f-droid.org/packages/com.material.music/"
 private const val SponsorUrl = "https://github.com/sponsors/lostf1sh"
+=======
+private const val SourceRepoUrl = "https://github.com/rebornlokii/MaterialMusic"
+>>>>>>> origin/main
 
 private data class ProjectLink(
     val id: String,
@@ -186,6 +210,7 @@ fun AboutScreen(
             icon = painterResource(R.drawable.github),
             onClick = { openUrl(context, SourceRepoUrl) },
         ),
+<<<<<<< HEAD
         ProjectLink(
             id = "fdroid",
             title = stringResource(R.string.about_link_fdroid_title),
@@ -200,6 +225,8 @@ fun AboutScreen(
             icon = rememberVectorPainter(Icons.Rounded.Balance),
             onClick = { navController.navigateSafely(Screen.Licenses.route) },
         ),
+=======
+>>>>>>> origin/main
     )
 
     val transitionState = remember { MutableTransitionState(false) }
@@ -319,16 +346,6 @@ fun AboutScreen(
                 )
             }
 
-            item(key = "support_card") {
-                AboutSupportCard(
-                    onSponsorClick = { openUrl(context, SponsorUrl) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 12.dp),
-                )
-            }
-
             item(key = "project_title") {
                 AboutSectionHeader(
                     title = stringResource(R.string.about_project_title),
@@ -424,7 +441,7 @@ private fun AboutHeroCard(
                         color = MaterialTheme.colorScheme.primaryContainer,
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.pixelplayer_base_monochrome),
+                            painter = painterResource(R.drawable.materialmusic_base_monochrome),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(10.dp).size(28.dp),
@@ -523,113 +540,6 @@ private fun CommunitySignalsRow() {
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun AboutSupportCard(
-    onSponsorClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val shape = AbsoluteSmoothCornerShape(30.dp, 60)
-
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = MaterialTheme.colorScheme.primaryContainer,
-        tonalElevation = 4.dp,
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primary,
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.rounded_favorite_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.padding(12.dp).size(24.dp),
-                    )
-                }
-
-                Spacer(Modifier.width(12.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.about_support_eyebrow),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f),
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = stringResource(R.string.about_support_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
-            Text(
-                text = stringResource(R.string.about_support_body),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.86f),
-            )
-
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                listOf(
-                    stringResource(R.string.about_support_chip_foss),
-                    stringResource(R.string.about_support_chip_ci),
-                    stringResource(R.string.about_support_chip_streaming),
-                ).forEach { label ->
-                    Surface(
-                        shape = AbsoluteSmoothCornerShape(16.dp, 60),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.10f),
-                    ) {
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-            }
-
-            FilledTonalButton(
-                onClick = onSponsorClick,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.github),
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = stringResource(R.string.about_support_cta),
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
         }
     }

@@ -81,15 +81,21 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.viewmodel.MainViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistViewModel
+<<<<<<< HEAD
 import com.material.music.presentation.viewmodel.SmartMixTarget
 import com.material.music.presentation.viewmodel.SmartMixViewModel
+=======
+>>>>>>> origin/main
 import com.material.music.utils.formatDuration
 import com.material.music.utils.shapes.RoundedStarShape
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import com.material.music.presentation.components.subcomps.EnhancedSongListItem
+<<<<<<< HEAD
 import com.material.music.presentation.utils.getSegmentedItemShape
+=======
+>>>>>>> origin/main
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import kotlinx.collections.immutable.persistentListOf
@@ -104,8 +110,8 @@ fun DailyMixScreen(
     navController: NavController,
     smartMixViewModel: SmartMixViewModel = hiltViewModel(),
 ) = traceSection("DailyMixScreen.Composition") {
-    val dailyMixTitle = stringResource(R.string.presentation_batch_b_daily_mix_title)
-    val playItLabel = stringResource(R.string.presentation_batch_b_play_it)
+    val dailyMixTitle = stringResource(R.string.daily_mix_title)
+    val playItLabel = stringResource(R.string.play_it)
     val shuffleLabel = stringResource(R.string.shortcut_shuffle_short)
     val dailyMixSongs: ImmutableList<Song> by playerViewModel.dailyMixSongs.collectAsStateWithLifecycle()
     val currentSongId by remember { playerViewModel.stablePlayerState.map { it.currentSong?.id }.distinctUntilChanged() }.collectAsStateWithLifecycle(initialValue = null)
@@ -387,7 +393,7 @@ private fun ExpressiveDailyMixHeader(
     scrollState: LazyListState,
     onTuneMix: () -> Unit
 ) = traceSection("ExpressiveDailyMixHeader.Composition") {
-    val dailyMixHeaderTitle = stringResource(R.string.presentation_batch_b_daily_mix_title)
+    val dailyMixHeaderTitle = stringResource(R.string.daily_mix_title)
     val albumArts = remember(songs) { songs.map { it.albumArtUriString }.distinct().take(3) }
     val totalDuration = remember(songs) { songs.sumOf { it.duration } }
 
@@ -515,7 +521,7 @@ private fun ExpressiveDailyMixHeader(
                 Text(
                     modifier = Modifier.padding(start = 3.dp),
                     text = pluralStringResource(
-                        R.plurals.presentation_batch_b_songs_dot_duration,
+                        R.plurals.daily_mix_songs_dot_duration,
                         songs.size,
                         songs.size,
                         formatDuration(totalDuration)

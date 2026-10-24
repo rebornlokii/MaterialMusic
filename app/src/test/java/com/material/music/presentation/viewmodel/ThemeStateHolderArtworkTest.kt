@@ -1,6 +1,9 @@
 package com.material.music.presentation.viewmodel
 
+<<<<<<< HEAD
 import android.net.Uri
+=======
+>>>>>>> origin/main
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
@@ -8,19 +11,26 @@ import com.material.music.data.preferences.AlbumArtColorAccuracy
 import com.material.music.data.preferences.AlbumArtPaletteStyle
 import com.material.music.data.preferences.ThemePreference
 import com.material.music.data.preferences.ThemePreferencesRepository
+<<<<<<< HEAD
 import com.material.music.utils.AlbumArtUtils
+=======
+>>>>>>> origin/main
 import com.material.music.utils.LocalArtworkUri
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+<<<<<<< HEAD
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import kotlinx.coroutines.CancellationException
+=======
+>>>>>>> origin/main
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+<<<<<<< HEAD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -34,10 +44,19 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+=======
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertNull
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ThemeStateHolderArtworkTest {
+<<<<<<< HEAD
     private val artworkVersion = MutableStateFlow(0L)
     private val processor = mockk<ColorSchemeProcessor>()
     private val oldScheme = scheme(Color.Red)
@@ -118,6 +137,15 @@ class ThemeStateHolderArtworkTest {
 
     @Test
     fun `stale owner clearing keeps album palettes generating until the current owner clears`() = runTest {
+=======
+    private val processor = mockk<ColorSchemeProcessor>()
+    private val oldScheme = scheme(Color.Red)
+
+    @Test
+    fun `stale owner clearing keeps album palettes generating until the current owner clears`() = runTest {
+        coEvery { processor.getOrGenerateColorScheme(any(), any(), any(), any()) } returns oldScheme
+
+>>>>>>> origin/main
         val holder = holder()
         val staleOwner = childScope()
         val currentOwner = childScope()
@@ -141,6 +169,7 @@ class ThemeStateHolderArtworkTest {
         currentOwner.cancel()
     }
 
+<<<<<<< HEAD
     @Test
     fun `current owner clearing hands album palettes back to the surviving owner`() = runTest {
         val holder = holder()
@@ -161,13 +190,18 @@ class ThemeStateHolderArtworkTest {
         mainActivityOwner.cancel()
     }
 
+=======
+>>>>>>> origin/main
     private fun TestScope.childScope(): CoroutineScope =
         CoroutineScope(backgroundScope.coroutineContext + Job(backgroundScope.coroutineContext[Job]))
 
     private fun holder(): ThemeStateHolder {
         val preferences = mockk<ThemePreferencesRepository> {
             every { playerThemePreferenceFlow } returns flowOf(ThemePreference.ALBUM_ART)
+<<<<<<< HEAD
             every { globalNowPlayingThemeEnabledFlow } returns flowOf(false)
+=======
+>>>>>>> origin/main
             every { albumArtPaletteStyleFlow } returns flowOf(AlbumArtPaletteStyle.default)
             every { albumArtColorAccuracyFlow } returns flowOf(AlbumArtColorAccuracy.DEFAULT)
         }

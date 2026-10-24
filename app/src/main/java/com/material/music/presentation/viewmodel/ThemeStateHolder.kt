@@ -9,8 +9,11 @@ import com.material.music.data.preferences.ThemePreferencesRepository
 import com.material.music.ui.theme.DarkColorScheme
 import com.material.music.ui.theme.clearExtractedColorCache
 import com.material.music.utils.traceAsyncSection
+<<<<<<< HEAD
 import com.material.music.utils.AlbumArtUtils
 import com.material.music.utils.LocalArtworkUri
+=======
+>>>>>>> origin/main
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -62,6 +65,7 @@ class ThemeStateHolder @Inject constructor(
         var observedArtworkVersion = AlbumArtUtils.artworkCacheVersion.value
 
         scope.launch {
+<<<<<<< HEAD
             AlbumArtUtils.artworkCacheVersion.collectLatest { version ->
                 if (version == observedArtworkVersion) return@collectLatest
                 observedArtworkVersion = version
@@ -82,6 +86,12 @@ class ThemeStateHolder @Inject constructor(
                     albumScheme
                 } else {
                     null
+=======
+            combine(playerThemePreference, _currentAlbumArtColorSchemePair) { playerPref, albumScheme ->
+                when (playerPref) {
+                    com.material.music.data.preferences.ThemePreference.ALBUM_ART -> albumScheme
+                    else -> null
+>>>>>>> origin/main
                 }
             }.collect { _activePlayerColorSchemePair.value = it }
         }
@@ -390,11 +400,20 @@ class ThemeStateHolder @Inject constructor(
     }
 
     fun onCleared(owner: CoroutineScope) {
+<<<<<<< HEAD
         // A stale PlayerViewModel clearing leaves the newer binding alone; the current one
         // clearing hands extraction back to the previous live PlayerViewModel, whose own
         // collectors above are still running. Going scope-less instead would stop album color
         // extraction until process restart.
         owners.remove(owner) { next -> scope = next }
+=======
+        // Only the scope that currently owns the binding may sever it. A stale
+        // PlayerViewModel clearing after a newer instance already re-initialized this
+        // singleton must not leave it scope-less (breaks album color extraction until
+        // process restart).
+        if (scope !== owner) return
+        scope = null
+>>>>>>> origin/main
     }
 
 }

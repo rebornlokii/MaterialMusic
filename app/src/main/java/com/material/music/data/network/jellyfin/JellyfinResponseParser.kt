@@ -5,7 +5,10 @@ import com.material.music.data.jellyfin.model.JellyfinArtist
 import com.material.music.data.jellyfin.model.JellyfinLibrary
 import com.material.music.data.jellyfin.model.JellyfinPlaylist
 import com.material.music.data.jellyfin.model.JellyfinSong
+<<<<<<< HEAD
 import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import org.json.JSONObject
 import timber.log.Timber
 

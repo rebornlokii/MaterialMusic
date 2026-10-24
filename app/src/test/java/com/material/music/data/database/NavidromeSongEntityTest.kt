@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 
 class NavidromeSongEntityTest {
 
+<<<<<<< HEAD
     private fun entity(trackNumber: Int = 1, discNumber: Int = 1) = NavidromeSongEntity(
         id = "__library___song-1",
         navidromeId = "song-1",
@@ -31,12 +32,40 @@ class NavidromeSongEntityTest {
     @Test
     fun `toSong keeps server id separate from playlist scoped row id`() {
         val song = entity().toSong()
+=======
+    @Test
+    fun `toSong keeps server id separate from playlist scoped row id`() {
+        val entity = NavidromeSongEntity(
+            id = "__library___song-1",
+            navidromeId = "song-1",
+            playlistId = "__library__",
+            title = "Track",
+            artist = "Artist",
+            artistId = "artist-1",
+            album = "Album",
+            albumId = "album-1",
+            coverArtId = "cover-1",
+            duration = 180_000L,
+            trackNumber = 1,
+            discNumber = 1,
+            year = 2024,
+            genre = "Genre",
+            bitRate = 320,
+            mimeType = "audio/mpeg",
+            suffix = "mp3",
+            path = "Artist/Album/Track.mp3",
+            dateAdded = 123L
+        )
+
+        val song = entity.toSong()
+>>>>>>> origin/main
 
         assertThat(song.id).isEqualTo("navidrome___library___song-1")
         assertThat(song.navidromeId).isEqualTo("song-1")
         assertThat(song.contentUriString).isEqualTo("navidrome://song-1")
     }
 
+<<<<<<< HEAD
     @Test
     fun `toSong carries the disc and track number`() {
         val song = entity(trackNumber = 3, discNumber = 2).toSong()
@@ -50,6 +79,8 @@ class NavidromeSongEntityTest {
         assertThat(entity(discNumber = 0).toSong().discNumber).isNull()
     }
 
+=======
+>>>>>>> origin/main
     private fun navidromeSong(created: Long) = NavidromeSong(
         id = "song-1",
         title = "Track",

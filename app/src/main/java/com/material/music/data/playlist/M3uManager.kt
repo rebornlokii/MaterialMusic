@@ -6,6 +6,7 @@ import com.material.music.data.model.Playlist
 import com.material.music.data.model.Song
 import com.material.music.data.repository.MusicRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+<<<<<<< HEAD
 import java.io.IOException
 import java.io.Reader
 import javax.inject.Inject
@@ -38,6 +39,13 @@ data class M3uParseResult(
     val ambiguousEntries: List<String>,
 )
 
+=======
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import javax.inject.Inject
+import javax.inject.Singleton
+
+>>>>>>> origin/main
 @Singleton
 class M3uManager @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -45,6 +53,7 @@ class M3uManager @Inject constructor(
 ) {
 
     suspend fun parseM3u(uri: Uri): Pair<String, List<String>> {
+<<<<<<< HEAD
         var playlistName = "Imported Playlist"
         val allSongs = musicRepository.getAllSongsOnce()
         val content = context.contentResolver.openInputStream(uri)
@@ -52,6 +61,40 @@ class M3uManager @Inject constructor(
             ?.use(::readM3uTextBounded)
             .orEmpty()
         val parsed = parseContent(content, allSongs)
+=======
+        val songIds = mutableListOf<String>()
+        var playlistName = "Imported Playlist"
+
+        val allSongs = musicRepository.getAllSongsOnce()
+        
+        val songsByPath = allSongs.associateBy { it.path }
+        val songsByFileName = allSongs.groupBy { it.path.substringAfterLast("/") }
+        val songsByContentUriFileName = allSongs.groupBy { it.contentUriString.substringAfterLast("/") }
+
+        context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
+                    val trimmedLine = line?.trim() ?: continue
+                    if (trimmedLine.isEmpty() || trimmedLine.startsWith("#")) {
+                        continue
+                    }
+                    
+                    val songByPath = songsByPath[trimmedLine]
+                    if (songByPath != null) {
+                        songIds.add(songByPath.id)
+                    } else {
+                        val fileName = trimmedLine.substringAfterLast("/")
+                        val matchedSong = songsByFileName[fileName]?.firstOrNull()
+                            ?: songsByContentUriFileName[fileName]?.firstOrNull()
+                        if (matchedSong != null) {
+                            songIds.add(matchedSong.id)
+                        }
+                    }
+                }
+            }
+        }
+>>>>>>> origin/main
 
         context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
             val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
@@ -60,6 +103,7 @@ class M3uManager @Inject constructor(
             }
         }
 
+<<<<<<< HEAD
         return Pair(playlistName, parsed.songIds)
     }
 
@@ -146,5 +190,18 @@ class M3uManager @Inject constructor(
 
         private fun normalizeEntry(value: String): String =
             value.trim().replace('\\', '/')
+=======
+        return Pair(playlistName, songIds)
+    }
+
+    fun generateM3u(playlist: Playlist, songs: List<Song>): String {
+        val sb = StringBuilder()
+        sb.append("#EXTM3U\n")
+        for (song in songs) {
+            sb.append("#EXTINF:${song.duration / 1000},${song.artist} - ${song.title}\n")
+            sb.append("${song.path}\n")
+        }
+        return sb.toString()
+>>>>>>> origin/main
     }
 }

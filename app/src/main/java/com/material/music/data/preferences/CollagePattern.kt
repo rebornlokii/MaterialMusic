@@ -1,5 +1,6 @@
 package com.material.music.data.preferences
 
+<<<<<<< HEAD
 import androidx.annotation.StringRes
 import com.material.music.R
 
@@ -17,6 +18,17 @@ enum class CollagePattern(
     SUNNY_BLOOM("sunny_bloom", R.string.collage_pattern_sunny_bloom),
     PIXEL_COOKIE("pixel_cookie", R.string.collage_pattern_pixel_cookie),
     HEART_GARDEN("heart_garden", R.string.collage_pattern_heart_garden);
+=======
+enum class CollagePattern(
+    val storageKey: String,
+    val label: String
+) {
+    COSMIC_SWIRL("cosmic_swirl", "Cosmic Swirl"),
+    HONEYCOMB_GROOVE("honeycomb_groove", "Honeycomb Groove"),
+    VINYL_STACK("vinyl_stack", "Vinyl Stack"),
+    PIXEL_MOSAIC("pixel_mosaic", "Pixel Mosaic"),
+    STARDUST_SCATTER("stardust_scatter", "Stardust Scatter");
+>>>>>>> origin/main
 
     companion object {
         val default: CollagePattern = COSMIC_SWIRL

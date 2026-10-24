@@ -3,10 +3,16 @@ package com.material.music.presentation.components
 import androidx.compose.ui.unit.dp
 import com.material.music.data.model.SyncedLine
 import com.material.music.data.model.SyncedWord
+<<<<<<< HEAD
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+=======
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+>>>>>>> origin/main
 
 class LyricsSheetLogicTest {
 

@@ -1,6 +1,10 @@
 # Third-Party Notices
 
+<<<<<<< HEAD
 MaterialMusic is licensed under the GNU General Public License v3.0 (GPL-3.0) and includes third-party open-source components.
+=======
+Material Music is licensed under the GNU General Public License v3.0 (GPL-3.0) and includes third-party open-source components.
+>>>>>>> origin/main
 
 Bundled fonts:
 

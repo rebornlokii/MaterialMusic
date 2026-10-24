@@ -67,19 +67,19 @@ private fun changelogVersions(): List<ChangelogVersion> = listOf(
         version = "0.2.0",
         date = "2026-07-12",
         sections = listOf(
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_whats_new, R.array.presentation_batch_g_changelog_v020_whats_new),
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_improvements, R.array.presentation_batch_g_changelog_v020_improvements),
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_under_the_hood, R.array.presentation_batch_g_changelog_v020_under_the_hood)
+            ChangelogSection(R.string.changelog_sec_whats_new, R.array.changelog_v020_whats_new),
+            ChangelogSection(R.string.changelog_sec_improvements, R.array.changelog_v020_improvements),
+            ChangelogSection(R.string.changelog_sec_under_the_hood, R.array.changelog_v020_under_the_hood)
         )
     ),
     ChangelogVersion(
         version = "0.1.0",
         date = "2026-06-09",
         sections = listOf(
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_initial_release, R.array.presentation_batch_g_changelog_070_whats_new),
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_removed_for_foss, R.array.presentation_batch_g_changelog_070_improvements),
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_release_readiness, R.array.presentation_batch_g_changelog_070_fixes),
-            ChangelogSection(R.string.presentation_batch_g_changelog_sec_security_privacy, R.array.presentation_batch_g_changelog_070_added)
+            ChangelogSection(R.string.changelog_sec_initial_release, R.array.changelog_070_whats_new),
+            ChangelogSection(R.string.changelog_sec_removed_for_foss, R.array.changelog_070_improvements),
+            ChangelogSection(R.string.changelog_sec_release_readiness, R.array.changelog_070_fixes),
+            ChangelogSection(R.string.changelog_sec_security_privacy, R.array.changelog_070_added)
         )
     )
 )
@@ -90,7 +90,11 @@ fun ChangelogBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+<<<<<<< HEAD
     val changelogUrl = "https://github.com/lostf1sh/MaterialMusic"
+=======
+    val changelogUrl = "https://github.com/rebornlokii/MaterialMusic"
+>>>>>>> origin/main
     val changelog = changelogVersions()
 
     val fabCornerRadius = 16.dp
@@ -103,7 +107,7 @@ fun ChangelogBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(R.string.presentation_batch_g_changelog_title),
+                text = stringResource(R.string.changelog_title),
                 fontFamily = RoundedSans,
                 style = ExpTitleTypography.displaySmall,
                 color = MaterialTheme.colorScheme.onSurface
@@ -160,7 +164,7 @@ fun ChangelogBottomSheet(
                     contentDescription = null
                 )
             },
-            text = { Text(text = stringResource(R.string.presentation_batch_g_changelog_view_github)) },
+            text = { Text(text = stringResource(R.string.changelog_view_github)) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(horizontal = 24.dp, vertical = 24.dp)

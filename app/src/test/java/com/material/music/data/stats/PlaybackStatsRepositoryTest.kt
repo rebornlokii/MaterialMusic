@@ -1,6 +1,7 @@
 package com.material.music.data.stats
 
 import com.google.common.truth.Truth.assertThat
+<<<<<<< HEAD
 import com.material.music.R
 import com.material.music.data.model.ArtistRef
 import com.material.music.data.model.Song
@@ -11,12 +12,22 @@ import java.time.Month
 import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Locale
+=======
+import com.material.music.data.model.ArtistRef
+import com.material.music.data.model.Song
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+>>>>>>> origin/main
 import java.util.concurrent.TimeUnit
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.io.path.createTempDirectory
 import kotlinx.coroutines.test.runTest
+<<<<<<< HEAD
 import org.junit.jupiter.api.Assumptions.assumeTrue
+=======
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 class PlaybackStatsRepositoryTest {
@@ -229,6 +240,7 @@ class PlaybackStatsRepositoryTest {
         assertThat(summary.topGenres.single().uniqueArtists).isEqualTo(2)
     }
 
+<<<<<<< HEAD
     @Test
     fun `loadSummary credits a multi-genre song to each of its genres`() = runTest {
         val repository = createRepository()
@@ -441,11 +453,15 @@ class PlaybackStatsRepositoryTest {
     private fun createRepository(
         weekLabel: (Int) -> String = { week -> "Week $week" }
     ): PlaybackStatsRepository {
+=======
+    private fun createRepository(): PlaybackStatsRepository {
+>>>>>>> origin/main
         val uniqueDir = createTempDirectory(
             "playback-stats-test-${Instant.now().toEpochMilli()}-"
         ).toFile()
         val testContext = mockk<android.content.Context>(relaxed = true)
         every { testContext.filesDir } returns uniqueDir
+<<<<<<< HEAD
         every {
             testContext.getString(R.string.presentation_batch_g_stats_week_label, *anyVararg())
         } answers {
@@ -455,6 +471,8 @@ class PlaybackStatsRepositoryTest {
             }
             weekLabel(formatArgs.first() as Int)
         }
+=======
+>>>>>>> origin/main
         return PlaybackStatsRepository(testContext)
     }
 

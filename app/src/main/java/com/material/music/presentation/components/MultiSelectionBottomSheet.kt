@@ -68,7 +68,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.size.Size
 import com.material.music.data.model.Song
+<<<<<<< HEAD
 import com.material.music.data.offline.CloudOfflineRepository
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 
@@ -92,7 +95,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.material.music.R
 import com.material.music.presentation.components.subcomps.AutoSizingTextToFill
+<<<<<<< HEAD
 import com.material.music.presentation.components.subcomps.TightWrapText
+=======
+>>>>>>> origin/main
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

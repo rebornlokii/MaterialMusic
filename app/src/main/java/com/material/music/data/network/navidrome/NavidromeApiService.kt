@@ -33,7 +33,11 @@ class NavidromeApiService @Inject constructor(
     companion object {
         private const val TAG = "NavidromeApi"
         private const val API_VERSION = "1.16.1"
+<<<<<<< HEAD
         private const val DEFAULT_CLIENT_ID = "MaterialMusic"
+=======
+        private const val DEFAULT_CLIENT_ID = "Material Music"
+>>>>>>> origin/main
         private const val DEFAULT_FORMAT = "json"
     }
 

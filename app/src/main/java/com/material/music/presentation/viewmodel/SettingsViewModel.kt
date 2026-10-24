@@ -5,8 +5,11 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.material.music.data.backup.BackupManager
+<<<<<<< HEAD
 import com.material.music.data.backup.format.BackupEncryptedException
 import com.material.music.data.backup.format.BackupWrongPassphraseException
+=======
+>>>>>>> origin/main
 import com.material.music.data.backup.model.BackupSection
 import com.material.music.data.backup.model.BackupOperationType
 import com.material.music.data.backup.model.BackupTransferProgressUpdate
@@ -14,6 +17,7 @@ import com.material.music.data.backup.model.BackupHistoryEntry
 import com.material.music.data.backup.model.RestorePlan
 import com.material.music.data.backup.model.RestoreResult
 import com.material.music.data.backup.model.ValidationError
+<<<<<<< HEAD
 import com.material.music.data.model.AudioOutputMode
 import com.material.music.data.preferences.AppLanguage
 import com.material.music.data.preferences.AppThemeMode
@@ -25,6 +29,13 @@ import com.material.music.data.preferences.ThemePreference
 import com.material.music.data.preferences.ThemePreset
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.utils.FolderArtworkSettingsCoordinator
+=======
+import com.material.music.data.preferences.AppThemeMode
+import com.material.music.data.preferences.CarouselStyle
+import com.material.music.data.preferences.LibraryNavigationMode
+import com.material.music.data.preferences.ThemePreference
+import com.material.music.data.preferences.UserPreferencesRepository
+>>>>>>> origin/main
 import com.material.music.data.preferences.AlbumArtQuality
 import com.material.music.data.preferences.AlbumArtColorAccuracy
 import com.material.music.data.preferences.AlbumArtPaletteStyle
@@ -54,7 +65,10 @@ import com.material.music.data.preferences.NavBarStyle
 import com.material.music.data.preferences.LaunchTab
 import com.material.music.data.model.Song
 import com.material.music.data.service.player.HiFiCapabilityChecker
+<<<<<<< HEAD
 import com.material.music.utils.AppLocaleManager
+=======
+>>>>>>> origin/main
 import java.io.File
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -105,6 +119,7 @@ data class SettingsUiState(
     val hapticsEnabled: Boolean = true,
     val immersiveLyricsEnabled: Boolean = false,
     val immersiveLyricsTimeout: Long = 4000L,
+    val lyricsFontSizeMultiplier: Float = 1.0f,
     val useAnimatedLyrics: Boolean = false,
     val animatedLyricsBlurEnabled: Boolean = true,
     val animatedLyricsBlurStrength: Float = 2.5f,
@@ -179,6 +194,7 @@ private sealed interface SettingsUiUpdate {
         val hapticsEnabled: Boolean,
         val immersiveLyricsEnabled: Boolean,
         val immersiveLyricsTimeout: Long,
+        val lyricsFontSizeMultiplier: Float,
         val animatedLyricsBlurEnabled: Boolean,
         val animatedLyricsBlurStrength: Float
     ) : SettingsUiUpdate
@@ -344,6 +360,7 @@ class SettingsViewModel @Inject constructor(
                 userPreferencesRepository.hapticsEnabledFlow,
                 userPreferencesRepository.immersiveLyricsEnabledFlow,
                 userPreferencesRepository.immersiveLyricsTimeoutFlow,
+                userPreferencesRepository.lyricsFontSizeMultiplierFlow,
                 userPreferencesRepository.animatedLyricsBlurEnabledFlow,
                 userPreferencesRepository.animatedLyricsBlurStrengthFlow
             ) { values ->
@@ -370,8 +387,9 @@ class SettingsViewModel @Inject constructor(
                     hapticsEnabled = values[11] as Boolean,
                     immersiveLyricsEnabled = values[12] as Boolean,
                     immersiveLyricsTimeout = values[13] as Long,
-                    animatedLyricsBlurEnabled = values[14] as Boolean,
-                    animatedLyricsBlurStrength = values[15] as Float
+                    lyricsFontSizeMultiplier = values[14] as Float,
+                    animatedLyricsBlurEnabled = values[15] as Boolean,
+                    animatedLyricsBlurStrength = values[16] as Float
                 )
             }.collect { update ->
                 _uiState.update { state ->
@@ -390,6 +408,7 @@ class SettingsViewModel @Inject constructor(
                         hapticsEnabled = update.hapticsEnabled,
                         immersiveLyricsEnabled = update.immersiveLyricsEnabled,
                         immersiveLyricsTimeout = update.immersiveLyricsTimeout,
+                        lyricsFontSizeMultiplier = update.lyricsFontSizeMultiplier,
                         animatedLyricsBlurEnabled = update.animatedLyricsBlurEnabled,
                         animatedLyricsBlurStrength = update.animatedLyricsBlurStrength
                     )
@@ -951,6 +970,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setLyricsFontSizeMultiplier(multiplier: Float) {
+        viewModelScope.launch {
+            userPreferencesRepository.setLyricsFontSizeMultiplier(multiplier)
+        }
+    }
+
     /**
      * Rebuilds local MediaStore-backed songs from scratch while preserving cloud sources.
      * Local imported lyrics, favorites, and user metadata edits are removed for rebuilt songs.
@@ -1002,6 +1027,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.setAlbumArtCacheLimitMb(limitMb)
             com.material.music.utils.AlbumArtCacheManager.configuredCacheLimitMb = limitMb.toLong()
+<<<<<<< HEAD
         }
     }
 
@@ -1013,6 +1039,8 @@ class SettingsViewModel @Inject constructor(
     fun setUseFolderAlbumArt(enabled: Boolean) {
         viewModelScope.launch {
             folderArtworkSettingsCoordinator.setEnabled(enabled)
+=======
+>>>>>>> origin/main
         }
     }
 

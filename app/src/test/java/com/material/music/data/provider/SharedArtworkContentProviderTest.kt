@@ -6,6 +6,7 @@ import org.junit.Test
 class SharedArtworkContentProviderTest {
 
     @Test
+<<<<<<< HEAD
     fun artworkReadAccess_allowsProviderProcess() {
         assertThat(
             SharedArtworkContentProvider.hasArtworkReadAccess(
@@ -108,6 +109,8 @@ class SharedArtworkContentProviderTest {
     }
 
     @Test
+=======
+>>>>>>> origin/main
     fun buildSongUri_usesDedicatedArtworkAuthority() {
         val uri = SharedArtworkContentProvider.buildSongUriString(
             packageName = "com.material.music",
@@ -148,6 +151,7 @@ class SharedArtworkContentProviderTest {
 
         assertThat(songId).isEqualTo(42L)
     }
+<<<<<<< HEAD
 
     @Test
     fun cloudArtworkUri_roundTripsNavidromeArtwork() {
@@ -196,4 +200,6 @@ class SharedArtworkContentProviderTest {
     private companion object {
         const val PACKAGE = "com.material.music"
     }
+=======
+>>>>>>> origin/main
 }

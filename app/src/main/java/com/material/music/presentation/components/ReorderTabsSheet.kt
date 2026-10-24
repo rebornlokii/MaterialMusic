@@ -2,7 +2,10 @@
 
 package com.material.music.presentation.components
 
+<<<<<<< HEAD
 import androidx.annotation.DrawableRes
+=======
+>>>>>>> origin/main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,26 +17,40 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+<<<<<<< HEAD
 import androidx.compose.foundation.layout.size
+=======
+import androidx.compose.foundation.layout.width
+>>>>>>> origin/main
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+<<<<<<< HEAD
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.DragIndicator
 import androidx.compose.material.icons.rounded.Remove
+=======
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.DragIndicator
+>>>>>>> origin/main
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MediumExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
+<<<<<<< HEAD
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+=======
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+>>>>>>> origin/main
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -50,10 +67,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+<<<<<<< HEAD
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+=======
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
+>>>>>>> origin/main
 import android.view.HapticFeedbackConstants
 import com.material.music.R
 import com.material.music.presentation.library.LibraryTabId
@@ -70,6 +95,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
+<<<<<<< HEAD
 /**
  * The stored order *is* the list of visible tabs, so every known tab missing from it is hidden.
  */
@@ -90,6 +116,8 @@ internal fun moveTabByKey(tabs: List<String>, fromKey: Any?, toKey: Any?): List<
     return tabs.toMutableList().apply { add(toIndex, removeAt(fromIndex)) }
 }
 
+=======
+>>>>>>> origin/main
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ReorderTabsSheet(
@@ -139,9 +167,15 @@ fun ReorderTabsSheet(
 
     val reorderableState = rememberReorderableLazyListState(
         onMove = { from, to ->
+<<<<<<< HEAD
             val moved = moveTabByKey(localTabs, from.key, to.key)
                 ?: return@rememberReorderableLazyListState
             localTabs = moved.toImmutableList()
+=======
+            localTabs = localTabs.toMutableList().apply {
+                add(to.index, removeAt(from.index))
+            }.toImmutableList()
+>>>>>>> origin/main
             performAppCompatHapticFeedback(
                 view,
                 appHapticsConfig,
@@ -152,8 +186,11 @@ fun ReorderTabsSheet(
     )
     var isLoading by remember { mutableStateOf(false) }
 
+<<<<<<< HEAD
     val hiddenTabs = remember(localTabs) { hiddenLibraryTabs(localTabs) }
 
+=======
+>>>>>>> origin/main
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = sheetState,
@@ -209,6 +246,7 @@ fun ReorderTabsSheet(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize().padding(horizontal = 14.dp),
+<<<<<<< HEAD
                         // Leaves room for the last hidden row above the floating toolbar.
                         contentPadding = PaddingValues(bottom = 120.dp, top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -283,6 +321,43 @@ fun ReorderTabsSheet(
                                         localTabs = (localTabs + tabId.stableKey).toImmutableList()
                                     }
                                 )
+=======
+                        contentPadding = PaddingValues(bottom = 100.dp, top = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(localTabs, key = { it }) { tab ->
+                            ReorderableItem(reorderableState, key = tab) { isDragging ->
+                                LaunchedEffect(isDragging) {
+                                    if (isDragging) {
+                                        performAppCompatHapticFeedback(
+                                            view,
+                                            appHapticsConfig,
+                                            HapticFeedbackConstants.GESTURE_START
+                                        )
+                                    }
+                                }
+
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(CircleShape),
+                                    shadowElevation = if (isDragging) 4.dp else 0.dp,
+                                    color = MaterialTheme.colorScheme.surfaceContainerLowest
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.DragIndicator,
+                                            contentDescription = stringResource(R.string.cd_drag_handle),
+                                            modifier = Modifier.draggableHandle()
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Text(text = tab, style = MaterialTheme.typography.bodyLarge)
+                                    }
+                                }
+>>>>>>> origin/main
                             }
                         }
                     }
@@ -292,6 +367,7 @@ fun ReorderTabsSheet(
     }
 }
 
+<<<<<<< HEAD
 /** Header for the visible and hidden groups, with the number of tabs in each. */
 @Composable
 private fun TabsEditorSectionHeader(title: String, count: Int) {
@@ -439,6 +515,8 @@ private fun LibraryTabId.iconRes(): Int = when (this) {
     LibraryTabId.Genres -> R.drawable.rounded_category_24
 }
 
+=======
+>>>>>>> origin/main
 @Composable
 fun FloatingToolBar(
     modifier: Modifier,

@@ -25402,7 +25402,11 @@ Lcom/material/music/data/database/LocalPlaylistDao;
 Lcom/material/music/data/database/LocalPlaylistDao_Impl;
 SPLcom/material/music/data/database/LocalPlaylistDao_Impl;-><clinit>()V
 SPLcom/material/music/data/database/LocalPlaylistDao_Impl;-><init>(Landroidx/room/RoomDatabase;)V
+<<<<<<< HEAD
 PLcom/material/music/data/database/LocalPlaylistDao_Impl;->__fetchRelationshipplaylistSongsAscomLostf1shPixelplayerossDataDatabasePlaylistSongEntity(Landroidx/sqlite/SQLiteConnection;Landroidx/collection/ArrayMap;)V
+=======
+PLcom/material/music/data/database/LocalPlaylistDao_Impl;->__fetchRelationshipplaylistSongsAscomMaterialMusicDataDatabasePlaylistSongEntity(Landroidx/sqlite/SQLiteConnection;Landroidx/collection/ArrayMap;)V
+>>>>>>> origin/main
 PLcom/material/music/data/database/LocalPlaylistDao_Impl;->getPlaylistCount$lambda$0(Ljava/lang/String;Landroidx/sqlite/SQLiteConnection;)I
 PLcom/material/music/data/database/LocalPlaylistDao_Impl;->getPlaylistCount(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 PLcom/material/music/data/database/LocalPlaylistDao_Impl;->observePlaylistsWithSongs$lambda$0(Ljava/lang/String;Lcom/material/music/data/database/LocalPlaylistDao_Impl;Landroidx/sqlite/SQLiteConnection;)Ljava/util/List;

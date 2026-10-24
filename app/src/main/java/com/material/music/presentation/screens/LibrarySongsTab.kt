@@ -44,8 +44,11 @@ import com.material.music.data.model.Song
 import com.material.music.data.model.StorageFilter
 import com.material.music.data.model.SortOption
 import com.material.music.presentation.components.MiniPlayerHeight
+<<<<<<< HEAD
 import com.material.music.presentation.selection.dragToSelect
 import com.material.music.presentation.selection.rememberDragToSelectState
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.components.subcomps.EnhancedSongListItem
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -55,8 +58,11 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.LoadState
 import com.material.music.R
 import com.material.music.presentation.components.ExpressiveScrollBar
+<<<<<<< HEAD
 import com.material.music.presentation.components.animatedScrollbarInset
 import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.songFastScrollLabel
 import androidx.compose.ui.text.style.TextOverflow
 import com.material.music.presentation.utils.SegmentedItemShapeDefaults

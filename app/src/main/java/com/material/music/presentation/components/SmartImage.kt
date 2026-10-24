@@ -37,7 +37,10 @@ import coil.size.Size
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.material.music.R
+<<<<<<< HEAD
 import com.material.music.utils.LocalArtworkUri
+=======
+>>>>>>> origin/main
 
 val SmartImageCompactListTargetSize = Size(96, 96)
 val SmartImageListTargetSize = Size(128, 128)

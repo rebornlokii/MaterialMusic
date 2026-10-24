@@ -1,7 +1,10 @@
 package com.material.music.data.worker
 
+<<<<<<< HEAD
 import androidx.work.WorkInfo
 import java.util.UUID
+=======
+>>>>>>> origin/main
 import java.util.concurrent.TimeUnit
 
 internal enum class LocalScanMode {
@@ -64,6 +67,7 @@ internal fun incrementalFetchTimestampSeconds(
 }
 
 internal const val INCREMENTAL_TIMESTAMP_OVERLAP_SECONDS = 1L
+<<<<<<< HEAD
 
 /**
  * MediaStore cutoff, in seconds, for the local fetch. 0 reads every row. Unchanged rows are
@@ -159,3 +163,5 @@ internal fun shouldRunForegroundCatchUp(
     cooldownMs: Long,
     mediaStoreChangedWhileAway: Boolean
 ): Boolean = mediaStoreChangedWhileAway || nowMs - lastCatchUpMs >= cooldownMs
+=======
+>>>>>>> origin/main

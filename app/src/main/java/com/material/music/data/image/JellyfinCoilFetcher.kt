@@ -6,7 +6,10 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import com.material.music.data.jellyfin.JellyfinRepository
+<<<<<<< HEAD
 import kotlinx.coroutines.CancellationException
+=======
+>>>>>>> origin/main
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber

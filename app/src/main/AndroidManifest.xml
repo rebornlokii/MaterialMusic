@@ -54,7 +54,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+<<<<<<< HEAD
             android:theme="@style/Theme.App.Starting"
+=======
+            android:theme="@style/Theme.MaterialMusic"
+>>>>>>> origin/main
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
             android:windowSoftInputMode="adjustResize">
@@ -142,7 +146,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/pixelplayer_glance_widget_info" />
+                android:resource="@xml/materialmusic_glance_widget_info" />
         </receiver>
 
         <receiver

@@ -58,8 +58,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.material.music.data.model.Playlist
+<<<<<<< HEAD
 import com.material.music.presentation.components.subcomps.AutoSizingTextToFill
 import com.material.music.presentation.components.subcomps.TightWrapText
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.resolvePlaylistCoverContentColor
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape

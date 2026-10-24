@@ -1,11 +1,16 @@
 package com.material.music.data.network.jellyfin
 
+<<<<<<< HEAD
 import com.google.common.truth.Truth.assertThat
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
+=======
+import org.json.JSONObject
+import org.junit.jupiter.api.Assertions.assertFalse
+>>>>>>> origin/main
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -58,6 +63,7 @@ class JellyfinResponseParserTest {
         assertFalse(JellyfinResponseParser.isAudioItem(item("Photo", "Photo")))
         assertFalse(JellyfinResponseParser.isAudioItem(item(null, null)))
     }
+<<<<<<< HEAD
 
     @Test
     fun `parseSong maps ParentIndexNumber to the disc and IndexNumber to the track`() {
@@ -100,4 +106,6 @@ class JellyfinResponseParserTest {
         assertEquals("Rap/Hip-Hop", JellyfinResponseParser.parseSong(withGenres("Rap/Hip-Hop")).genre)
         assertNull(JellyfinResponseParser.parseSong(withGenres()).genre)
     }
+=======
+>>>>>>> origin/main
 }

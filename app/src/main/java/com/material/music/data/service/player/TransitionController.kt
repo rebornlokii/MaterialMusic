@@ -6,13 +6,19 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
+<<<<<<< HEAD
 import com.material.music.data.media.TrackBpmRepository
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.TransitionMode
 import com.material.music.data.model.TransitionResolution
 import com.material.music.data.model.TransitionSource
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.repository.TransitionRepository
+<<<<<<< HEAD
 import com.material.music.utils.MediaItemBuilder
+=======
+>>>>>>> origin/main
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

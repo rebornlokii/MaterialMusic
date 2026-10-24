@@ -110,9 +110,13 @@ import com.google.common.util.concurrent.MoreExecutors
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.NavBarStyle
 import com.material.music.data.preferences.sanitizeNavBarCornerRadius
+<<<<<<< HEAD
 import com.material.music.data.preferences.SidebarShortcutKeys
 import com.material.music.data.preferences.ThemePreferencesRepository
 import com.material.music.data.preferences.ThemePreset
+=======
+import com.material.music.data.preferences.ThemePreferencesRepository
+>>>>>>> origin/main
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.service.MusicService
 import com.material.music.data.worker.SyncManager
@@ -126,7 +130,10 @@ import com.material.music.presentation.components.MiniPlayerBottomSpacer
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.PlayerInternalNavigationBar
 import com.material.music.presentation.components.PlayerNavigationRail
+<<<<<<< HEAD
 import com.material.music.presentation.components.SmartMixHost
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.UnifiedPlayerSheetV2
 import com.material.music.presentation.components.calculatePlayerSheetCollapsedTargetY
 import com.material.music.presentation.components.resolveNavBarOccupiedHeight
@@ -137,6 +144,7 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.screens.SetupScreen
 import com.material.music.presentation.viewmodel.MainViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
 import com.material.music.presentation.splash.MaterialMusicSplash
 import com.material.music.ui.theme.MaterialMusicTheme
 import com.material.music.ui.theme.resolveAppWideNowPlayingColorSchemePair
@@ -145,6 +153,11 @@ import com.material.music.utils.AppLocaleManager
 import com.material.music.utils.CrashHandler
 import com.material.music.utils.LogUtils
 import com.material.music.utils.shouldKeepScreenAwake
+=======
+import com.material.music.ui.theme.MaterialMusicTheme
+import com.material.music.utils.CrashHandler
+import com.material.music.utils.LogUtils
+>>>>>>> origin/main
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -381,9 +394,13 @@ class MainActivity : ComponentActivity() {
             }
 
             MaterialMusicTheme(
+<<<<<<< HEAD
                 darkTheme = useDarkTheme,
                 colorSchemePairOverride = appWideNowPlayingScheme,
                 themePreset = themePreset
+=======
+                darkTheme = useDarkTheme
+>>>>>>> origin/main
             ) {
                 var contentVisible by remember { mutableStateOf(false) }
                 val contentAlpha by animateFloatAsState(

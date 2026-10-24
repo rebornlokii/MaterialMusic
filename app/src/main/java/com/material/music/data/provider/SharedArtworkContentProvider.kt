@@ -1,5 +1,6 @@
 package com.material.music.data.provider
 
+<<<<<<< HEAD
 import android.Manifest
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -25,6 +26,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+=======
+import android.content.ContentProvider
+import android.content.ContentValues
+import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.database.Cursor
+import android.net.Uri
+import android.os.ParcelFileDescriptor
+import com.material.music.utils.AlbumArtUtils
+import java.io.File
+import java.io.FileNotFoundException
+>>>>>>> origin/main
 
 class SharedArtworkContentProvider : ContentProvider() {
 
@@ -40,10 +53,14 @@ class SharedArtworkContentProvider : ContentProvider() {
 
     override fun getType(uri: Uri): String? {
         val appContext = context?.applicationContext ?: return null
+<<<<<<< HEAD
         return if (
             parseSongId(uri, appContext.packageName) != null ||
             parseCloudArtworkUri(uri.toString(), appContext.packageName) != null
         ) {
+=======
+        return if (parseSongId(uri, appContext.packageName) != null) {
+>>>>>>> origin/main
             DEFAULT_CONTENT_TYPE
         } else {
             null
@@ -66,6 +83,7 @@ class SharedArtworkContentProvider : ContentProvider() {
             throw FileNotFoundException("Shared artwork provider is read-only")
         }
 
+<<<<<<< HEAD
         val appContext = context?.applicationContext
             ?: throw FileNotFoundException("Artwork provider is unavailable")
         enforceArtworkReadAccess(uri, appContext)
@@ -74,6 +92,8 @@ class SharedArtworkContentProvider : ContentProvider() {
             return openCloudArtworkPipe(appContext, cloudArtworkUri)
         }
 
+=======
+>>>>>>> origin/main
         val file = resolveArtworkFile(uri)
             ?: throw FileNotFoundException("No artwork found for uri=$uri")
 
@@ -94,6 +114,7 @@ class SharedArtworkContentProvider : ContentProvider() {
         )?.takeIf { it.exists() && it.isFile && it.canRead() }
     }
 
+<<<<<<< HEAD
     /**
      * Some vendor System UI implementations reject URI grants before attempting to open a
      * non-exported provider. The provider is therefore exported for compatibility, while every
@@ -171,6 +192,12 @@ class SharedArtworkContentProvider : ContentProvider() {
         private const val CLOUD_ARTWORK_JPEG_QUALITY = 90
         private val CLOUD_ARTWORK_SCHEMES = setOf("navidrome_cover", "jellyfin_cover")
         private val cloudArtworkScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+=======
+    companion object {
+        private const val AUTHORITY_SUFFIX = ".artwork"
+        private const val PATH_SONG = "song"
+        private const val DEFAULT_CONTENT_TYPE = "image/jpeg"
+>>>>>>> origin/main
 
         fun authority(packageName: String): String = packageName + AUTHORITY_SUFFIX
 
@@ -188,6 +215,7 @@ class SharedArtworkContentProvider : ContentProvider() {
             return Uri.parse(buildSongUriString(packageName, songId, cacheBustToken))
         }
 
+<<<<<<< HEAD
         fun buildCloudUri(context: Context, rawArtworkUri: String): Uri? {
             return buildCloudUriString(context.packageName, rawArtworkUri)?.let(Uri::parse)
         }
@@ -231,6 +259,8 @@ class SharedArtworkContentProvider : ContentProvider() {
             return scheme in CLOUD_ARTWORK_SCHEMES && rawArtworkUri.startsWith("$scheme://")
         }
 
+=======
+>>>>>>> origin/main
         internal fun buildSongUriString(
             packageName: String,
             songId: Long,
@@ -277,6 +307,7 @@ class SharedArtworkContentProvider : ContentProvider() {
             }
             return songIdSegment.toLongOrNull()
         }
+<<<<<<< HEAD
 
         internal fun hasArtworkReadAccess(
             callingUid: Int,
@@ -323,5 +354,7 @@ class SharedArtworkContentProvider : ContentProvider() {
         private fun artworkKey(uriString: String, packageName: String): String? =
             parseSongId(uriString, packageName)?.let { "song:$it" }
                 ?: parseCloudArtworkUri(uriString, packageName)?.let { "cloud:$it" }
+=======
+>>>>>>> origin/main
     }
 }

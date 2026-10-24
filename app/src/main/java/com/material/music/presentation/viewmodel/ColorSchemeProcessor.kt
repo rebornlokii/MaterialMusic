@@ -141,12 +141,39 @@ class ColorSchemeProcessor @Inject constructor(
                 loadBitmapForColorExtraction(albumArtUri, forceRefresh)
             } ?: return@traceAsyncSection null
 
+<<<<<<< HEAD
             val schemePair = try {
                 withContext(Dispatchers.Default) {
                     val seed = extractSeedColor(
                         bitmap = bitmap,
                         config = com.material.music.ui.theme.ColorExtractionConfig(
                             accuracyLevel = colorAccuracyLevel
+=======
+            val schemePair = withContext(Dispatchers.Default) {
+                val seed = extractSeedColor(
+                    bitmap = bitmap,
+                    config = com.material.music.ui.theme.ColorExtractionConfig(
+                        accuracyLevel = colorAccuracyLevel
+                    )
+                )
+                bitmap.recycle()
+                generateColorSchemeFromSeed(
+                    seedColor = seed,
+                    paletteStyle = paletteStyle
+                )
+            }
+
+            memoryCache.put(cacheKey, schemePair)
+
+            if (persistToDatabase) {
+                withContext(Dispatchers.IO) {
+                    albumArtThemeDao.insertTheme(
+                        mapColorSchemePairToEntity(
+                            uri = albumArtUri,
+                            paletteStyle = paletteStyle,
+                            colorAccuracyLevel = colorAccuracyLevel,
+                            pair = schemePair
+>>>>>>> origin/main
                         )
                     )
                     generateColorSchemeFromSeed(seedColor = seed, paletteStyle = paletteStyle)

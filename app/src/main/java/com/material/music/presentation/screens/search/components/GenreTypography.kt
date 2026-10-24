@@ -11,7 +11,10 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.material.music.R
+<<<<<<< HEAD
 import java.text.BreakIterator
+=======
+>>>>>>> origin/main
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
