@@ -94,7 +94,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.3.0
+        uses: gradle/actions/setup-gradle@v6.4.0
 
       # The shared CI keystore lives in the CI_KEYSTORE_B64 + CI_KEYSTORE_PASSWORD
       # repo secrets so every workflow signs with the same stable key and builds
@@ -136,7 +136,7 @@ jobs:
           done
 
       - name: Upload Phone nightly split APK artifacts
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: MaterialMusic-phone-nightly-${{ needs.changes.outputs.short-sha }}
           path: |
