@@ -28,6 +28,10 @@ import com.material.music.data.preferences.PlaylistPreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.stream.BulkSyncResult
 import com.material.music.data.stream.CloudMusicUtils
+<<<<<<< HEAD
+import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +85,7 @@ class NavidromeRepository @Inject constructor(
         private const val NAVIDROME_ALBUM_ID_OFFSET = 10_000_000_000_000L
         private const val NAVIDROME_ARTIST_ID_OFFSET = 11_000_000_000_000L
         private const val NAVIDROME_PARENT_DIRECTORY = "/Cloud/Navidrome"
-        private const val NAVIDROME_GENRE = "Navidrome"
+        private const val NAVIDROME_GENRE = GenreParser.NAVIDROME_PLACEHOLDER
         private const val NAVIDROME_PLAYLIST_PREFIX = "navidrome_playlist:"
         const val LIBRARY_PLAYLIST_ID = "__library__"
     }
@@ -853,6 +857,7 @@ class NavidromeRepository @Inject constructor(
                     isFavorite = false,
                     lyrics = null,
                     trackNumber = navidromeSong.trackNumber,
+                    discNumber = CloudMusicUtils.normalizeDiscNumber(navidromeSong.discNumber),
                     year = navidromeSong.year,
                     dateAdded = navidromeSong.dateAdded.takeIf { it > 0 }
                         ?: System.currentTimeMillis(),
@@ -1052,6 +1057,10 @@ fun NavidromeSong.toSong(): Song {
         sampleRate = null,
         year = year,
         trackNumber = trackNumber,
+<<<<<<< HEAD
+        discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
+=======
+>>>>>>> origin/main
         dateAdded = dateAddedOr(System.currentTimeMillis()),
         isFavorite = false,
         navidromeId = id

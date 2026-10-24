@@ -2,9 +2,42 @@ package com.material.music.data.service.player
 
 import androidx.media3.common.Player
 import com.google.common.truth.Truth.assertThat
+import com.material.music.data.model.AudioOutputMode
 import org.junit.jupiter.api.Test
 
 class AudioOffloadPolicyTest {
+
+    @Test
+    fun outputModePolicy_enablesOffloadOnlyForSystemDefault() {
+        assertThat(
+            shouldEnableAudioOffloadForMode(
+                audioOffloadAvailableForSession = true,
+                audioOutputMode = AudioOutputMode.SYSTEM_DEFAULT
+            )
+        ).isTrue()
+        assertThat(
+            shouldEnableAudioOffloadForMode(
+                audioOffloadAvailableForSession = true,
+                audioOutputMode = AudioOutputMode.DIRECT
+            )
+        ).isFalse()
+        assertThat(
+            shouldEnableAudioOffloadForMode(
+                audioOffloadAvailableForSession = true,
+                audioOutputMode = AudioOutputMode.PCM_FLOAT
+            )
+        ).isFalse()
+    }
+
+    @Test
+    fun outputModePolicy_keepsOffloadDisabledWhenUnavailableForSession() {
+        assertThat(
+            shouldEnableAudioOffloadForMode(
+                audioOffloadAvailableForSession = false,
+                audioOutputMode = AudioOutputMode.SYSTEM_DEFAULT
+            )
+        ).isFalse()
+    }
 
     @Test
     fun defaultPolicy_disablesOffloadForReportedLavaMtkDeviceOnAndroid15() {
@@ -207,5 +240,31 @@ class AudioOffloadPolicyTest {
         )
 
         assertThat(shouldDisable).isFalse()
+    }
+
+    @Test
+    fun offloadHealth_skipsOffloadWhenItStalledOnThisExactBuild() {
+        assertThat(
+            isAudioOffloadMarkedBroken(
+                storedBuildFingerprint = "OnePlus/PJZ110/OP5D0DL1:17/BP4A:user/release-keys",
+                currentBuildFingerprint = "OnePlus/PJZ110/OP5D0DL1:17/BP4A:user/release-keys"
+            )
+        ).isTrue()
+    }
+
+    @Test
+    fun offloadHealth_retestsOffloadAfterSystemUpdate() {
+        assertThat(
+            isAudioOffloadMarkedBroken(
+                storedBuildFingerprint = "OnePlus/PJZ110/OP5D0DL1:17/BP4A:user/release-keys",
+                currentBuildFingerprint = "OnePlus/PJZ110/OP5D0DL1:17/BP4B:user/release-keys"
+            )
+        ).isFalse()
+    }
+
+    @Test
+    fun offloadHealth_keepsOffloadWhenNothingWasRecorded() {
+        assertThat(isAudioOffloadMarkedBroken(null, "any/build")).isFalse()
+        assertThat(isAudioOffloadMarkedBroken("", "any/build")).isFalse()
     }
 }

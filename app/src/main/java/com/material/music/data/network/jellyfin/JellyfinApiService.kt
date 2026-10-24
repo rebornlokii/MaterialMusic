@@ -27,7 +27,11 @@ class JellyfinApiService @Inject constructor(
 
     companion object {
         private const val TAG = "JellyfinApi"
+<<<<<<< HEAD
+        private const val CLIENT_NAME = "MaterialMusic"
+=======
         private const val CLIENT_NAME = "Material Music"
+>>>>>>> origin/main
         private const val CLIENT_VERSION = "1.0"
         private const val DEVICE_NAME = "Android"
         private const val DEVICE_ID = "MaterialMusic-Android"

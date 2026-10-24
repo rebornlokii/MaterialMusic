@@ -13,11 +13,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.rounded.FormatAlignRight
@@ -28,6 +27,7 @@ import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.BrightnessHigh
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -69,6 +69,8 @@ fun LyricsMoreBottomSheet(
     showSyncedLyrics: Boolean,
     isSyncControlsVisible: Boolean,
     onSaveLyricsAsLrc: () -> Unit,
+    canCopyLyrics: Boolean,
+    onCopyLyrics: () -> Unit,
     onResetImportedLyrics: () -> Unit,
     onToggleSyncControls: () -> Unit,
     isImmersiveTemporarilyDisabled: Boolean,
@@ -106,14 +108,15 @@ fun LyricsMoreBottomSheet(
         containerColor = containerColor,
         contentColor = contentColor,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        contentWindowInsets = { WindowInsets(top = 0, bottom = 0) }
+        // A tall sheet (landscape, small screens, many control rows) reaches the top of the
+        // window; keep its handle and first rows below the status bar.
+        contentWindowInsets = { WindowInsets.statusBars }
     ) {
-        val screenHeight = LocalConfiguration.current.screenHeightDp.dp
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f, fill = false)
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp + navigationBarsPadding)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -147,6 +150,32 @@ fun LyricsMoreBottomSheet(
                             .clickable {
                                 onDismissRequest()
                                 onSaveLyricsAsLrc()
+                            },
+                        colors = ListItemDefaults.colors(
+                            containerColor = Color.Transparent,
+                            headlineColor = contentColor,
+                            leadingIconColor = contentColor
+                        )
+                    )
+                }
+                // Copyable lyrics imply lyrics != null, so this row always sits between
+                // Save and Reset.
+                if (canCopyLyrics) {
+                    ListItem(
+                        content = { Text(stringResource(R.string.lyrics_more_copy_lyrics)) },
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Rounded.ContentCopy,
+                                contentDescription = null
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(itemBackgroundColor)
+                            .clickable {
+                                onDismissRequest()
+                                onCopyLyrics()
                             },
                         colors = ListItemDefaults.colors(
                             containerColor = Color.Transparent,
@@ -306,6 +335,8 @@ fun LyricsMoreBottomSheet(
                 val isRomanizationLast = isRomanizationVisible && !isTranslationVisible && !isImmersiveVisible && !isKeepScreenOnVisible
                 val isTranslationLast = isTranslationVisible && !isImmersiveVisible && !isKeepScreenOnVisible
                 val isImmersiveLast = isImmersiveVisible && !isKeepScreenOnVisible
+                val isKeepScreenOnFirst = isKeepScreenOnVisible && !isSyncVisible &&
+                    !isRomanizationVisible && !isTranslationVisible && !isImmersiveVisible
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -509,8 +540,10 @@ fun LyricsMoreBottomSheet(
                                 .fillMaxWidth()
                                 .clip(
                                     RoundedCornerShape(
-                                        topStart = 8.dp,
-                                        topEnd = 8.dp,
+                                        // Plain lyrics leave this as the only control:
+                                        // round it as a standalone card, not a group tail.
+                                        topStart = if (isKeepScreenOnFirst) 24.dp else 8.dp,
+                                        topEnd = if (isKeepScreenOnFirst) 24.dp else 8.dp,
                                         bottomStart = 24.dp,
                                         bottomEnd = 24.dp
                                     )
@@ -548,6 +581,10 @@ fun LyricsMoreBottomSheet(
                     onFavoriteToggle = onFavoriteToggle
                 )
             }
+
+            // Bottom inset lives inside the scroll content so the last row can scroll
+            // clear of the navigation bar.
+            Spacer(modifier = Modifier.height(16.dp + navigationBarsPadding))
         }
     }
 }

@@ -1,5 +1,9 @@
 name: Bug Report
+<<<<<<< HEAD
+description: Create a report to help us improve MaterialMusic
+=======
 description: Create a report to help us improve Material Music
+>>>>>>> origin/main
 title: "[Bug]: "
 labels: ["bug"]
 body:

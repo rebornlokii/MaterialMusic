@@ -51,10 +51,12 @@ internal fun UnifiedPlayerQueueLayer(
     shouldRenderLayer: Boolean,
     keepQueueSheetWarm: Boolean,
     albumColorScheme: ColorScheme,
-    queueScrimAlpha: Float,
+    queueScrimAlphaProvider: () -> Float,
+    showQueueScrim: Boolean,
     showQueueSheet: Boolean,
     queueHiddenOffsetPx: Float,
     queueSheetOffset: Animatable<Float, AnimationVector1D>,
+    queuePredictiveBackProgress: Animatable<Float, AnimationVector1D>,
     queueSheetHeightPx: Float,
     onQueueSheetHeightPxChange: (Float) -> Unit,
     configurationResetKey: Any,
@@ -92,12 +94,12 @@ internal fun UnifiedPlayerQueueLayer(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (queueScrimAlpha > 0f) {
+        if (showQueueScrim) {
             Box(
                 modifier = Modifier
                     .matchParentSize()
                     .zIndex(0f)
-                    .graphicsLayer { alpha = queueScrimAlpha }
+                    .graphicsLayer { alpha = queueScrimAlphaProvider() }
                     .background(MaterialTheme.colorScheme.scrim)
             )
         }
@@ -154,7 +156,9 @@ internal fun UnifiedPlayerQueueLayer(
                     onRequestSaveAsPlaylist = onRequestSaveAsPlaylist,
                     onQueueDragStart = onQueueDragStart,
                     onQueueDrag = onQueueDrag,
-                    onQueueRelease = onQueueRelease
+                    onQueueRelease = onQueueRelease,
+                    queueSheetOffset = queueSheetOffset,
+                    predictiveBackProgress = queuePredictiveBackProgress
                 )
             }
         }
@@ -226,7 +230,7 @@ internal fun UnifiedPlayerSongInfoLayer(
                 onNavigateToAlbum = { onNavigateToAlbum(liveSong) },
                 onNavigateToArtist = { onNavigateToArtist(liveSong) },
                 onNavigateToGenre = { onNavigateToGenre(liveSong) },
-                onEditSong = { title, artist, album, albumArtist, composer, genre, lyrics, trackNumber, discNumber, replayGainTrackGainDb, replayGainAlbumGainDb, coverArtUpdate ->
+                onEditSong = { title, artist, album, albumArtist, composer, genre, lyrics, trackNumber, discNumber, replayGainTrackGainDb, replayGainAlbumGainDb, coverArtUpdate, customMetadataChanges ->
                     playerViewModel.editSongMetadata(
                         liveSong,
                         title,
@@ -240,7 +244,8 @@ internal fun UnifiedPlayerSongInfoLayer(
                         discNumber,
                         replayGainTrackGainDb,
                         replayGainAlbumGainDb,
-                        coverArtUpdate
+                        coverArtUpdate,
+                        customMetadataChanges
                     )
                     onDismissSongInfo()
                 },
@@ -270,10 +275,12 @@ internal fun UnifiedPlayerQueueAndSongInfoHost(
     keepQueueSheetWarm: Boolean,
     isQueueTelemetryActive: Boolean,
     albumColorScheme: ColorScheme,
-    queueScrimAlpha: Float,
+    queueScrimAlphaProvider: () -> Float,
+    showQueueScrim: Boolean,
     showQueueSheet: Boolean,
     queueHiddenOffsetPx: Float,
     queueSheetOffset: Animatable<Float, AnimationVector1D>,
+    queuePredictiveBackProgress: Animatable<Float, AnimationVector1D>,
     queueSheetHeightPx: Float,
     onQueueSheetHeightPxChange: (Float) -> Unit,
     configurationResetKey: Any,
@@ -385,10 +392,12 @@ internal fun UnifiedPlayerQueueAndSongInfoHost(
                 shouldRenderLayer = true,
                 keepQueueSheetWarm = keepQueueSheetWarm,
                 albumColorScheme = albumColorScheme,
-                queueScrimAlpha = queueScrimAlpha,
+                queueScrimAlphaProvider = queueScrimAlphaProvider,
+                showQueueScrim = showQueueScrim,
                 showQueueSheet = showQueueSheet,
                 queueHiddenOffsetPx = queueHiddenOffsetPx,
                 queueSheetOffset = queueSheetOffset,
+                queuePredictiveBackProgress = queuePredictiveBackProgress,
                 queueSheetHeightPx = queueSheetHeightPx,
                 onQueueSheetHeightPxChange = onQueueSheetHeightPxChange,
                 configurationResetKey = configurationResetKey,

@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ComponentCallbacks2
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -12,12 +13,24 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
+import com.material.music.data.diagnostics.AdvancedPerformanceDiagnosticsController
+import com.material.music.data.media.SongMetadataEditor
 import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.data.playlist.M3uSyncCoordinator
+========
+import com.material.music.data.preferences.UserPreferencesRepository
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
 import com.material.music.data.repository.ArtistImageRepository
 import com.material.music.presentation.viewmodel.LibraryStateHolder
 import com.material.music.presentation.viewmodel.ThemeStateHolder
 import com.material.music.utils.AlbumArtCacheManager
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
+import com.material.music.utils.FolderArtworkSettingsCoordinator
+import com.material.music.utils.AppLocaleManager
+========
 import com.material.music.utils.AlbumArtUtils
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
 import com.material.music.utils.CrashHandler
 import com.material.music.utils.MediaMetadataRetrieverPool
 import dagger.hilt.android.HiltAndroidApp
@@ -60,7 +73,26 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
     lateinit var userPreferencesRepository: dagger.Lazy<UserPreferencesRepository>
 
     @Inject
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
+    lateinit var folderArtworkSettingsCoordinator: dagger.Lazy<FolderArtworkSettingsCoordinator>
+
+    @Inject
     lateinit var syncManager: dagger.Lazy<com.material.music.data.worker.SyncManager>
+
+    @Inject
+    lateinit var advancedPerformanceDiagnosticsController: dagger.Lazy<AdvancedPerformanceDiagnosticsController>
+
+    @Inject
+    lateinit var m3uSyncCoordinator: dagger.Lazy<M3uSyncCoordinator>
+
+    @Inject
+    lateinit var updateCheckScheduler: dagger.Lazy<com.material.music.data.update.UpdateCheckScheduler>
+
+    @Inject
+    lateinit var songMetadataEditor: dagger.Lazy<SongMetadataEditor>
+========
+    lateinit var syncManager: dagger.Lazy<com.material.music.data.worker.SyncManager>
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
 
     private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -71,7 +103,26 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
     private val appLifecycleObserver = object : DefaultLifecycleObserver {
         override fun onStart(owner: LifecycleOwner) {
             libraryStateHolder.get().restoreAfterTrimIfNeeded()
+            m3uSyncCoordinator.get().onAppForeground()
+            advancedPerformanceDiagnosticsController.get().onAppForeground()
+            // Gives songs cut off by an interrupted tag save (a failed write-back, or the app
+            // being killed mid-write) their edited audio back, and lists the ones the app can no
+            // longer write to so the player can ask the user for access.
+            startupScope.launch { songMetadataEditor.get().resumeInterruptedWriteBacks() }
         }
+
+        override fun onResume(owner: LifecycleOwner) {
+            // Image access can change while system settings is open, without restarting us.
+            startupScope.launch { folderArtworkSettingsCoordinator.get().reconcile() }
+        }
+
+        override fun onStop(owner: LifecycleOwner) {
+            advancedPerformanceDiagnosticsController.get().onAppBackground()
+        }
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(AppLocaleManager.wrapContext(base))
     }
 
     override fun onCreate() {
@@ -90,7 +141,11 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
+                "MaterialMusic Music Playback",
+========
                 "Material Music Playback",
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
                 NotificationManager.IMPORTANCE_LOW
             )
             val notificationManager = getSystemService(NotificationManager::class.java)
@@ -101,8 +156,17 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
 
         syncManager.get().start()
 
+        m3uSyncCoordinator.get().start()
+
+        updateCheckScheduler.get().start()
+
+        advancedPerformanceDiagnosticsController.get().start(startupScope)
+
         startupScope.launch {
+<<<<<<<< HEAD:app/src/main/java/com/material/music/PixelPlayerApplication.kt
+========
             AlbumArtUtils.migrateLegacyCacheLocation(this@MaterialMusicApplication)
+>>>>>>>> origin/main:app/src/main/java/com/material/music/MaterialMusicApplication.kt
             val savedLimit = runCatching {
                 userPreferencesRepository.get().albumArtCacheLimitMbFlow.first()
             }.getOrNull()
@@ -110,11 +174,22 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
                 AlbumArtCacheManager.configuredCacheLimitMb = savedLimit.toLong()
             }
         }
+
+        // Collected rather than read once: the preference can also change underneath us, most
+        // notably when a backup restore writes it straight into DataStore. A stale mirror would
+        // leave the toggle reporting one thing while artwork resolution did another.
+        startupScope.launch {
+            userPreferencesRepository.get().useFolderAlbumArtFlow.collect {
+                folderArtworkSettingsCoordinator.get().reconcile()
+            }
+        }
     }
 
     override fun newImageLoader(): ImageLoader {
         return imageLoader.get().newBuilder()
             .components {
+                add(com.material.music.data.image.SharedCloudArtworkStringMapper(packageName))
+                add(com.material.music.data.image.SharedCloudArtworkUriMapper(packageName))
                 add(localArtworkCoilFetcherFactory.get())
                 add(navidromeCoilFetcherFactory.get())
                 add(jellyfinCoilFetcherFactory.get())

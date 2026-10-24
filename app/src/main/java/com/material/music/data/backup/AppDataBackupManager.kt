@@ -254,7 +254,11 @@ class AppDataBackupManager @Inject constructor(
                 step = ++step,
                 totalSteps = totalSteps,
                 title = "Backup complete",
+<<<<<<< HEAD
+                detail = "Your MaterialMusic backup was created successfully."
+=======
                 detail = "Your Material Music backup was created successfully."
+>>>>>>> origin/main
             )
         }
     }

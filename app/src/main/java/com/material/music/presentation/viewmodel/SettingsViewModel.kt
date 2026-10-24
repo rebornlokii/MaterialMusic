@@ -5,6 +5,11 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.material.music.data.backup.BackupManager
+<<<<<<< HEAD
+import com.material.music.data.backup.format.BackupEncryptedException
+import com.material.music.data.backup.format.BackupWrongPassphraseException
+=======
+>>>>>>> origin/main
 import com.material.music.data.backup.model.BackupSection
 import com.material.music.data.backup.model.BackupOperationType
 import com.material.music.data.backup.model.BackupTransferProgressUpdate
@@ -12,11 +17,25 @@ import com.material.music.data.backup.model.BackupHistoryEntry
 import com.material.music.data.backup.model.RestorePlan
 import com.material.music.data.backup.model.RestoreResult
 import com.material.music.data.backup.model.ValidationError
+<<<<<<< HEAD
+import com.material.music.data.model.AudioOutputMode
+import com.material.music.data.preferences.AppLanguage
+import com.material.music.data.preferences.AppThemeMode
+import com.material.music.data.preferences.CarouselStyle
+import com.material.music.data.preferences.LibraryNavigationMode
+import com.material.music.data.preferences.PreviousButtonBehavior
+import com.material.music.data.preferences.DEFAULT_LYRICS_FONT_SIZE_SP
+import com.material.music.data.preferences.ThemePreference
+import com.material.music.data.preferences.ThemePreset
+import com.material.music.data.preferences.UserPreferencesRepository
+import com.material.music.utils.FolderArtworkSettingsCoordinator
+=======
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.CarouselStyle
 import com.material.music.data.preferences.LibraryNavigationMode
 import com.material.music.data.preferences.ThemePreference
 import com.material.music.data.preferences.UserPreferencesRepository
+>>>>>>> origin/main
 import com.material.music.data.preferences.AlbumArtQuality
 import com.material.music.data.preferences.AlbumArtColorAccuracy
 import com.material.music.data.preferences.AlbumArtPaletteStyle
@@ -36,6 +55,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import com.material.music.di.AppScope
 import javax.inject.Inject
 
 import com.material.music.R
@@ -43,6 +65,10 @@ import com.material.music.data.preferences.NavBarStyle
 import com.material.music.data.preferences.LaunchTab
 import com.material.music.data.model.Song
 import com.material.music.data.service.player.HiFiCapabilityChecker
+<<<<<<< HEAD
+import com.material.music.utils.AppLocaleManager
+=======
+>>>>>>> origin/main
 import java.io.File
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -50,7 +76,10 @@ import kotlinx.collections.immutable.toImmutableList
 
 data class SettingsUiState(
     val isLoadingDirectories: Boolean = false,
+    val appLanguageTag: String = AppLanguage.SYSTEM.tag,
     val appThemeMode: String = AppThemeMode.FOLLOW_SYSTEM,
+    val globalNowPlayingThemeEnabled: Boolean = false,
+    val themePreset: String = ThemePreset.DEFAULT,
     val playerThemePreference: String = ThemePreference.ALBUM_ART,
     val albumArtPaletteStyle: AlbumArtPaletteStyle = AlbumArtPaletteStyle.default,
     val albumArtColorAccuracy: Int = AlbumArtColorAccuracy.DEFAULT,
@@ -62,11 +91,13 @@ data class SettingsUiState(
     val libraryNavigationMode: String = LibraryNavigationMode.TAB_ROW,
     val launchTab: String = LaunchTab.HOME,
     val keepPlayingInBackground: Boolean = true,
+    val keepScreenAwakeWhilePlaying: Boolean = false,
     val resumeOnHeadsetReconnect: Boolean = false,
     val showQueueHistory: Boolean = true,
     val isCrossfadeEnabled: Boolean = false,
-    val hiFiModeEnabled: Boolean = false,
-    val hiFiModeDeviceSupported: Boolean = true,
+    val smartCrossfadeEnabled: Boolean = false,
+    val audioOutputMode: AudioOutputMode = AudioOutputMode.SYSTEM_DEFAULT,
+    val pcmFloatOutputSupported: Boolean = true,
     val crossfadeDuration: Int = 2000,
     val persistentShuffleEnabled: Boolean = false,
     val folderBackGestureNavigation: Boolean = true,
@@ -78,9 +109,13 @@ data class SettingsUiState(
     val appRebrandDialogShown: Boolean = false,
     val fullPlayerLoadingTweaks: FullPlayerLoadingTweaks = FullPlayerLoadingTweaks(),
     val showPlayerFileInfo: Boolean = true,
+    val showScrollbar: Boolean = true,
     val albumArtQuality: AlbumArtQuality = AlbumArtQuality.MEDIUM,
     val albumArtCacheLimitMb: Int = 200,
     val tapBackgroundClosesPlayer: Boolean = false,
+    val miniPlayerSwipeToSkip: Boolean = false,
+    val autoplayOnSkip: Boolean = true,
+    val previousButtonBehavior: PreviousButtonBehavior = PreviousButtonBehavior.DEFAULT,
     val hapticsEnabled: Boolean = true,
     val immersiveLyricsEnabled: Boolean = false,
     val immersiveLyricsTimeout: Long = 4000L,
@@ -88,12 +123,16 @@ data class SettingsUiState(
     val useAnimatedLyrics: Boolean = false,
     val animatedLyricsBlurEnabled: Boolean = true,
     val animatedLyricsBlurStrength: Float = 2.5f,
+    val lyricsFontSizeSp: Float = DEFAULT_LYRICS_FONT_SIZE_SP,
     val backupInfoDismissed: Boolean = false,
     val isDataTransferInProgress: Boolean = false,
     val restorePlan: RestorePlan? = null,
     val backupHistory: ImmutableList<BackupHistoryEntry> = persistentListOf(),
     val backupValidationErrors: List<ValidationError> = emptyList(),
     val isInspectingBackup: Boolean = false,
+    // Encrypted backup password prompt state
+    val pendingEncryptedBackupUri: String? = null,
+    val wrongBackupPassword: Boolean = false,
     val collagePattern: CollagePattern = CollagePattern.default,
     val collageAutoRotate: Boolean = false,
     val minSongDuration: Int = 10000,
@@ -136,7 +175,8 @@ private sealed interface SettingsUiUpdate {
         val libraryNavigationMode: String,
         val carouselStyle: String,
         val launchTab: String,
-        val showPlayerFileInfo: Boolean
+        val showPlayerFileInfo: Boolean,
+        val globalNowPlayingThemeEnabled: Boolean
     ) : SettingsUiUpdate
     
     data class Group2(
@@ -144,7 +184,7 @@ private sealed interface SettingsUiUpdate {
         val resumeOnHeadsetReconnect: Boolean,
         val showQueueHistory: Boolean,
         val isCrossfadeEnabled: Boolean,
-        val hiFiModeEnabled: Boolean,
+        val audioOutputMode: AudioOutputMode,
         val crossfadeDuration: Int,
         val persistentShuffleEnabled: Boolean,
         val folderBackGestureNavigation: Boolean,
@@ -170,11 +210,14 @@ class SettingsViewModel @Inject constructor(
     private val lyricsRepository: LyricsRepository,
     private val musicRepository: MusicRepository,
     private val backupManager: BackupManager,
-    @ApplicationContext private val context: Context
+    private val folderArtworkSettingsCoordinator: FolderArtworkSettingsCoordinator,
+    @ApplicationContext private val context: Context,
+    @AppScope private val appScope: CoroutineScope
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    private val pcmFloatOutputSupported = HiFiCapabilityChecker.isSupported()
 
     private val fileExplorerStateHolder = FileExplorerStateHolder(userPreferencesRepository, viewModelScope, context)
 
@@ -187,6 +230,8 @@ class SettingsViewModel @Inject constructor(
     val isExplorerPriming = fileExplorerStateHolder.isPrimingExplorer
     val isExplorerReady = fileExplorerStateHolder.isExplorerReady
     val isCurrentDirectoryResolved = fileExplorerStateHolder.isCurrentDirectoryResolved
+    val allAudioFolders = fileExplorerStateHolder.allAudioFolders
+    val isLoadingAllAudioFolders = fileExplorerStateHolder.isLoadingAllAudioFolders
     private var hasPendingDirectoryRuleChanges = false
     private var latestDirectoryRuleUpdateJob: Job? = null
 
@@ -225,6 +270,12 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(collageAutoRotate = autoRotate) }
             }
         }
+
+        viewModelScope.launch {
+            themePreferencesRepository.themePresetFlow.collect { preset ->
+                _uiState.update { it.copy(themePreset = preset) }
+            }
+        }
     }
 
     private val _dataTransferProgress = MutableStateFlow<BackupTransferProgressUpdate?>(null)
@@ -233,7 +284,8 @@ class SettingsViewModel @Inject constructor(
     init {
         _uiState.update {
             it.copy(
-                hiFiModeDeviceSupported = HiFiCapabilityChecker.isSupported()
+                pcmFloatOutputSupported = pcmFloatOutputSupported,
+                appLanguageTag = AppLocaleManager.currentLanguageTag(context)
             )
         }
 
@@ -251,7 +303,8 @@ class SettingsViewModel @Inject constructor(
                 userPreferencesRepository.libraryNavigationModeFlow,
                 userPreferencesRepository.carouselStyleFlow,
                 userPreferencesRepository.launchTabFlow,
-                userPreferencesRepository.showPlayerFileInfoFlow
+                userPreferencesRepository.showPlayerFileInfoFlow,
+                themePreferencesRepository.globalNowPlayingThemeEnabledFlow
             ) { values ->
                 SettingsUiUpdate.Group1(
                     appRebrandDialogShown = values[0] as Boolean,
@@ -266,7 +319,8 @@ class SettingsViewModel @Inject constructor(
                     libraryNavigationMode = values[9] as String,
                     carouselStyle = values[10] as String,
                     launchTab = values[11] as String,
-                    showPlayerFileInfo = values[12] as Boolean
+                    showPlayerFileInfo = values[12] as Boolean,
+                    globalNowPlayingThemeEnabled = values[13] as Boolean
                 )
             }.collect { update ->
                 _uiState.update { state ->
@@ -283,7 +337,8 @@ class SettingsViewModel @Inject constructor(
                         libraryNavigationMode = update.libraryNavigationMode,
                         carouselStyle = update.carouselStyle,
                         launchTab = update.launchTab,
-                        showPlayerFileInfo = update.showPlayerFileInfo
+                        showPlayerFileInfo = update.showPlayerFileInfo,
+                        globalNowPlayingThemeEnabled = update.globalNowPlayingThemeEnabled
                     )
                 }
             }
@@ -295,7 +350,7 @@ class SettingsViewModel @Inject constructor(
                 userPreferencesRepository.resumeOnHeadsetReconnectFlow,
                 userPreferencesRepository.showQueueHistoryFlow,
                 userPreferencesRepository.isCrossfadeEnabledFlow,
-                userPreferencesRepository.hiFiModeEnabledFlow,
+                userPreferencesRepository.audioOutputModeFlow,
                 userPreferencesRepository.crossfadeDurationFlow,
                 userPreferencesRepository.persistentShuffleEnabledFlow,
                 userPreferencesRepository.folderBackGestureNavigationFlow,
@@ -309,12 +364,20 @@ class SettingsViewModel @Inject constructor(
                 userPreferencesRepository.animatedLyricsBlurEnabledFlow,
                 userPreferencesRepository.animatedLyricsBlurStrengthFlow
             ) { values ->
+                val requestedAudioOutputMode = values[4] as AudioOutputMode
                 SettingsUiUpdate.Group2(
                     keepPlayingInBackground = values[0] as Boolean,
                     resumeOnHeadsetReconnect = values[1] as Boolean,
                     showQueueHistory = values[2] as Boolean,
                     isCrossfadeEnabled = values[3] as Boolean,
-                    hiFiModeEnabled = values[4] as Boolean,
+                    audioOutputMode = if (
+                        requestedAudioOutputMode == AudioOutputMode.PCM_FLOAT &&
+                        !pcmFloatOutputSupported
+                    ) {
+                        AudioOutputMode.SYSTEM_DEFAULT
+                    } else {
+                        requestedAudioOutputMode
+                    },
                     crossfadeDuration = values[5] as Int,
                     persistentShuffleEnabled = values[6] as Boolean,
                     folderBackGestureNavigation = values[7] as Boolean,
@@ -335,7 +398,7 @@ class SettingsViewModel @Inject constructor(
                         resumeOnHeadsetReconnect = update.resumeOnHeadsetReconnect,
                         showQueueHistory = update.showQueueHistory,
                         isCrossfadeEnabled = update.isCrossfadeEnabled,
-                        hiFiModeEnabled = update.hiFiModeEnabled,
+                        audioOutputMode = update.audioOutputMode,
                         crossfadeDuration = update.crossfadeDuration,
                         persistentShuffleEnabled = update.persistentShuffleEnabled,
                         folderBackGestureNavigation = update.folderBackGestureNavigation,
@@ -354,6 +417,18 @@ class SettingsViewModel @Inject constructor(
         }
         
         viewModelScope.launch {
+            userPreferencesRepository.smartCrossfadeEnabledFlow.collect { enabled ->
+                _uiState.update { it.copy(smartCrossfadeEnabled = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.keepScreenAwakeWhilePlayingFlow.collect { enabled ->
+                _uiState.update { it.copy(keepScreenAwakeWhilePlaying = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
             userPreferencesRepository.fullPlayerLoadingTweaksFlow.collect { tweaks ->
                 _uiState.update { it.copy(fullPlayerLoadingTweaks = tweaks) }
             }
@@ -362,6 +437,12 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.useAnimatedLyricsFlow.collect { enabled ->
                 _uiState.update { it.copy(useAnimatedLyrics = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.lyricsFontSizeFlow.collect { fontSizeSp ->
+                _uiState.update { it.copy(lyricsFontSizeSp = fontSizeSp) }
             }
         }
 
@@ -408,6 +489,24 @@ class SettingsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            userPreferencesRepository.miniPlayerSwipeToSkipFlow.collect { enabled ->
+                _uiState.update { it.copy(miniPlayerSwipeToSkip = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.autoplayOnSkipFlow.collect { enabled ->
+                _uiState.update { it.copy(autoplayOnSkip = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.previousButtonBehaviorFlow.collect { behavior ->
+                _uiState.update { it.copy(previousButtonBehavior = behavior) }
+            }
+        }
+
+        viewModelScope.launch {
             userPreferencesRepository.minSongDurationFlow.collect { duration ->
                 _uiState.update { it.copy(minSongDuration = duration) }
             }
@@ -430,6 +529,12 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(replayGainUseAlbumGain = useAlbum) }
             }
         }
+
+        viewModelScope.launch {
+            userPreferencesRepository.showScrollbarFlow.collect { enabled ->
+                _uiState.update { it.copy(showScrollbar = enabled) }
+            }
+        }
     }
 
     fun setAppRebrandDialogShown(wasShown: Boolean) {
@@ -438,9 +543,13 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    // Directory rules are committed as the user leaves the excluded-directories screen,
+    // which pops that destination and clears this view model in the same frame. Running the
+    // write and the follow-up rescan on the application scope keeps them from being
+    // cancelled halfway, which would drop the user's exclusions.
     fun toggleDirectoryAllowed(file: File) {
         hasPendingDirectoryRuleChanges = true
-        latestDirectoryRuleUpdateJob = viewModelScope.launch {
+        latestDirectoryRuleUpdateJob = appScope.launch(Dispatchers.Main.immediate) {
             fileExplorerStateHolder.toggleDirectoryAllowed(file)
         }
     }
@@ -448,10 +557,18 @@ class SettingsViewModel @Inject constructor(
     fun applyPendingDirectoryRuleChanges() {
         if (!hasPendingDirectoryRuleChanges) return
         hasPendingDirectoryRuleChanges = false
-        viewModelScope.launch {
-            latestDirectoryRuleUpdateJob?.join()
+        val pendingUpdate = latestDirectoryRuleUpdateJob
+        appScope.launch {
+            pendingUpdate?.join()
             syncManager.forceRefresh()
         }
+    }
+
+    // A system Back or predictive-back swipe at the explorer root pops the destination
+    // without going through Done; committing here keeps that exit path from losing changes.
+    override fun onCleared() {
+        applyPendingDirectoryRuleChanges()
+        super.onCleared()
     }
 
     fun loadDirectory(file: File) {
@@ -474,6 +591,10 @@ class SettingsViewModel @Inject constructor(
         fileExplorerStateHolder.refreshCurrentDirectory()
     }
 
+    fun loadAllAudioFolders(forceRefresh: Boolean = false) {
+        fileExplorerStateHolder.loadAllAudioFolders(forceRefresh)
+    }
+
     fun selectStorage(index: Int) {
         fileExplorerStateHolder.selectStorage(index)
     }
@@ -489,6 +610,18 @@ class SettingsViewModel @Inject constructor(
     fun setPlayerThemePreference(preference: String) {
         viewModelScope.launch {
             themePreferencesRepository.setPlayerThemePreference(preference)
+        }
+    }
+
+    fun setGlobalNowPlayingThemeEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferencesRepository.setGlobalNowPlayingThemeEnabled(enabled)
+        }
+    }
+
+    fun setThemePreset(preset: String) {
+        viewModelScope.launch {
+            themePreferencesRepository.setThemePreset(preset)
         }
     }
 
@@ -531,6 +664,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setAppLanguage(languageTag: String) {
+        val normalized = AppLanguage.normalize(languageTag)
+        AppLocaleManager.applyLanguage(context, normalized)
+        _uiState.update { it.copy(appLanguageTag = normalized) }
+    }
+
     fun setAppThemeMode(mode: String) {
         viewModelScope.launch {
             themePreferencesRepository.setAppThemeMode(mode)
@@ -546,6 +685,12 @@ class SettingsViewModel @Inject constructor(
     fun setNavBarCompactMode(enabled: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setNavBarCompactMode(enabled)
+        }
+    }
+
+    fun setShowScrollbar(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setShowScrollbar(enabled)
         }
     }
 
@@ -579,15 +724,28 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setKeepScreenAwakeWhilePlaying(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setKeepScreenAwakeWhilePlaying(enabled)
+        }
+    }
+
     fun setResumeOnHeadsetReconnect(enabled: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setResumeOnHeadsetReconnect(enabled)
         }
     }
 
-    fun setHiFiModeEnabled(enabled: Boolean) {
+    fun setAudioOutputMode(mode: AudioOutputMode) {
         viewModelScope.launch {
-            userPreferencesRepository.setHiFiModeEnabled(enabled)
+            val supportedMode = if (
+                mode == AudioOutputMode.PCM_FLOAT && !pcmFloatOutputSupported
+            ) {
+                AudioOutputMode.SYSTEM_DEFAULT
+            } else {
+                mode
+            }
+            userPreferencesRepository.setAudioOutputMode(supportedMode)
         }
     }
 
@@ -606,6 +764,12 @@ class SettingsViewModel @Inject constructor(
     fun setCrossfadeDuration(duration: Int) {
         viewModelScope.launch {
             userPreferencesRepository.setCrossfadeDuration(duration)
+        }
+    }
+
+    fun setSmartCrossfadeEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setSmartCrossfadeEnabled(enabled)
         }
     }
 
@@ -735,6 +899,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setLyricsFontSize(fontSizeSp: Float) {
+        viewModelScope.launch {
+            userPreferencesRepository.setLyricsFontSize(fontSizeSp)
+        }
+    }
+
     fun setAnimatedLyricsBlurStrength(strength: Float) {
         viewModelScope.launch {
             userPreferencesRepository.setAnimatedLyricsBlurStrength(strength)
@@ -844,6 +1014,9 @@ class SettingsViewModel @Inject constructor(
     val tapBackgroundClosesPlayer: StateFlow<Boolean> = userPreferencesRepository.tapBackgroundClosesPlayerFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
+    val useFolderAlbumArt: StateFlow<Boolean> = userPreferencesRepository.useFolderAlbumArtFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     fun setAlbumArtQuality(quality: AlbumArtQuality) {
         viewModelScope.launch {
             userPreferencesRepository.setAlbumArtQuality(quality)
@@ -854,12 +1027,44 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.setAlbumArtCacheLimitMb(limitMb)
             com.material.music.utils.AlbumArtCacheManager.configuredCacheLimitMb = limitMb.toLong()
+<<<<<<< HEAD
+        }
+    }
+
+    /**
+     * Folder covers outrank embedded artwork, so flipping this in either direction invalidates
+     * every cached cover and every "no art" marker: they were all resolved under the old
+     * precedence. The rescan then rebuilds each song's stored artwork URI.
+     */
+    fun setUseFolderAlbumArt(enabled: Boolean) {
+        viewModelScope.launch {
+            folderArtworkSettingsCoordinator.setEnabled(enabled)
+=======
+>>>>>>> origin/main
         }
     }
 
     fun setUseSmoothCorners(enabled: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setUseSmoothCorners(enabled)
+        }
+    }
+
+    fun setMiniPlayerSwipeToSkip(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setMiniPlayerSwipeToSkip(enabled)
+        }
+    }
+
+    fun setAutoplayOnSkip(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setAutoplayOnSkip(enabled)
+        }
+    }
+
+    fun setPreviousButtonBehavior(behavior: PreviousButtonBehavior) {
+        viewModelScope.launch {
+            userPreferencesRepository.setPreviousButtonBehavior(behavior)
         }
     }
 
@@ -881,7 +1086,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun exportAppData(uri: Uri, sections: Set<BackupSection>) {
+    fun exportAppData(uri: Uri, sections: Set<BackupSection>, passphrase: String? = null) {
         if (sections.isEmpty() || _uiState.value.isDataTransferInProgress) return
         viewModelScope.launch {
             _uiState.update { it.copy(isDataTransferInProgress = true) }
@@ -892,7 +1097,7 @@ class SettingsViewModel @Inject constructor(
                 title = context.getString(R.string.backup_progress_preparing_backup),
                 detail = context.getString(R.string.backup_progress_starting_backup_task),
             )
-            val result = backupManager.export(uri, sections) { progress ->
+            val result = backupManager.export(uri, sections, passphrase) { progress ->
                 _dataTransferProgress.value = progress
             }
             result.fold(
@@ -912,24 +1117,62 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun inspectBackupFile(uri: Uri) {
+    fun inspectBackupFile(uri: Uri, passphrase: String? = null) {
         if (_uiState.value.isInspectingBackup) return
         viewModelScope.launch {
-            _uiState.update { it.copy(isInspectingBackup = true, backupValidationErrors = emptyList(), restorePlan = null) }
-            val result = backupManager.inspectBackup(uri)
+            _uiState.update {
+                it.copy(
+                    isInspectingBackup = true,
+                    backupValidationErrors = emptyList(),
+                    restorePlan = null,
+                    wrongBackupPassword = false
+                )
+            }
+            val result = backupManager.inspectBackup(uri, passphrase)
             result.fold(
                 onSuccess = { plan ->
-                    _uiState.update { it.copy(restorePlan = plan, isInspectingBackup = false) }
+                    _uiState.update {
+                        it.copy(
+                            restorePlan = plan,
+                            isInspectingBackup = false,
+                            pendingEncryptedBackupUri = null,
+                            wrongBackupPassword = false
+                        )
+                    }
                 },
                 onFailure = { error ->
-                    _dataTransferEvents.send(
-                        context.getString(
-                            R.string.backup_invalid_format,
-                            error.localizedMessage ?: context.getString(R.string.error_unknown),
-                        ),
-                    )
-                    _uiState.update { it.copy(isInspectingBackup = false) }
+                    when (error) {
+                        is BackupEncryptedException -> _uiState.update {
+                            it.copy(isInspectingBackup = false, pendingEncryptedBackupUri = uri.toString())
+                        }
+                        is BackupWrongPassphraseException -> _uiState.update {
+                            it.copy(
+                                isInspectingBackup = false,
+                                pendingEncryptedBackupUri = uri.toString(),
+                                wrongBackupPassword = true
+                            )
+                        }
+                        else -> {
+                            _dataTransferEvents.send(
+                                context.getString(
+                                    R.string.backup_invalid_format,
+                                    error.localizedMessage ?: context.getString(R.string.error_unknown),
+                                ),
+                            )
+                            _uiState.update { it.copy(isInspectingBackup = false) }
+                        }
+                    }
                 }
+            )
+        }
+    }
+
+    /** Called when the user dismisses the encrypted-backup password prompt. */
+    fun dismissEncryptedBackupPrompt() {
+        _uiState.update {
+            it.copy(
+                pendingEncryptedBackupUri = null,
+                wrongBackupPassword = false
             )
         }
     }
@@ -982,7 +1225,17 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun clearRestorePlan() {
-        _uiState.update { it.copy(restorePlan = null, backupValidationErrors = emptyList()) }
+        _uiState.value.restorePlan?.backupUri?.let { planUri ->
+            runCatching { backupManager.discardDecryptedBackup(Uri.parse(planUri)) }
+        }
+        _uiState.update {
+            it.copy(
+                restorePlan = null,
+                backupValidationErrors = emptyList(),
+                pendingEncryptedBackupUri = null,
+                wrongBackupPassword = false
+            )
+        }
     }
 
     fun removeBackupHistoryEntry(entry: BackupHistoryEntry) {

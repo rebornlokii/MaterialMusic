@@ -90,6 +90,10 @@ import com.material.music.presentation.screens.TabAnimation
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import com.material.music.ui.theme.RoundedSans
+<<<<<<< HEAD
+import com.material.music.ui.theme.LocalShowScrollbar
+=======
+>>>>>>> origin/main
 import com.material.music.ui.theme.ShapeCache
 import kotlinx.coroutines.flow.map
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
@@ -535,7 +539,7 @@ fun SongPickerPagingList(
                         bottom = contentPadding.calculateBottomPadding(),
                         top = contentPadding.calculateTopPadding(),
                         start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                        end = if (listState.canScrollForward || listState.canScrollBackward) 12.dp else 0.dp
+                        end = animatedScrollbarInset(LocalShowScrollbar.current && (listState.canScrollForward || listState.canScrollBackward), 12.dp, 0.dp)
                     ),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -857,7 +861,7 @@ fun SongPickerList(
                     bottom = contentPadding.calculateBottomPadding(),
                     top = contentPadding.calculateTopPadding(),
                     start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                    end = if (listState.canScrollForward || listState.canScrollBackward) 12.dp else 0.dp
+                    end = animatedScrollbarInset(LocalShowScrollbar.current && (listState.canScrollForward || listState.canScrollBackward), 12.dp, 0.dp)
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

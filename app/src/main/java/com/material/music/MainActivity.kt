@@ -4,11 +4,13 @@ import com.material.music.presentation.navigation.navigateSafely
 
 import android.Manifest
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import com.material.music.utils.traceSection
 import android.provider.Settings
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -16,7 +18,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.CallSuper
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -63,6 +67,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -104,7 +110,13 @@ import com.google.common.util.concurrent.MoreExecutors
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.NavBarStyle
 import com.material.music.data.preferences.sanitizeNavBarCornerRadius
+<<<<<<< HEAD
+import com.material.music.data.preferences.SidebarShortcutKeys
 import com.material.music.data.preferences.ThemePreferencesRepository
+import com.material.music.data.preferences.ThemePreset
+=======
+import com.material.music.data.preferences.ThemePreferencesRepository
+>>>>>>> origin/main
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.service.MusicService
 import com.material.music.data.worker.SyncManager
@@ -118,6 +130,10 @@ import com.material.music.presentation.components.MiniPlayerBottomSpacer
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.PlayerInternalNavigationBar
 import com.material.music.presentation.components.PlayerNavigationRail
+<<<<<<< HEAD
+import com.material.music.presentation.components.SmartMixHost
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.UnifiedPlayerSheetV2
 import com.material.music.presentation.components.calculatePlayerSheetCollapsedTargetY
 import com.material.music.presentation.components.resolveNavBarOccupiedHeight
@@ -128,10 +144,22 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.screens.SetupScreen
 import com.material.music.presentation.viewmodel.MainViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
+import com.material.music.presentation.splash.MaterialMusicSplash
+import com.material.music.ui.theme.MaterialMusicTheme
+import com.material.music.ui.theme.resolveAppWideNowPlayingColorSchemePair
+import com.material.music.ui.theme.LocalShowScrollbar
+import com.material.music.utils.AppLocaleManager
+import com.material.music.utils.CrashHandler
+import com.material.music.utils.LogUtils
+import com.material.music.utils.shouldKeepScreenAwake
+=======
 import com.material.music.ui.theme.MaterialMusicTheme
 import com.material.music.utils.CrashHandler
 import com.material.music.utils.LogUtils
+>>>>>>> origin/main
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -145,21 +173,32 @@ import com.material.music.presentation.utils.NoOpHapticFeedback
 import com.material.music.utils.CrashLogData
 import javax.annotation.concurrent.Immutable
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 
 @Immutable
 data class BottomNavItem(
-    val label: String,
+    /** Shown as the tab label and content description, so it follows the app language. */
+    @StringRes val labelResId: Int,
     @DrawableRes val iconResId: Int,
     @DrawableRes val selectedIconResId: Int? = null,
     val screen: Screen
+)
+
+/** Top-level destinations shared by the bottom navigation bar and the navigation rail. */
+internal val MainNavItems: ImmutableList<BottomNavItem> = persistentListOf(
+    BottomNavItem(R.string.tab_home, R.drawable.rounded_home_24, R.drawable.home_24_rounded_filled, Screen.Home),
+    BottomNavItem(R.string.search, R.drawable.rounded_search_24, R.drawable.rounded_search_24, Screen.Search),
+    BottomNavItem(R.string.tab_library, R.drawable.rounded_library_music_24, R.drawable.round_library_music_24, Screen.Library)
 )
 
 private data class DismissUndoBarSlice(
     val isVisible: Boolean = false,
     val durationMillis: Long = 4000L
 )
+
+private const val SYSTEM_SPLASH_HANDOFF_MS = 150L
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @AndroidEntryPoint
@@ -177,8 +216,17 @@ class MainActivity : ComponentActivity() {
     lateinit var syncManager: SyncManager
     private val _pendingPlaylistNavigation = kotlinx.coroutines.flow.MutableStateFlow<String?>(null)
     private val _pendingShuffleAll = kotlinx.coroutines.flow.MutableStateFlow(false)
+    private val _pendingUpdatesNavigation = kotlinx.coroutines.flow.MutableStateFlow(false)
+
+    /** Flips when the system splash view is removed; MaterialMusicSplash starts animating then. */
+    private val systemSplashGone = mutableStateOf(false)
 
     private val requestAllFilesAccessLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+    }
+
+    @CallSuper
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocaleManager.wrapContext(newBase))
     }
 
     @OptIn(ExperimentalPermissionsApi::class)
@@ -200,9 +248,51 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    combine(
+                        userPreferencesRepository.keepScreenAwakeWhilePlayingFlow,
+                        playerViewModel.stablePlayerState
+                            .map { state -> state.isPlaying }
+                            .distinctUntilChanged(),
+                        ::shouldKeepScreenAwake,
+                    ).distinctUntilChanged().collect { keepAwake ->
+                        if (keepAwake) {
+                            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                        } else {
+                            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                        }
+                    }
+                } finally {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+        }
+
         splashScreen.setKeepOnScreenCondition { false }
 
         val isBenchmarkMode = intent.getBooleanExtra("is_benchmark", false)
+
+        // The animated splash plays on fresh launches only (not on recreation), and never
+        // when the user has turned animations off or a benchmark is timing startup.
+        val playAnimatedSplash = savedInstanceState == null &&
+            !isBenchmarkMode &&
+            Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) > 0f
+        if (playAnimatedSplash) {
+            // MaterialMusicSplash's first frame is the system splash's last one, so the system view
+            // only needs a short fade to cover device-specific icon rendering differences.
+            splashScreen.setOnExitAnimationListener { provider ->
+                provider.view.animate()
+                    .alpha(0f)
+                    .setDuration(SYSTEM_SPLASH_HANDOFF_MS)
+                    .withEndAction {
+                        provider.remove()
+                        systemSplashGone.value = true
+                    }
+                    .start()
+            }
+        }
         val shouldBenchmarkRebuildDatabase =
             isBenchmarkMode && intent.getBooleanExtra("benchmark_rebuild_database", false)
         Timber.tag("MaterialMusicBenchmark").i(
@@ -221,11 +311,53 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemDarkTheme = isSystemInDarkTheme()
             val appThemeMode by themePreferencesRepository.appThemeModeFlow.collectAsStateWithLifecycle(initialValue = AppThemeMode.FOLLOW_SYSTEM)
+            val themePreset by themePreferencesRepository.themePresetFlow.collectAsStateWithLifecycle(initialValue = ThemePreset.DEFAULT)
             val useDarkTheme = when (appThemeMode) {
                 AppThemeMode.DARK -> true
                 AppThemeMode.LIGHT -> false
                 else -> systemDarkTheme
             }
+            val globalNowPlayingThemeEnabled by themePreferencesRepository
+                .globalNowPlayingThemeEnabledFlow
+                .collectAsStateWithLifecycle(initialValue = false)
+            val activePlayerColorSchemePair by playerViewModel
+                .activePlayerColorSchemePair
+                .collectAsStateWithLifecycle()
+            val themedAlbumArtUri by playerViewModel
+                .currentThemedAlbumArtUri
+                .collectAsStateWithLifecycle()
+            val stablePlayerState by playerViewModel
+                .stablePlayerState
+                .collectAsStateWithLifecycle()
+            val currentSongId = stablePlayerState.currentSong?.id
+            val currentSongScheme = activePlayerColorSchemePair.takeIf {
+                val artworkUri = stablePlayerState.currentSong?.albumArtUriString
+                !artworkUri.isNullOrBlank() && artworkUri == themedAlbumArtUri
+            }
+            var lastValidNowPlayingSongId by remember { mutableStateOf<String?>(null) }
+            var lastValidNowPlayingScheme by remember {
+                mutableStateOf<com.material.music.presentation.viewmodel.ColorSchemePair?>(null)
+            }
+            LaunchedEffect(currentSongId, currentSongScheme) {
+                when {
+                    currentSongId == null -> {
+                        lastValidNowPlayingSongId = null
+                        lastValidNowPlayingScheme = null
+                    }
+                    currentSongScheme != null -> {
+                        lastValidNowPlayingSongId = currentSongId
+                        lastValidNowPlayingScheme = currentSongScheme
+                    }
+                }
+            }
+            val appWideNowPlayingScheme = resolveAppWideNowPlayingColorSchemePair(
+                enabled = globalNowPlayingThemeEnabled,
+                currentSongId = currentSongId,
+                isPlaying = stablePlayerState.isPlaying,
+                currentSongScheme = currentSongScheme,
+                lastValidSongId = lastValidNowPlayingSongId,
+                lastValidScheme = lastValidNowPlayingScheme
+            )
             val isSetupComplete by mainViewModel.isSetupComplete.collectAsStateWithLifecycle()
             
             var showCrashReportDialog by remember { mutableStateOf(false) }
@@ -262,7 +394,13 @@ class MainActivity : ComponentActivity() {
             }
 
             MaterialMusicTheme(
+<<<<<<< HEAD
+                darkTheme = useDarkTheme,
+                colorSchemePairOverride = appWideNowPlayingScheme,
+                themePreset = themePreset
+=======
                 darkTheme = useDarkTheme
+>>>>>>> origin/main
             ) {
                 var contentVisible by remember { mutableStateOf(false) }
                 val contentAlpha by animateFloatAsState(
@@ -276,42 +414,53 @@ class MainActivity : ComponentActivity() {
                     contentVisible = true
                 }
 
-                Surface(
-                    modifier = Modifier.fillMaxSize().graphicsLayer { alpha = contentAlpha }, 
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    if (showSetupScreen == null) {
-                        SetupGateLoadingScreen()
-                    } else {
-                        AnimatedContent(
-                            targetState = showSetupScreen,
-                            transitionSpec = {
-                                if (targetState) {
-                                    fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
+                var showAnimatedSplash by remember { mutableStateOf(playAnimatedSplash) }
+
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize().graphicsLayer { alpha = contentAlpha },
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        if (showSetupScreen == null) {
+                            SetupGateLoadingScreen()
+                        } else {
+                            AnimatedContent(
+                                targetState = showSetupScreen,
+                                transitionSpec = {
+                                    if (targetState) {
+                                        fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
+                                    } else {
+                                        scaleIn(initialScale = 0.95f, animationSpec = tween(450)) + fadeIn(animationSpec = tween(450)) togetherWith
+                                                slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(450)) + fadeOut(animationSpec = tween(450))
+                                    }
+                                },
+                                label = "SetupTransition"
+                            ) { shouldShowSetup ->
+                                if (shouldShowSetup) {
+                                    SetupScreen(onSetupComplete = {
+                                    })
                                 } else {
-                                    scaleIn(initialScale = 0.95f, animationSpec = tween(450)) + fadeIn(animationSpec = tween(450)) togetherWith
-                                            slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(450)) + fadeOut(animationSpec = tween(450))
+                                    MainAppContent(playerViewModel, mainViewModel)
                                 }
-                            },
-                            label = "SetupTransition"
-                        ) { shouldShowSetup ->
-                            if (shouldShowSetup) {
-                                SetupScreen(onSetupComplete = {
-                                })
-                            } else {
-                                MainAppContent(playerViewModel, mainViewModel)
                             }
+                        }
+
+                        if (showCrashReportDialog && crashLogData != null) {
+                            CrashReportDialog(
+                                crashLog = crashLogData!!,
+                                onDismiss = {
+                                    CrashHandler.clearCrashLog()
+                                    crashLogData = null
+                                    showCrashReportDialog = false
+                                }
+                            )
                         }
                     }
 
-                    if (showCrashReportDialog && crashLogData != null) {
-                        CrashReportDialog(
-                            crashLog = crashLogData!!,
-                            onDismiss = {
-                                CrashHandler.clearCrashLog()
-                                crashLogData = null
-                                showCrashReportDialog = false
-                            }
+                    if (showAnimatedSplash) {
+                        MaterialMusicSplash(
+                            systemSplashGone = systemSplashGone.value,
+                            onFinished = { showAnimatedSplash = false }
                         )
                     }
                 }
@@ -339,6 +488,11 @@ class MainActivity : ComponentActivity() {
                 intent.getStringExtra(MainActivityIntentContract.EXTRA_PLAYLIST_ID)?.let { playlistId ->
                     _pendingPlaylistNavigation.value = playlistId
                 }
+                intent.action = null
+            }
+
+            intent.action == MainActivityIntentContract.ACTION_OPEN_UPDATES -> {
+                _pendingUpdatesNavigation.value = true
                 intent.action = null
             }
 
@@ -435,7 +589,7 @@ class MainActivity : ComponentActivity() {
                 CircularWavyProgressIndicator()
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = "Preparing setup…",
+                    text = stringResource(R.string.setup_gate_preparing),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )
@@ -495,6 +649,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        val pendingUpdatesNav by _pendingUpdatesNavigation.collectAsStateWithLifecycle()
+        LaunchedEffect(pendingUpdatesNav) {
+            if (!pendingUpdatesNav) return@LaunchedEffect
+            // The NavHost may not be attached yet when the activity is cold-started from the notification.
+            repeat(50) {
+                if (navController.navigateSafely(Screen.Updates.route)) {
+                    _pendingUpdatesNavigation.value = false
+                    return@LaunchedEffect
+                }
+                delay(100)
+            }
+            _pendingUpdatesNavigation.value = false
+        }
+
         var canShowLoadingIndicator by remember { mutableStateOf(false) }
         var loadingShownTimestamp by remember { mutableStateOf(0L) }
         val minimumDisplayDuration = 1500L
@@ -536,13 +704,6 @@ class MainActivity : ComponentActivity() {
         playerViewModel: PlayerViewModel,
         navController: NavHostController
     ) = traceSection("MainActivity.MainUI") {
-        val commonNavItems = remember {
-            persistentListOf(
-                BottomNavItem("Home", R.drawable.rounded_home_24, R.drawable.home_24_rounded_filled, Screen.Home),
-                BottomNavItem("Search", R.drawable.rounded_search_24, R.drawable.rounded_search_24, Screen.Search),
-                BottomNavItem("Library", R.drawable.rounded_library_music_24, R.drawable.round_library_music_24, Screen.Library)
-            )
-        }
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         var isSearchBarActive by remember { mutableStateOf(false) }
@@ -566,6 +727,7 @@ class MainActivity : ComponentActivity() {
                 Screen.Stats.route,
                 Screen.EditTransition.route,
                 Screen.Experimental.route,
+                Screen.LyricsSettings.route,
                 Screen.ArtistSettings.route,
                 Screen.Equalizer.route,
                 Screen.SettingsCategory.route,
@@ -574,7 +736,11 @@ class MainActivity : ComponentActivity() {
                 Screen.RecentlyPlayed.route,
                 Screen.DeviceCapabilities.route,
                 Screen.EasterEgg.route,
-                Screen.WordDelimiterConfig.route
+                Screen.WordDelimiterConfig.route,
+                Screen.ExcludedDirectories.route,
+                Screen.AudioBookmarks.route,
+                Screen.AudioBookmarkFolder.route,
+                Screen.Updates.route
             )
         }
         val shouldHideNavigationBar by remember(currentRoute, isSearchBarActive) {
@@ -680,20 +846,31 @@ class MainActivity : ComponentActivity() {
             userPreferencesRepository.clearDeprecatedPlayerSheetPreference()
         }
 
+        val showScrollbar by userPreferencesRepository.showScrollbarFlow.collectAsStateWithLifecycle(initialValue = true)
+
         CompositionLocalProvider(
             LocalAppHapticsConfig provides appHapticsConfig,
-            LocalHapticFeedback provides scopedHapticFeedback
+            LocalHapticFeedback provides scopedHapticFeedback,
+            LocalShowScrollbar provides showScrollbar
         ) {
+            val sidebarShortcuts by userPreferencesRepository.sidebarShortcutsFlow
+                .collectAsStateWithLifecycle(initialValue = SidebarShortcutKeys.DEFAULT)
             AppSidebarDrawer(
                 drawerState = drawerState,
                 selectedRoute = currentRoute ?: Screen.Home.route,
+                enabledShortcuts = sidebarShortcuts,
+                onShortcutsChanged = { shortcuts ->
+                    scope.launch { userPreferencesRepository.setSidebarShortcuts(shortcuts) }
+                },
                 onDestinationSelected = { destination ->
                     scope.launch { drawerState.close() }
                     when (destination) {
                         DrawerDestination.Home -> navController.navigateSafely(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = true }
                         }
+                        DrawerDestination.Stats -> navController.navigateSafely(Screen.Stats.route)
                         DrawerDestination.Equalizer -> navController.navigateSafely(Screen.Equalizer.route)
+                        DrawerDestination.Bookmarks -> navController.navigateSafely(Screen.AudioBookmarks.route)
                         DrawerDestination.Settings -> navController.navigateSafely(Screen.Settings.route)
                     }
                 }
@@ -710,7 +887,7 @@ class MainActivity : ComponentActivity() {
                         }
                         PlayerNavigationRail(
                             navController = navController,
-                            navItems = commonNavItems,
+                            navItems = MainNavItems,
                             currentRoute = currentRoute,
                             onSearchIconDoubleTap = onSearchIconDoubleTap
                         )
@@ -809,7 +986,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 PlayerInternalNavigationBar(
                                     navController = navController,
-                                    navItems = commonNavItems,
+                                    navItems = MainNavItems,
                                     currentRoute = currentRoute,
                                     navBarStyle = navBarStyle,
                                     compactMode = navBarCompactMode,
@@ -939,6 +1116,14 @@ class MainActivity : ComponentActivity() {
                                 durationMillis = dismissUndoBarSlice.durationMillis
                             )
                         }
+
+                        SmartMixHost(
+                            playerViewModel = playerViewModel,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = innerPadding.calculateBottomPadding() + MiniPlayerHeight)
+                                .padding(horizontal = horizontalPadding)
+                        )
                     }
                 }
             }

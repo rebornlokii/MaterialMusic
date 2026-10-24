@@ -1,7 +1,15 @@
 package com.material.music.data.service.player
 
+<<<<<<< HEAD
+import androidx.media3.common.C
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
+import com.material.music.data.model.AudioOutputMode
+=======
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
+>>>>>>> origin/main
 import java.util.Locale
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -13,12 +21,41 @@ internal object AudioDecoderPolicy {
         AUDIO_MIDI
     )
 
+<<<<<<< HEAD
+    /**
+     * True when the item exposes audio but no audio track can be decoded by any renderer
+     * (FFmpeg included), so ExoPlayer would advance a silent clock.
+     */
+    fun hasUnsupportedAudio(tracks: Tracks): Boolean {
+        val audio = tracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }
+        return audio.isNotEmpty() && audio.none { group ->
+            (0 until group.length).any(group::isTrackSupported)
+        }
+    }
+
+    fun shouldUseExtensionRenderer(mimeType: String, outputMode: AudioOutputMode): Boolean {
+        // Some platform FLAC decoders produce corrupt audio when Media3 requests PCM_FLOAT
+        // (reported on the Galaxy S25 Ultra, issue #122). FFmpeg can decode FLAC directly to
+        // float PCM without that platform negotiation. Keep the normal decoder order in the
+        // integer output modes, where the reporter confirmed playback works.
+        return (outputMode.usesFloatOutput && MimeTypes.AUDIO_FLAC.equals(mimeType, ignoreCase = true)) ||
+            extensionOnlyMimeTypes.any { it.equals(mimeType, ignoreCase = true) }
+    }
+
+    fun <T> selectPlatformDecoders(
+        mimeType: String,
+        decoderInfos: List<T>,
+        outputMode: AudioOutputMode
+    ): List<T> {
+        return if (shouldUseExtensionRenderer(mimeType, outputMode)) {
+=======
     fun shouldUseExtensionRenderer(mimeType: String): Boolean {
         return extensionOnlyMimeTypes.any { it.equals(mimeType, ignoreCase = true) }
     }
 
     fun <T> selectPlatformDecoders(mimeType: String, decoderInfos: List<T>): List<T> {
         return if (shouldUseExtensionRenderer(mimeType)) {
+>>>>>>> origin/main
             emptyList()
         } else {
             decoderInfos

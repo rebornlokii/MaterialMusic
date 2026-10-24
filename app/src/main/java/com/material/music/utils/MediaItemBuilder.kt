@@ -67,10 +67,18 @@ object MediaItemBuilder {
         "audio/x-alac",
         "audio/x-aiff",
     )
-    private val SUPPORTED_INTERNAL_ARTWORK_SCHEMES = setOf(
-        LocalArtworkUri.SCHEME,
+    private val CLOUD_ARTWORK_SCHEMES = setOf(
         "navidrome_cover",
         "jellyfin_cover",
+    )
+    private val SUPPORTED_INTERNAL_ARTWORK_SCHEMES = setOf(
+        LocalArtworkUri.SCHEME,
+<<<<<<< HEAD
+        *CLOUD_ARTWORK_SCHEMES.toTypedArray(),
+=======
+        "navidrome_cover",
+        "jellyfin_cover",
+>>>>>>> origin/main
         "content",
         "file",
         "android.resource",
@@ -84,6 +92,27 @@ object MediaItemBuilder {
         "http",
         "https",
     )
+    /**
+     * Playlist a queued item was started from. TransitionController reads it to find the
+     * playlist's default and per-pair transition rules, so every place that rebuilds a queued
+     * item (session resolution, queue reshuffle, snapshot restore) has to carry it over.
+     */
+    const val EXTRA_PLAYLIST_ID = "playlistId"
+
+    fun playlistIdOf(item: MediaItem): String? =
+        item.mediaMetadata.extras?.getString(EXTRA_PLAYLIST_ID)?.takeIf { it.isNotBlank() }
+
+    /** Returns [item] tagged with [playlistId], keeping its other extras. */
+    fun withPlaylistId(item: MediaItem, playlistId: String?): MediaItem {
+        if (playlistId.isNullOrBlank() || playlistIdOf(item) == playlistId) return item
+        val extras = Bundle(item.mediaMetadata.extras ?: Bundle()).apply {
+            putString(EXTRA_PLAYLIST_ID, playlistId)
+        }
+        return item.buildUpon()
+            .setMediaMetadata(item.mediaMetadata.buildUpon().setExtras(extras).build())
+            .build()
+    }
+
     const val EXTERNAL_EXTRA_FLAG = EXTERNAL_EXTRA_PREFIX + "FLAG"
     const val EXTERNAL_EXTRA_ALBUM = EXTERNAL_EXTRA_PREFIX + "ALBUM"
     const val EXTERNAL_EXTRA_DURATION = EXTERNAL_EXTRA_PREFIX + "DURATION"
@@ -250,6 +279,17 @@ object MediaItemBuilder {
                 context = context.applicationContext,
                 songId = songId,
                 cacheBustToken = LocalArtworkUri.extractCacheBustToken(rawArtworkUri)
+            )
+        }
+
+        val internalArtworkUri = normalizeArtworkUri(
+            rawArtworkUri,
+            CLOUD_ARTWORK_SCHEMES
+        )
+        if (internalArtworkUri != null) {
+            return SharedArtworkContentProvider.buildCloudUri(
+                context = context.applicationContext,
+                rawArtworkUri = internalArtworkUri.toString()
             )
         }
 

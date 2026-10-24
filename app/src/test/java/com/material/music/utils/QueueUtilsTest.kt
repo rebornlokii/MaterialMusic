@@ -171,7 +171,11 @@ class QueueUtilsTest {
             album = "Album",
             albumId = 1L,
             path = "/tmp/song-$index.mp3",
+<<<<<<< HEAD
+            contentUriString = "content://pixelplayer/song/$index",
+=======
             contentUriString = "content://materialmusic/song/$index",
+>>>>>>> origin/main
             albumArtUriString = null,
             duration = 180_000L,
             mimeType = "audio/mpeg",

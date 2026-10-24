@@ -1,6 +1,12 @@
+<<<<<<< HEAD
+# Contributing to MaterialMusic
+
+Thanks for your interest in improving MaterialMusic! This guide covers the
+=======
 # Contributing to Material Music
 
 Thanks for your interest in improving Material Music! This guide covers the
+>>>>>>> origin/main
 conventions that aren't obvious from the code alone. For a deeper architectural
 overview, see [CLAUDE.md](CLAUDE.md) (written for AI assistants but accurate for
 humans too).
@@ -8,7 +14,11 @@ humans too).
 ## Getting started
 
 ```sh
+<<<<<<< HEAD
+git clone https://github.com/MaterialMusicHQ/MaterialMusic.git
+=======
 git clone https://github.com/rebornlokii/MaterialMusic.git
+>>>>>>> origin/main
 cd MaterialMusic
 
 # Universal debug APK for local installation

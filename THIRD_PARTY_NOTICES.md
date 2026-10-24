@@ -1,6 +1,10 @@
 # Third-Party Notices
 
+<<<<<<< HEAD
+MaterialMusic is licensed under the GNU General Public License v3.0 (GPL-3.0). The app also includes third-party libraries and font assets. This file records source and license evidence useful for app-store and F-Droid review.
+=======
 Material Music is licensed under the GNU General Public License v3.0 (GPL-3.0). The app also includes third-party libraries and font assets. This file records source and license evidence useful for app-store review.
+>>>>>>> origin/main
 
 ## Bundled Font Assets
 
@@ -11,6 +15,15 @@ Material Music is licensed under the GNU General Public License v3.0 (GPL-3.0). 
 
 The OFL text is included in `app/src/main/assets/licenses/OFL.txt`.
 
+## Bundled Smart Mix Data Assets
+
+| Asset | Source | License |
+| --- | --- | --- |
+| `app/src/main/assets/nlp/artist-genres.txt` | Artist-to-genre labels derived from Wikidata, `https://www.wikidata.org` | CC0 1.0 (public domain dedication) |
+| `app/src/main/assets/nlp/concepts.txt` | Word-to-genre-family/mood concept table, generated offline with a locally run language model and shipped as static, reviewable text | Distributed under the project license (GPL-3.0) |
+
+Both files are read only on the device by the offline Smart Mix engine. The app makes no network request and runs no AI model to use them.
+
 ## Native/Binary Runtime Artifacts
 
 | Artifact | APK native library | Upstream/source | License evidence |
@@ -19,7 +32,11 @@ The OFL text is included in `app/src/main/assets/licenses/OFL.txt`.
 | `io.github.kyant0:taglib:1.0.6` | `libtaglib.so` | `https://github.com/Kyant0/taglib` | Maven POM declares Apache-2.0 |
 | `androidx.graphics:graphics-shapes:1.1.0` | `libandroidx.graphics.path.so` | `https://android.googlesource.com/platform/frameworks/support` | Google Maven POM declares Apache-2.0 |
 
+<<<<<<< HEAD
+The Jellyfin FFmpeg decoder bundled in the APK is GPL-3.0, consistent with the MaterialMusic source license (GPL-3.0).
+=======
 The Jellyfin FFmpeg decoder bundled in the APK is GPL-3.0, consistent with the Material Music source license (GPL-3.0).
+>>>>>>> origin/main
 
 ## JitPack Artifacts
 

@@ -90,7 +90,11 @@ fun ChangelogBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+<<<<<<< HEAD
+    val changelogUrl = "https://github.com/lostf1sh/MaterialMusic"
+=======
     val changelogUrl = "https://github.com/rebornlokii/MaterialMusic"
+>>>>>>> origin/main
     val changelog = changelogVersions()
 
     val fabCornerRadius = 16.dp

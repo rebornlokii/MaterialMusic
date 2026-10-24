@@ -45,6 +45,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Balance
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material3.FilledIconButton
@@ -67,6 +68,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
@@ -132,9 +135,14 @@ private val CurrentMaintainer = Contributor(
 private val OriginalFossMaintainer = Contributor(
     id = "lostf1sh",
     displayName = "@lostf1sh",
+<<<<<<< HEAD
+    role = "FOSS Maintainer",
+    detail = "Maintains MaterialMusic. GitHub and Telegram: @lostf1sh.",
+=======
     role = "Original FOSS Maintainer",
     detail = "Maintained PixelPlayerOSS, the free and open-source project Material Music is based on.",
     badge = "Original project",
+>>>>>>> origin/main
     avatarUrl = "https://github.com/lostf1sh.png",
     iconRes = R.drawable.round_developer_board_24,
     githubUrl = "https://github.com/lostf1sh",
@@ -143,8 +151,13 @@ private val OriginalFossMaintainer = Contributor(
 private val OriginalAuthor = Contributor(
     id = "theovilardo",
     displayName = "@theovilardo",
+<<<<<<< HEAD
+    role = "Author / Non-FOSS Maintainer",
+    detail = "Author and maintainer of the original Google Play / non-FOSS MaterialMusic release.",
+=======
     role = "Original Author",
     detail = "Author and maintainer of the original Google Play / non-FOSS PixelPlayer release.",
+>>>>>>> origin/main
     badge = "Original app",
     avatarUrl = "https://github.com/theovilardo.png",
     iconRes = R.drawable.round_developer_board_24,
@@ -157,14 +170,20 @@ private val AboutMaintainers = listOf(
     OriginalAuthor,
 )
 
+<<<<<<< HEAD
+private const val SourceRepoUrl = "https://github.com/lostf1sh/MaterialMusic"
+private const val FDroidUrl = "https://f-droid.org/packages/com.material.music/"
+private const val SponsorUrl = "https://github.com/sponsors/lostf1sh"
+=======
 private const val SourceRepoUrl = "https://github.com/rebornlokii/MaterialMusic"
+>>>>>>> origin/main
 
 private data class ProjectLink(
     val id: String,
     val title: String,
     val subtitle: String,
-    @DrawableRes val iconRes: Int,
-    val url: String,
+    val icon: Painter,
+    val onClick: () -> Unit,
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -188,9 +207,26 @@ fun AboutScreen(
             id = "source",
             title = stringResource(R.string.about_link_source_title),
             subtitle = stringResource(R.string.about_link_source_subtitle),
-            iconRes = R.drawable.github,
-            url = SourceRepoUrl,
+            icon = painterResource(R.drawable.github),
+            onClick = { openUrl(context, SourceRepoUrl) },
         ),
+<<<<<<< HEAD
+        ProjectLink(
+            id = "fdroid",
+            title = stringResource(R.string.about_link_fdroid_title),
+            subtitle = stringResource(R.string.about_link_fdroid_subtitle),
+            icon = painterResource(R.drawable.fdroid),
+            onClick = { openUrl(context, FDroidUrl) },
+        ),
+        ProjectLink(
+            id = "licenses",
+            title = stringResource(R.string.about_licenses_title),
+            subtitle = stringResource(R.string.about_licenses_subtitle),
+            icon = rememberVectorPainter(Icons.Rounded.Balance),
+            onClick = { navController.navigateSafely(Screen.Licenses.route) },
+        ),
+=======
+>>>>>>> origin/main
     )
 
     val transitionState = remember { MutableTransitionState(false) }
@@ -329,7 +365,7 @@ fun AboutScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .padding(top = if (index == 0) 0.dp else 3.dp),
-                    onClick = { openUrl(context, link.url) },
+                    onClick = link.onClick,
                 )
             }
 
@@ -566,7 +602,7 @@ private fun AboutLinkCard(
                 color = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Icon(
-                    painter = painterResource(link.iconRes),
+                    painter = link.icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier

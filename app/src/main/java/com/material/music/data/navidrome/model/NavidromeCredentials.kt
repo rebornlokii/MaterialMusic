@@ -17,13 +17,21 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
  * @property serverUrl The base URL of the Navidrome server (e.g., "https://music.example.com")
  * @property username The username for authentication
  * @property password The password (stored securely, used to generate tokens)
+<<<<<<< HEAD
+ * @property clientId The client identifier sent to the server (default: "MaterialMusic")
+=======
  * @property clientId The client identifier sent to the server (default: "Material Music")
+>>>>>>> origin/main
  */
 data class NavidromeCredentials(
     val serverUrl: String,
     val username: String,
     val password: String,
+<<<<<<< HEAD
+    val clientId: String = "MaterialMusic"
+=======
     val clientId: String = "Material Music"
+>>>>>>> origin/main
 ) {
     companion object {
         /**
@@ -38,7 +46,11 @@ data class NavidromeCredentials(
             serverUrl = "",
             username = "",
             password = "",
+<<<<<<< HEAD
+            clientId = "MaterialMusic"
+=======
             clientId = "Material Music"
+>>>>>>> origin/main
         )
     }
 
@@ -50,9 +62,25 @@ data class NavidromeCredentials(
 
     /**
      * Returns the parsed and normalized server URL, or null if it is invalid.
+     *
+     * A URL typed without a scheme gets `http://` when its host is a local network or VPN
+     * address and `https://` otherwise, matching [com.material.music.data.jellyfin.model.JellyfinCredentials].
      */
     val normalizedHttpUrlOrNull: HttpUrl?
-        get() = serverUrl.trim().trimEnd('/').toHttpUrlOrNull()
+        get() {
+            val trimmed = serverUrl.trim().trimEnd('/')
+            val hasScheme = trimmed.startsWith("http://", ignoreCase = true) ||
+                trimmed.startsWith("https://", ignoreCase = true)
+
+            val withScheme = if (!hasScheme) {
+                val host = "http://$trimmed".toHttpUrlOrNull()?.host?.lowercase()
+                val scheme = if (host != null && isHttpAllowedHost(host)) "http" else "https"
+                "$scheme://$trimmed"
+            } else {
+                trimmed
+            }
+            return withScheme.toHttpUrlOrNull()
+        }
 
     /**
      * Returns the normalized server URL (without trailing slash).

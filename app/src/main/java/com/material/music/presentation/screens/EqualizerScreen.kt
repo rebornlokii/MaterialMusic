@@ -78,6 +78,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.drawscope.translate
@@ -925,6 +926,23 @@ private fun VerticalBandSlider(
 
 
 
+/**
+ * Colour of a vertical band slider's active fill, or null when no fill should be drawn.
+ *
+ * The fill is a round cap plus a rect that overlap at the thumb, so it must stay opaque: a
+ * translucent colour stacks into a darker half-disc there. A fully transparent active colour
+ * (the graph view) means "no fill"; copying an alpha onto it would turn it into 30% black.
+ */
+internal fun resolveVerticalSliderFillColor(
+    active: Color,
+    inactive: Color,
+    enabled: Boolean
+): Color? = when {
+    active.alpha == 0f -> null
+    enabled -> active
+    else -> active.copy(alpha = 0.3f).compositeOver(inactive)
+}
+
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun CustomVerticalSlider(
@@ -977,7 +995,7 @@ private fun CustomVerticalSlider(
         }
     }
 
-    val actualActiveTrackColor = if (enabled) activeTrackColor else activeTrackColor.copy(alpha = 0.3f)
+    val actualActiveTrackColor = resolveVerticalSliderFillColor(activeTrackColor, inactiveTrackColor, enabled)
     val actualInactiveTrackColor = inactiveTrackColor
     val actualThumbColor = if (enabled) thumbColor else MaterialTheme.colorScheme.onSurfaceVariant
 
@@ -1064,16 +1082,18 @@ private fun CustomVerticalSlider(
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(trackWidth / 2)
             )
             
-            drawCircle(
-                color = actualActiveTrackColor,
-                radius = trackWidth / 2,
-                center = androidx.compose.ui.geometry.Offset(centerX, thumbCenterY)
-            )
-            
+            if (actualActiveTrackColor != null) {
+                drawCircle(
+                    color = actualActiveTrackColor,
+                    radius = trackWidth / 2,
+                    center = androidx.compose.ui.geometry.Offset(centerX, thumbCenterY)
+                )
+            }
+
             val activeRectTop = thumbCenterY
             val activeRectHeight = size.height - activeRectTop
-            
-            if (activeRectHeight > 0f) {
+
+            if (actualActiveTrackColor != null && activeRectHeight > 0f) {
                 val activeTrackPath = androidx.compose.ui.graphics.Path().apply {
                     addRoundRect(
                         androidx.compose.ui.geometry.RoundRect(

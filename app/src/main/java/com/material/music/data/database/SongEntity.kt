@@ -7,6 +7,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.material.music.data.model.ArtistRef
 import com.material.music.data.model.Song
+<<<<<<< HEAD
+import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import com.material.music.utils.LocalArtworkUri
 import com.material.music.utils.normalizeMetadataText
 import com.material.music.utils.normalizeMetadataTextOrEmpty
@@ -115,7 +119,10 @@ private fun SongEntity.toSongInternal(artists: List<ArtistRef>): Song {
             contentUriString = this.contentUriString
         ),
         duration = this.duration,
-        genre = this.genre.normalizeMetadataText(),
+        // normalizeMetadataText drops NULs, which would glue an ID3v2.4 "Rock\u0000Pop" into one genre.
+        genre = this.genre
+            ?.let { raw -> if ('\u0000' in raw) GenreParser.joinValues(raw.split('\u0000')) else raw }
+            .normalizeMetadataText(),
         lyrics = this.lyrics?.normalizeMetadataText(),
         isFavorite = this.isFavorite,
         trackNumber = this.trackNumber,

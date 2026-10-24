@@ -29,10 +29,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+<<<<<<< HEAD
+import com.material.music.R
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.components.WavySliderExpressive
 import com.material.music.utils.formatDuration
 import kotlin.math.roundToLong
@@ -120,7 +125,7 @@ fun PlayerSeekBar(
             thumbColor = primaryColor,
             wavelength = 30.dp,
             isPlaying = isPlaying,
-            semanticsLabel = "Playback position"
+            semanticsLabel = stringResource(R.string.cd_playback_position)
         )
     }
 }

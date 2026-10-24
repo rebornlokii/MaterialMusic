@@ -5,6 +5,10 @@ import com.material.music.data.navidrome.model.NavidromeArtist
 import com.material.music.data.navidrome.model.NavidromeMusicFolder
 import com.material.music.data.navidrome.model.NavidromePlaylist
 import com.material.music.data.navidrome.model.NavidromeSong
+<<<<<<< HEAD
+import com.material.music.utils.GenreParser
+=======
+>>>>>>> origin/main
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -64,8 +68,22 @@ object NavidromeResponseParser {
             duration = json.optLong("duration", 0L) * 1000L,
             playCount = json.optInt("playCount", 0),
             year = json.optInt("year", 0),
-            genre = json.optString("genre").takeIf { it.isNotEmpty() }
+            genre = parseGenre(json)
         )
+    }
+
+    /**
+     * The item's genres. OpenSubsonic servers list every genre in `genres` ([{"name": ...}]),
+     * while the legacy `genre` field only holds one of them.
+     */
+    private fun parseGenre(json: JSONObject): String? {
+        val genreNames = json.optJSONArray("genres")?.let { array ->
+            (0 until array.length()).map { index ->
+                array.optJSONObject(index)?.optString("name") ?: array.optString(index)
+            }
+        }.orEmpty()
+        return GenreParser.joinValues(genreNames)
+            ?: json.optString("genre").takeIf { it.isNotEmpty() }
     }
 
     /**
@@ -92,7 +110,7 @@ object NavidromeResponseParser {
             trackNumber = json.optInt("track", 0),
             discNumber = json.optInt("discNumber", 0),
             year = json.optInt("year", 0),
-            genre = json.optString("genre").takeIf { it.isNotEmpty() },
+            genre = parseGenre(json),
             bitRate = json.optInt("bitRate", 0).takeIf { it > 0 },
             contentType = json.optString("contentType").takeIf { it.isNotEmpty() },
             suffix = json.optString("suffix").takeIf { it.isNotEmpty() },

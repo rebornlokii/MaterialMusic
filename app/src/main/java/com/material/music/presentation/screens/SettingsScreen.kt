@@ -2,6 +2,7 @@ package com.material.music.presentation.screens
 
 import com.material.music.presentation.navigation.navigateSafely
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
@@ -31,20 +32,30 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,13 +63,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -67,7 +81,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -77,7 +93,13 @@ import com.material.music.presentation.components.CollapsibleCommonTopBar
 import com.material.music.presentation.components.ExpressiveTopBarContent
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.model.SettingsCategory
+<<<<<<< HEAD
+import com.material.music.presentation.settings.search.SettingsFuzzySearchEngine
+import com.material.music.presentation.settings.search.SettingsRegistry
+import com.material.music.presentation.settings.search.SettingsSearchResultsContent
+=======
 import com.material.music.presentation.navigation.Screen
+>>>>>>> origin/main
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
 import kotlin.math.roundToInt
@@ -188,6 +210,41 @@ fun SettingsScreen(
         }
     }
 
+    val context = LocalContext.current
+    // Kept as a TextFieldValue so the caret survives navigating into a result and back;
+    // a plain String restored the field with the cursor parked at the start.
+    var searchFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(""))
+    }
+    val searchQuery = searchFieldValue.text
+    var isSearchActive by rememberSaveable { mutableStateOf(false) }
+
+    val searchFocusRequester = remember { FocusRequester() }
+    LaunchedEffect(isSearchActive) {
+        if (isSearchActive) {
+            if (searchFieldValue.selection != TextRange(searchFieldValue.text.length)) {
+                searchFieldValue = searchFieldValue.copy(selection = TextRange(searchFieldValue.text.length))
+            }
+            kotlinx.coroutines.delay(150)
+            searchFocusRequester.requestFocus()
+        }
+    }
+
+    // The search overlay is a state of this screen, not a destination, so the system Back
+    // gesture has to dismiss it first instead of popping Settings entirely.
+    BackHandler(enabled = isSearchActive) {
+        isSearchActive = false
+        searchFieldValue = TextFieldValue("")
+    }
+
+    val searchResults = remember(searchQuery) {
+        if (searchQuery.isNotBlank()) {
+            SettingsFuzzySearchEngine.search(context, searchQuery, SettingsRegistry.allSettings)
+        } else {
+            emptyList()
+        }
+    }
+
     Box(
             modifier =
                     Modifier.nestedScroll(nestedScrollConnection).fillMaxSize().graphicsLayer {
@@ -207,76 +264,66 @@ fun SettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxSize()
         ) {
+            // Persistent docked search bar
             item {
-                val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
-                ExpressiveSettingsGroup {
-                    val mainCategories = SettingsCategory.entries.filter {
-                        it != SettingsCategory.ABOUT && 
-                        it != SettingsCategory.DEVICE_CAPABILITIES
-                    }
-
-                    val totalItems = mainCategories.size + 3
-                    fun shapeFor(index: Int) =
-                        when {
-                            totalItems == 1 -> RoundedCornerShape(24.dp)
-                            index == 0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 4.dp, bottomEnd = 4.dp)
-                            index == totalItems - 1 -> RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
-                            else -> RoundedCornerShape(4.dp)
-                        }
-
-                    var itemIndex = 0
-
-                    mainCategories.forEach { category ->
-                        val colors = getCategoryColors(category, isDark)
-
-                        ExpressiveCategoryItem(
-                            category = category,
-                            customColors = colors,
-                            onClick = {
-                                if (category == SettingsCategory.EQUALIZER) {
-                                    navController.navigateSafely(Screen.Equalizer.route)
-                                } else {
-                                    navController.navigateSafely(Screen.SettingsCategory.createRoute(category.id))
-                                }
-                            },
-                            shape = shapeFor(itemIndex)
+                Surface(
+                    onClick = { isSearchActive = true },
+                    shape = RoundedCornerShape(28.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = stringResource(R.string.search),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
                         )
-                        if (itemIndex < totalItems - 1) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = stringResource(R.string.settings_search_hint),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            item {
+                val colorScheme = MaterialTheme.colorScheme
+                ExpressiveSettingsGroup {
+                    mainSettingsEntries.forEachIndexed { index, entry ->
+                        val shape = settingsGroupItemShape(index, mainSettingsEntries.size)
+                        val colors = colorScheme.settingsIconColors(entry.iconTone)
+
+                        when (entry) {
+                            is MainSettingsEntry.Category -> ExpressiveCategoryItem(
+                                category = entry.category,
+                                customColors = colors,
+                                onClick = { navController.navigateSafely(entry.route) },
+                                shape = shape
+                            )
+                            is MainSettingsEntry.Destination -> ExpressiveNavigationItem(
+                                title = stringResource(entry.titleRes),
+                                subtitle = stringResource(entry.subtitleRes),
+                                icon = entry.icon,
+                                colors = colors,
+                                onClick = { navController.navigateSafely(entry.route) },
+                                shape = shape
+                            )
+                        }
+                        if (index < mainSettingsEntries.lastIndex) {
                             Spacer(modifier = Modifier.height(2.dp))
                         }
-                        itemIndex++
                     }
-
-                    ExpressiveCategoryItem(
-                        category = SettingsCategory.DEVICE_CAPABILITIES,
-                        customColors = getCategoryColors(SettingsCategory.DEVICE_CAPABILITIES, isDark),
-                        onClick = { navController.navigateSafely(Screen.DeviceCapabilities.route) },
-                        shape = shapeFor(itemIndex)
-                    )
-                    if (itemIndex < totalItems - 1) {
-                        Spacer(modifier = Modifier.height(2.dp))
-                    }
-                    itemIndex++
-
-                    ExpressiveNavigationItem(
-                        title = stringResource(R.string.settings_accounts_row_title),
-                        subtitle = stringResource(R.string.settings_accounts_row_subtitle),
-                        icon = Icons.Rounded.AccountCircle,
-                        colors = getAccountsColors(isDark),
-                        onClick = { navController.navigateSafely(Screen.Accounts.route) },
-                        shape = shapeFor(itemIndex)
-                    )
-                    if (itemIndex < totalItems - 1) {
-                        Spacer(modifier = Modifier.height(2.dp))
-                    }
-                    itemIndex++
-
-                    ExpressiveCategoryItem(
-                        category = SettingsCategory.ABOUT,
-                        customColors = getCategoryColors(SettingsCategory.ABOUT, isDark),
-                        onClick = { navController.navigateSafely("about") },
-                        shape = shapeFor(itemIndex)
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -288,6 +335,96 @@ fun SettingsScreen(
                 headerHeight = currentTopBarHeightDp,
                 onBackClick = onNavigationIconClick
         )
+
+        // Fullscreen expanded search overlay with auto-focus
+        AnimatedVisibility(
+            visible = isSearchActive,
+            enter = fadeIn(tween(250)) + slideInVertically(initialOffsetY = { -it / 4 }),
+            exit = fadeOut(tween(200)) + slideOutVertically(targetOffsetY = { -it / 4 }),
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(100f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .statusBarsPadding()
+                                .fillMaxWidth()
+                                .height(64.dp)
+                                .padding(horizontal = 8.dp)
+                        ) {
+                            IconButton(onClick = {
+                                isSearchActive = false
+                                searchFieldValue = TextFieldValue("")
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                    contentDescription = stringResource(R.string.auth_cd_back),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+
+                            OutlinedTextField(
+                                value = searchFieldValue,
+                                onValueChange = { searchFieldValue = it },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.settings_search_hint),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f)
+                                    )
+                                },
+                                singleLine = true,
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .focusRequester(searchFocusRequester)
+                            )
+
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchFieldValue = TextFieldValue("") }) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Close,
+                                        contentDescription = stringResource(R.string.cd_clear_search_query),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    SettingsSearchResultsContent(
+                        query = searchQuery,
+                        results = searchResults,
+                        uiState = uiState,
+                        settingsViewModel = settingsViewModel,
+                        navController = navController,
+                        contentPadding = PaddingValues(
+                            top = 16.dp,
+                            bottom = 16.dp + MiniPlayerHeight,
+                            start = 16.dp,
+                            end = 16.dp
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
 
         var isTransitioning by remember { mutableStateOf(true) }
         LaunchedEffect(Unit) {
@@ -434,14 +571,6 @@ fun ExpressiveCategoryItem(
     }
 }
 
-private fun getAccountsColors(isDark: Boolean): Pair<Color, Color> {
-    return if (isDark) {
-        Color(0xFF37474F) to Color(0xFFBBD9E8)
-    } else {
-        Color(0xFFD6EAF5) to Color(0xFF103548)
-    }
-}
-
 @Composable
 fun ExpressiveSettingsGroup(content: @Composable () -> Unit) {
     Column(
@@ -451,33 +580,5 @@ fun ExpressiveSettingsGroup(content: @Composable () -> Unit) {
             .background(Color.Transparent)
     ) {
         content()
-    }
-}
-
-private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair<Color, Color> {
-    return if (isDark) {
-        when (category) {
-            SettingsCategory.LIBRARY -> Color(0xFF004A77) to Color(0xFFC2E7FF) 
-            SettingsCategory.APPEARANCE -> Color(0xFF7D5260) to Color(0xFFFFD8E4) 
-            SettingsCategory.PLAYBACK -> Color(0xFF633B48) to Color(0xFFFFD8EC) 
-            SettingsCategory.BEHAVIOR -> Color(0xFF3E4C63) to Color(0xFFD7E3FF)
-            SettingsCategory.BACKUP_RESTORE -> Color(0xFF3B4869) to Color(0xFFD9E2FF)
-            SettingsCategory.DEVELOPER -> Color(0xFF324F34) to Color(0xFFCBEFD0) 
-            SettingsCategory.EQUALIZER -> Color(0xFF6E4E13) to Color(0xFFFFDEAC) 
-            SettingsCategory.DEVICE_CAPABILITIES -> Color(0xFF004D61) to Color(0xFFACEFEE)
-            SettingsCategory.ABOUT -> Color(0xFF3F474D) to Color(0xFFDEE3EB) 
-        }
-    } else {
-        when (category) {
-            SettingsCategory.LIBRARY -> Color(0xFFD7E3FF) to Color(0xFF005AC1)
-            SettingsCategory.APPEARANCE -> Color(0xFFFFD8E4) to Color(0xFF631835)
-            SettingsCategory.PLAYBACK -> Color(0xFFFFD8EC) to Color(0xFF631B4B)
-            SettingsCategory.BEHAVIOR -> Color(0xFFD7E3FF) to Color(0xFF253347)
-            SettingsCategory.BACKUP_RESTORE -> Color(0xFFD9E2FF) to Color(0xFF27304E)
-            SettingsCategory.DEVELOPER -> Color(0xFFCBEFD0) to Color(0xFF042106)
-            SettingsCategory.EQUALIZER -> Color(0xFFFFDEAC) to Color(0xFF281900)
-            SettingsCategory.DEVICE_CAPABILITIES -> Color(0xFFACEFEE) to Color(0xFF002022)
-            SettingsCategory.ABOUT -> Color(0xFFEFF1F7) to Color(0xFF44474F)
-        }
     }
 }

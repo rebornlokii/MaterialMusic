@@ -3,6 +3,10 @@ package com.material.music.data.navidrome
 import com.google.common.truth.Truth.assertThat
 import com.material.music.data.database.NavidromePlaylistEntity
 import com.material.music.data.navidrome.model.NavidromeMusicFolder
+<<<<<<< HEAD
+import com.material.music.data.navidrome.model.NavidromeSong
+=======
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 class NavidromeRepositoryTest {
@@ -100,5 +104,34 @@ class NavidromeRepositoryTest {
         )
 
         assertThat(selectedIds).isEmpty()
+    }
+
+    @Test
+    fun `search results carry the disc and track number`() {
+        val song = NavidromeSong(
+            id = "song-1",
+            title = "Track",
+            artist = "Artist",
+            album = "Album",
+            duration = 180_000L,
+            trackNumber = 3,
+            discNumber = 2
+        ).toSong()
+
+        assertThat(song.discNumber).isEqualTo(2)
+        assertThat(song.trackNumber).isEqualTo(3)
+    }
+
+    @Test
+    fun `search results report no disc when the server sent none`() {
+        val song = NavidromeSong(
+            id = "song-1",
+            title = "Track",
+            artist = "Artist",
+            album = "Album",
+            duration = 180_000L
+        ).toSong()
+
+        assertThat(song.discNumber).isNull()
     }
 }

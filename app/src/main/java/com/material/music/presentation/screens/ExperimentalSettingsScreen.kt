@@ -42,7 +42,6 @@ import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Rectangle
 import androidx.compose.material.icons.rounded.Title
 import androidx.compose.material.icons.rounded.ViewCarousel
-import androidx.compose.material.icons.rounded.BlurOn
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -226,6 +225,8 @@ fun ExperimentalSettingsScreen(
                                 }
                             )
 
+<<<<<<< HEAD
+=======
                             AnimatedVisibility(
                                 visible = uiState.useAnimatedLyrics,
                                 enter = fadeIn() + expandVertically(),
@@ -318,6 +319,7 @@ fun ExperimentalSettingsScreen(
                                 }
                             }
 
+>>>>>>> origin/main
                             Surface(
                                 color = MaterialTheme.colorScheme.surfaceContainer,
                                 modifier = Modifier

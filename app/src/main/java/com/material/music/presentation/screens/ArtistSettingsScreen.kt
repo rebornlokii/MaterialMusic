@@ -48,6 +48,8 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.RestartAlt
+import androidx.compose.material.icons.rounded.UnfoldLess
+import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,16 +95,28 @@ import androidx.navigation.NavController
 import com.material.music.R
 import com.material.music.presentation.components.CollapsibleCommonTopBar
 import com.material.music.presentation.components.ExpressiveTopBarContent
+<<<<<<< HEAD
+import com.material.music.presentation.settings.search.LocalSettingsHighlightTarget
+import com.material.music.presentation.settings.search.settingHighlight
 import com.material.music.presentation.viewmodel.ArtistSettingsViewModel
+import kotlinx.coroutines.delay
+=======
+import com.material.music.presentation.viewmodel.ArtistSettingsViewModel
+>>>>>>> origin/main
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+// LazyColumn indices of the sections below that settings search can point into.
+private const val ARTIST_SETTINGS_LIBRARY_ORG_ITEM_INDEX = 2
+private const val ARTIST_SETTINGS_ARTIST_PAGE_ITEM_INDEX = 3
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ArtistSettingsScreen(
     navController: NavController,
+    highlightKey: String? = null,
     viewModel: ArtistSettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -165,6 +179,22 @@ fun ArtistSettingsScreen(
         }
     }
 
+    // The sections live in separate lazy items, and on a short or landscape screen the lower
+    // ones start below the viewport, so they are never composed and their row cannot scroll
+    // itself into view. Bring the target's item in first; the row then clears the bars itself.
+    // Skipped once the highlight was consumed, so returning here or rotating does not scroll.
+    val highlightPending = LocalSettingsHighlightTarget.current != null
+    LaunchedEffect(highlightKey) {
+        if (!highlightPending) return@LaunchedEffect
+        val targetIndex = when (highlightKey) {
+            "item_artist_group_by_album_artist" -> ARTIST_SETTINGS_LIBRARY_ORG_ITEM_INDEX
+            "item_artist_albums_collapsed_by_default" -> ARTIST_SETTINGS_ARTIST_PAGE_ITEM_INDEX
+            else -> return@LaunchedEffect
+        }
+        delay(200)
+        lazyListState.animateScrollToItem(targetIndex)
+    }
+
     Box(
         modifier = Modifier
             .nestedScroll(nestedScrollConnection)
@@ -177,6 +207,7 @@ fun ArtistSettingsScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(top = currentTopBarHeightDp + 8.dp, bottom = 100.dp)
         ) {
+            // Item order matters: the search-highlight scroll above targets items by index.
             item {
                 AnimatedVisibility(
                     visible = uiState.rescanRequired,
@@ -225,6 +256,7 @@ fun ArtistSettingsScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             },
+                            modifier = Modifier.settingHighlight("item_artist_char_delimiters", highlightKey),
                             onClick = {
                                 navController.navigateSafely("delimiter_config")
                             }
@@ -256,6 +288,7 @@ fun ArtistSettingsScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             },
+                            modifier = Modifier.settingHighlight("item_artist_word_delimiters", highlightKey),
                             onClick = {
                                 navController.navigateSafely("word_delimiter_config")
                             }
@@ -272,7 +305,8 @@ fun ArtistSettingsScreen(
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
-                            }
+                            },
+                            modifier = Modifier.settingHighlight("item_artist_extract_from_title", highlightKey)
                         )
                     }
                 }
@@ -301,7 +335,39 @@ fun ArtistSettingsScreen(
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
-                            }
+                            },
+                            modifier = Modifier.settingHighlight("item_artist_group_by_album_artist", highlightKey)
+                        )
+                    }
+                }
+            }
+
+            item {
+                SettingsSection(
+                    title = stringResource(R.string.artist_page_settings_section),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Rounded.ViewAgenda,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                ) {
+                    Column(modifier = Modifier.clip(shape = RoundedCornerShape(24.dp))) {
+                        // Display only: unlike the switches above, it does not ask for a rescan.
+                        SwitchSettingItem(
+                            title = stringResource(R.string.artist_page_albums_collapsed_by_default),
+                            subtitle = stringResource(R.string.artist_page_albums_collapsed_by_default_sub),
+                            checked = uiState.albumsCollapsedByDefault,
+                            onCheckedChange = { viewModel.setAlbumsCollapsedByDefault(it) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Rounded.UnfoldLess,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            },
+                            modifier = Modifier.settingHighlight("item_artist_albums_collapsed_by_default", highlightKey)
                         )
                     }
                 }

@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,12 +81,21 @@ import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.viewmodel.MainViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistViewModel
+<<<<<<< HEAD
+import com.material.music.presentation.viewmodel.SmartMixTarget
+import com.material.music.presentation.viewmodel.SmartMixViewModel
+=======
+>>>>>>> origin/main
 import com.material.music.utils.formatDuration
 import com.material.music.utils.shapes.RoundedStarShape
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import com.material.music.presentation.components.subcomps.EnhancedSongListItem
+<<<<<<< HEAD
+import com.material.music.presentation.utils.getSegmentedItemShape
+=======
+>>>>>>> origin/main
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import kotlinx.collections.immutable.persistentListOf
@@ -99,6 +108,7 @@ fun DailyMixScreen(
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel,
     navController: NavController,
+    smartMixViewModel: SmartMixViewModel = hiltViewModel(),
 ) = traceSection("DailyMixScreen.Composition") {
     val dailyMixTitle = stringResource(R.string.daily_mix_title)
     val playItLabel = stringResource(R.string.play_it)
@@ -177,7 +187,7 @@ fun DailyMixScreen(
                 }
                 showSongInfoSheet = false
             },
-            onEditSong = { newTitle, newArtist, newAlbum, newAlbumArtist, newComposer, newGenre, newLyrics, newTrackNumber, newDiscNumber, replayGainTrackGainDb, replayGainAlbumGainDb, coverArtUpdate ->
+            onEditSong = { newTitle, newArtist, newAlbum, newAlbumArtist, newComposer, newGenre, newLyrics, newTrackNumber, newDiscNumber, replayGainTrackGainDb, replayGainAlbumGainDb, coverArtUpdate, customMetadataChanges ->
                 playerViewModel.editSongMetadata(
                     song,
                     newTitle,
@@ -191,7 +201,8 @@ fun DailyMixScreen(
                     newDiscNumber,
                     replayGainTrackGainDb,
                     replayGainAlbumGainDb,
-                    coverArtUpdate
+                    coverArtUpdate,
+                    customMetadataChanges
                 )
             },
             removeFromListTrigger = removeFromListTrigger
@@ -228,12 +239,13 @@ fun DailyMixScreen(
                 state = lazyListState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = MiniPlayerHeight + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 item(key = "daily_mix_header") {
                     ExpressiveDailyMixHeader(
                         songs = dailyMixSongs,
-                        scrollState = lazyListState
+                        scrollState = lazyListState,
+                        onTuneMix = { smartMixViewModel.open(SmartMixTarget.DailyMix) }
                     )
                 }
 
@@ -297,11 +309,16 @@ fun DailyMixScreen(
                     }
                 }
 
-                items(dailyMixSongs, key = { it.id }) { song ->
+                itemsIndexed(
+                    items = dailyMixSongs,
+                    key = { _, song -> song.id },
+                    contentType = { _, _ -> "song" }
+                ) { index, song ->
                     EnhancedSongListItem(
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
                         song = song,
+                        customShape = getSegmentedItemShape(index, dailyMixSongs.size),
                         isCurrentSong = currentSongId == song.id,
                         isPlaying = currentSongId == song.id && isPlaying,
                         onClick = { playerViewModel.showAndPlaySong(song, dailyMixSongs, dailyMixTitle, isVoluntaryPlay = false) },
@@ -373,7 +390,8 @@ fun DailyMixScreen(
 @Composable
 private fun ExpressiveDailyMixHeader(
     songs: ImmutableList<Song>,
-    scrollState: LazyListState
+    scrollState: LazyListState,
+    onTuneMix: () -> Unit
 ) = traceSection("ExpressiveDailyMixHeader.Composition") {
     val dailyMixHeaderTitle = stringResource(R.string.daily_mix_title)
     val albumArts = remember(songs) { songs.map { it.albumArtUriString }.distinct().take(3) }
@@ -488,7 +506,8 @@ private fun ExpressiveDailyMixHeader(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 6.dp),
+                    .padding(start = 6.dp)
+                    .weight(1f, fill = false),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.Start
             ) {
@@ -509,6 +528,20 @@ private fun ExpressiveDailyMixHeader(
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                )
+            }
+            LargeExtendedFloatingActionButton(
+                onClick = onTuneMix,
+                shape = RoundedStarShape(
+                    sides = 8,
+                    curve = 0.05,
+                    rotation = 0f
+                )
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(R.drawable.ic_smart_mix),
+                    contentDescription = stringResource(R.string.mix_tune_today)
                 )
             }
         }

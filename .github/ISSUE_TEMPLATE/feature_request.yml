@@ -6,7 +6,11 @@ body:
   - type: markdown
     attributes:
       value: |
+<<<<<<< HEAD
+        Thanks for your interest in improving MaterialMusic!
+=======
         Thanks for your interest in improving Material Music!
+>>>>>>> origin/main
   - type: textarea
     id: problem
     attributes:

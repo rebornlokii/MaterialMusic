@@ -100,7 +100,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Bluetooth
+import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Cloud
+import androidx.compose.material.icons.rounded.Speaker
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.material.music.presentation.viewmodel.AudioBookmarksViewModel
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.derivedStateOf
@@ -122,7 +128,10 @@ import com.material.music.presentation.components.subcomps.FetchLyricsDialog
 import com.material.music.presentation.viewmodel.LyricsSearchUiState
 import com.material.music.presentation.viewmodel.PlayerSheetState
 import com.material.music.presentation.viewmodel.PlayerViewModel
+<<<<<<< HEAD
+=======
 import com.material.music.ui.theme.GoogleSansFlexFamily
+>>>>>>> origin/main
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.AudioMetaUtils.mimeTypeToFormat
 import com.material.music.utils.LyricsImportFailureReason
@@ -145,7 +154,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import com.material.music.presentation.components.rememberModalSheetState
 
-private const val PREVIOUS_TRACK_RESTART_THRESHOLD_MS = 10_000L
 private const val SKIP_COMMAND_GUARD_MS = 96L
 
 private enum class SkipDirection { PREVIOUS, NEXT }
@@ -233,6 +241,9 @@ fun FullPlayerContent(
     var showSongInfoBottomSheet by remember { mutableStateOf(false) }
     var showLyricsSheet by remember { mutableStateOf(false) }
     var showArtistPicker by rememberSaveable { mutableStateOf(false) }
+    var showSaveBookmarkDialog by rememberSaveable { mutableStateOf(false) }
+    var showAudioOutputSheet by rememberSaveable { mutableStateOf(false) }
+    val bookmarksViewModel: AudioBookmarksViewModel = hiltViewModel()
     
     val lyricsSearchUiState by playerViewModel.lyricsSearchUiState.collectAsStateWithLifecycle()
 
@@ -353,6 +364,30 @@ fun FullPlayerContent(
         }
     }
 
+    if (showSaveBookmarkDialog) {
+        val bookmarkProgressMs = remember(showSaveBookmarkDialog) { currentPositionProvider() }
+        val lyricBookmarkTitle = resolveLyricBookmarkTitle(
+            lyrics = lyricsProvider(),
+            timestampMs = bookmarkProgressMs,
+            lyricsSyncOffsetMs = lyricsSyncOffset
+        )
+        MaterialTheme(
+            colorScheme = LocalMaterialTheme.current,
+            typography = MaterialTheme.typography,
+            shapes = MaterialTheme.shapes
+        ) {
+            AddBookmarkDialog(
+                currentProgressMs = bookmarkProgressMs,
+                lyricTitle = lyricBookmarkTitle,
+                onSave = { title ->
+                    bookmarksViewModel.addBookmark(song, title, bookmarkProgressMs)
+                    showSaveBookmarkDialog = false
+                },
+                onDismiss = { showSaveBookmarkDialog = false }
+            )
+        }
+    }
+
     LaunchedEffect(lyricsSearchUiState) {
         when (val state = lyricsSearchUiState) {
             is LyricsSearchUiState.Success -> {
@@ -454,7 +489,9 @@ fun FullPlayerContent(
             SkipDirection.PREVIOUS -> predictSkipPreviousCarouselIndex(
                 currentIndex = baseIndex,
                 queue = queueSnapshot,
-                currentPositionMs = latestCurrentPositionProvider(),
+                restartsCurrentTrack = playerViewModel.previousButtonRestartsAt(
+                    latestCurrentPositionProvider()
+                ),
                 repeatMode = latestRepeatMode,
                 isExternalOutputActive = latestIsExternalOutputActive
             )
@@ -727,6 +764,40 @@ fun FullPlayerContent(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val bluetoothOutputName = bluetoothName?.takeIf { isBluetoothEnabled }
+                            Box(
+                                modifier = Modifier
+                                    .size(42.dp)
+                                    .clip(CircleShape)
+                                    .background(playerOnAccentColor.copy(alpha = 0.7f))
+                                    .clickable { showAudioOutputSheet = true },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = if (bluetoothOutputName != null) {
+                                        Icons.Rounded.Bluetooth
+                                    } else {
+                                        Icons.Rounded.Speaker
+                                    },
+                                    contentDescription = bluetoothOutputName
+                                        ?: stringResource(R.string.player_audio_output_title),
+                                    tint = playerAccentColor
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(42.dp)
+                                    .clip(CircleShape)
+                                    .background(playerOnAccentColor.copy(alpha = 0.7f))
+                                    .clickable { showSaveBookmarkDialog = true },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Bookmark,
+                                    contentDescription = stringResource(R.string.audio_bookmarks_cd_add),
+                                    tint = playerAccentColor
+                                )
+                            }
                             Box(
                                 modifier = Modifier
                                     .size(42.dp)
@@ -842,6 +913,13 @@ fun FullPlayerContent(
                 playerViewModel.triggerArtistNavigationFromPlayer(artist.id)
                 showArtistPicker = false
             }
+        )
+    }
+
+    if (showAudioOutputSheet) {
+        AudioOutputBottomSheet(
+            sheetState = rememberModalSheetState(skipPartiallyExpanded = true),
+            onDismiss = { showAudioOutputSheet = false }
         )
     }
 }
@@ -1126,15 +1204,16 @@ private fun predictSkipNextCarouselIndex(
     }
 }
 
+/** Null when [restartsCurrentTrack], since previous then restarts the playing track in place. */
 private fun predictSkipPreviousCarouselIndex(
     currentIndex: Int?,
     queue: ImmutableList<Song>,
-    currentPositionMs: Long,
+    restartsCurrentTrack: Boolean,
     repeatMode: Int,
     isExternalOutputActive: Boolean
 ): Int? {
     if (isExternalOutputActive || queue.size <= 1) return null
-    if (currentPositionMs > PREVIOUS_TRACK_RESTART_THRESHOLD_MS) return null
+    if (restartsCurrentTrack) return null
     val safeCurrentIndex = currentIndex?.takeIf { it in queue.indices } ?: return null
 
     return when {
@@ -1705,7 +1784,7 @@ private fun EfficientSlider(
         isPlaying = isPlaying,
         isVisible = isVisible,
         trackEdgePadding = trackEdgePadding,
-        semanticsLabel = "Playback position",
+        semanticsLabel = stringResource(R.string.cd_playback_position),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 0.dp)
@@ -2415,7 +2494,7 @@ private fun BottomToggleRow(
                 inactiveContentColor = inactiveContentColor,
                 onClick = onShuffleToggle,
                 iconId = R.drawable.rounded_shuffle_24,
-                contentDesc = "Shuffle"
+                contentDesc = stringResource(R.string.cd_shuffle)
             )
             val repeatActive = repeatMode != Player.REPEAT_MODE_OFF
             val repeatIcon = when (repeatMode) {
@@ -2433,7 +2512,7 @@ private fun BottomToggleRow(
                 inactiveContentColor = inactiveContentColor,
                 onClick = onRepeatToggle,
                 iconId = repeatIcon,
-                contentDesc = "Repeat"
+                contentDesc = stringResource(R.string.cd_repeat)
             )
             ToggleSegmentButton(
                 modifier = commonModifier,
@@ -2445,7 +2524,7 @@ private fun BottomToggleRow(
                 inactiveContentColor = inactiveContentColor,
                 onClick = onFavoriteToggle,
                 iconId = if (isFavorite) R.drawable.round_favorite_24 else R.drawable.rounded_favorite_24,
-                contentDesc = "Favorite"
+                contentDesc = stringResource(R.string.cd_favorite)
             )
         }
     }

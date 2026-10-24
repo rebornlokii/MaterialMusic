@@ -22,7 +22,11 @@ data class CrashLogData(
      */
     fun getFullLog(): String {
         return buildString {
+<<<<<<< HEAD
+            appendLine("=== MaterialMusic Crash Report ===")
+=======
             appendLine("=== Material Music Crash Report ===")
+>>>>>>> origin/main
             appendLine("Date: $formattedDate")
             appendLine("Exception: $exceptionMessage")
             appendLine()

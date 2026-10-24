@@ -34,6 +34,14 @@ import androidx.navigation.navArgument
 import com.material.music.data.preferences.LaunchTab
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.presentation.screens.AlbumDetailScreen
+<<<<<<< HEAD
+import com.material.music.presentation.screens.AudioBookmarkFolderScreen
+import com.material.music.presentation.screens.AudioBookmarksScreen
+import com.material.music.presentation.screens.CloudDownloadsScreen
+import com.material.music.presentation.screens.UpdatesScreen
+import com.material.music.presentation.model.SettingsCategory
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.screens.AccountsScreen
 import com.material.music.presentation.screens.ArtistDetailScreen
 import com.material.music.presentation.screens.ArtistSettingsScreen
@@ -41,6 +49,10 @@ import com.material.music.presentation.screens.DailyMixScreen
 import com.material.music.presentation.screens.EditTransitionScreen
 import com.material.music.presentation.screens.EasterEggScreen
 import com.material.music.presentation.screens.ExperimentalSettingsScreen
+<<<<<<< HEAD
+import com.material.music.presentation.screens.LyricsSettingsScreen
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.screens.GenreDetailScreen
 import com.material.music.presentation.screens.HomeScreen
 import com.material.music.presentation.screens.LibraryScreen
@@ -51,6 +63,10 @@ import com.material.music.presentation.screens.PlaylistDetailScreen
 import com.material.music.presentation.screens.RecentlyPlayedScreen
 
 import com.material.music.presentation.screens.AboutScreen
+<<<<<<< HEAD
+import com.material.music.presentation.screens.LicensesScreen
+=======
+>>>>>>> origin/main
 import com.material.music.presentation.screens.SearchScreen
 import com.material.music.presentation.screens.StatsScreen
 import com.material.music.presentation.screens.DuplicateSongsScreen
@@ -59,8 +75,18 @@ import com.material.music.presentation.screens.SettingsCategoryScreen
 import com.material.music.presentation.screens.EqualizerScreen
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.PlaylistViewModel
+<<<<<<< HEAD
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.material.music.presentation.screens.ExcludedDirectoriesScreen
+import com.material.music.presentation.components.ScreenWrapper
+import com.material.music.presentation.settings.search.ProvideSettingsHighlight
+=======
 import kotlinx.coroutines.flow.first
 import com.material.music.presentation.components.ScreenWrapper
+>>>>>>> origin/main
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -219,7 +245,8 @@ fun AppNavigation(
                 }
             }
             composable(
-                Screen.Accounts.route,
+                route = Screen.Accounts.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -239,7 +266,10 @@ fun AppNavigation(
             }
             composable(
                 route = Screen.SettingsCategory.route,
-                arguments = listOf(navArgument("categoryId") { type = NavType.StringType }),
+                arguments = listOf(
+                    navArgument("categoryId") { type = NavType.StringType },
+                    navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }
+                ),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -247,18 +277,23 @@ fun AppNavigation(
             ) { backStackEntry ->
                 ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
                     val categoryId = backStackEntry.arguments?.getString("categoryId")
+                    val highlightKey = backStackEntry.arguments?.getString("highlightKey")
                     if (categoryId != null) {
-                        SettingsCategoryScreen(
-                            categoryId = categoryId,
-                            navController = navController,
-                            playerViewModel = playerViewModel,
-                            onBackClick = { navController.popBackStack() }
-                        )
+                        ProvideSettingsHighlight(highlightKey) {
+                            SettingsCategoryScreen(
+                                categoryId = categoryId,
+                                highlightKey = highlightKey,
+                                navController = navController,
+                                playerViewModel = playerViewModel,
+                                onBackClick = { navController.popBackStack() }
+                            )
+                        }
                     }
                 }
             }
             composable(
-                Screen.PaletteStyle.route,
+                route = Screen.PaletteStyle.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -272,7 +307,8 @@ fun AppNavigation(
                 }
             }
             composable(
-                Screen.Experimental.route,
+                route = Screen.Experimental.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -284,6 +320,25 @@ fun AppNavigation(
                         playerViewModel = playerViewModel,
                         onNavigationIconClick = { navController.popBackStack() }
                     )
+                }
+            }
+            composable(
+                route = Screen.LyricsSettings.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) { backStackEntry ->
+                val highlightKey = backStackEntry.arguments?.getString("highlightKey")
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    ProvideSettingsHighlight(highlightKey) {
+                        LyricsSettingsScreen(
+                            navController = navController,
+                            playerViewModel = playerViewModel,
+                            highlightKey = highlightKey
+                        )
+                    }
                 }
             }
             composable(
@@ -323,12 +378,14 @@ fun AppNavigation(
             ) {
                 ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
                     StatsScreen(
-                        navController = navController
+                        navController = navController,
+                        playerViewModel = playerViewModel
                     )
                 }
             }
             composable(
-                Screen.Duplicates.route,
+                route = Screen.Duplicates.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -436,7 +493,8 @@ fun AppNavigation(
                 }
             }
             composable(
-                "nav_bar_corner_radius",
+                route = Screen.NavBarCrRad.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -477,6 +535,19 @@ fun AppNavigation(
                 }
             }
             composable(
+                Screen.Licenses.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) {
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    LicensesScreen(
+                        onNavigationIconClick = { navController.popBackStack() }
+                    )
+                }
+            }
+            composable(
                 Screen.EasterEgg.route,
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
@@ -491,14 +562,21 @@ fun AppNavigation(
                 }
             }
             composable(
-                Screen.ArtistSettings.route,
+                route = Screen.ArtistSettings.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
                 popExitTransition = { popExitTransition() },
-            ) {
+            ) { backStackEntry ->
+                val highlightKey = backStackEntry.arguments?.getString("highlightKey")
                 ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
-                    ArtistSettingsScreen(navController = navController)
+                    ProvideSettingsHighlight(highlightKey) {
+                        ArtistSettingsScreen(
+                            navController = navController,
+                            highlightKey = highlightKey
+                        )
+                    }
                 }
             }
             composable(
@@ -524,7 +602,32 @@ fun AppNavigation(
                 }
             }
             composable(
-                Screen.Equalizer.route,
+                Screen.ExcludedDirectories.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) {
+                val initialMiniplayerVisible = remember(playerViewModel) {
+                    playerViewModel.stablePlayerState.value.currentSong != null
+                }
+                val isMiniplayerVisible by remember(playerViewModel) {
+                    playerViewModel.stablePlayerState
+                        .map { state -> state.currentSong != null }
+                        .distinctUntilChanged()
+                }.collectAsStateWithLifecycle(initialValue = initialMiniplayerVisible)
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    ExcludedDirectoriesScreen(
+                        onNavigateBack = {
+                            navController.popBackStack(Screen.ExcludedDirectories.route, inclusive = true)
+                        },
+                        isMiniplayerVisible = isMiniplayerVisible
+                    )
+                }
+            }
+            composable(
+                route = Screen.Equalizer.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -538,7 +641,8 @@ fun AppNavigation(
                 }
             }
             composable(
-                Screen.DeviceCapabilities.route,
+                route = Screen.DeviceCapabilities.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
                 popEnterTransition = { popEnterTransition() },
@@ -576,6 +680,65 @@ fun AppNavigation(
                         onBack = { navController.popBackStack() }
                     )
                 }
+            }
+            composable(
+                Screen.CloudDownloads.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) {
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    CloudDownloadsScreen(onBack = { navController.popBackStack() })
+                }
+            }
+            composable(
+                Screen.Updates.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) {
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    UpdatesScreen(
+                        onBack = { navController.popBackStack() },
+                        onOpenBackup = {
+                            navController.navigateSafely(
+                                Screen.SettingsCategory.createRoute(
+                                    SettingsCategory.BACKUP_RESTORE.id,
+                                    highlightKey = "item_backup_export"
+                                )
+                            )
+                        }
+                    )
+                }
+            }
+            composable(
+                Screen.AudioBookmarks.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) {
+                AudioBookmarksScreen(
+                    navController = navController,
+                    playerViewModel = playerViewModel,
+                    onOpenSidebar = onOpenSidebar
+                )
+            }
+            composable(
+                Screen.AudioBookmarkFolder.route,
+                arguments = listOf(navArgument("songId") { type = NavType.StringType }),
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) { backStackEntry ->
+                AudioBookmarkFolderScreen(
+                    songId = backStackEntry.arguments?.getString("songId").orEmpty(),
+                    navController = navController,
+                    playerViewModel = playerViewModel
+                )
             }
         }
     }

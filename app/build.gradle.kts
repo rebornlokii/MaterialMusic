@@ -49,6 +49,15 @@ android {
     }
 
     androidResources {
+        // Keep only the languages we actually ship. Without this the app picks up
+        // every locale our AndroidX dependencies carry, which bloats the APK and
+        // makes the system language picker offer languages we have no strings for.
+        localeFilters.addAll(
+            listOf(
+                "en", "ar", "de", "es", "fr", "in",
+                "it", "ko", "nb", "ru", "tr", "zh-rCN"
+            )
+        )
     }
 
     packaging {
@@ -260,6 +269,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.gson)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.snakeyaml)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.cio)
@@ -303,12 +313,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.truth)
-    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.worktesting)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.benchmark.macro.junit4)
     androidTestImplementation(libs.androidx.uiautomator)
 
     debugImplementation(platform(libs.androidx.compose.bom))

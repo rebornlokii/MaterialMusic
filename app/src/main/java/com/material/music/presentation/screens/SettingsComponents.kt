@@ -61,6 +61,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -98,12 +102,13 @@ fun SettingsItem(
         subtitle: String,
         leadingIcon: @Composable () -> Unit,
         trailingIcon: @Composable () -> Unit = {},
+        modifier: Modifier = Modifier,
         onClick: () -> Unit
 ) {
     Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
             modifier =
-                    Modifier.fillMaxWidth()
+                    modifier.fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
                             .clickable(onClick = onClick)
     ) {
@@ -146,14 +151,15 @@ fun SwitchSettingItem(
         checked: Boolean,
         onCheckedChange: (Boolean) -> Unit,
         leadingIcon: @Composable (() -> Unit)? = null,
-        enabled: Boolean = true
+        enabled: Boolean = true,
+        modifier: Modifier = Modifier
 ) {
     val view = LocalView.current
     val appHapticsConfig = LocalAppHapticsConfig.current
 
     Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+            modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
     ) {
         Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -232,9 +238,12 @@ fun ThemeSelectorItem(
         label: String,
         description: String,
         options: Map<String, String>,
+        optionDescriptions: Map<String, String> = emptyMap(),
+        disabledOptionKeys: Set<String> = emptySet(),
         selectedKey: String,
         onSelectionChanged: (String) -> Unit,
-        leadingIcon: @Composable () -> Unit
+        leadingIcon: @Composable () -> Unit,
+        modifier: Modifier = Modifier
 ) {
     var showSheet by remember { mutableStateOf(false) }
     val selectedOption = options[selectedKey] ?: selectedKey
@@ -242,7 +251,7 @@ fun ThemeSelectorItem(
     Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
             modifier =
-                    Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable {
+                    modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable {
                         showSheet = true
                     }
     ) {
@@ -290,60 +299,124 @@ fun ThemeSelectorItem(
     }
 
     if (showSheet) {
-        androidx.compose.material3.ModalBottomSheet(
-            onDismissRequest = { showSheet = false },
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        ) {
-            Column(modifier = Modifier.padding(bottom = 24.dp)) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                    fontWeight = FontWeight.Bold
-                )
-                
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .heightIn(max = 400.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(options.entries.toList()) { (key, optionLabel) ->
-                        val isSelected = key == selectedKey
-                        val containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer
-                        val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
-                        
-                        Surface(
-                            onClick = {
-                                onSelectionChanged(key)
-                                showSheet = false
-                            },
-                            shape = RoundedCornerShape(24.dp),
-                            color = containerColor,
-                            modifier = Modifier.fillMaxWidth().height(72.dp)
+        OptionSelectionSheet(
+            title = label,
+            options = options,
+            selectedKey = selectedKey,
+            onSelect = { key ->
+                onSelectionChanged(key)
+                showSheet = false
+            },
+            onDismiss = { showSheet = false },
+            optionDescriptions = optionDescriptions,
+            disabledOptionKeys = disabledOptionKeys
+        )
+    }
+}
+
+/**
+ * Bottom sheet listing [options] (key to label) with [selectedKey] checked. [onSelect] receives
+ * the tapped key; callers decide whether to dismiss. Keys in [disabledOptionKeys] are shown but
+ * cannot be picked.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OptionSelectionSheet(
+        title: String,
+        options: Map<String, String>,
+        selectedKey: String,
+        onSelect: (String) -> Unit,
+        onDismiss: () -> Unit,
+        optionDescriptions: Map<String, String> = emptyMap(),
+        disabledOptionKeys: Set<String> = emptySet()
+) {
+    androidx.compose.material3.ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
+        Column(modifier = Modifier.padding(bottom = 24.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                fontWeight = FontWeight.Bold
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .heightIn(max = 400.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(options.entries.toList()) { (key, optionLabel) ->
+                    val isSelected = key == selectedKey
+                    val isEnabled = key !in disabledOptionKeys
+                    val optionDescription = optionDescriptions[key]
+                    val containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer
+                    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                    val resolvedContentColor = if (isEnabled) {
+                        contentColor
+                    } else {
+                        contentColor.copy(alpha = 0.38f)
+                    }
+                    val resolvedDescriptionColor = contentColor.copy(
+                        alpha = if (isEnabled) 0.75f else 0.38f
+                    )
+
+                    Surface(
+                        onClick = { onSelect(key) },
+                        enabled = isEnabled,
+                        shape = RoundedCornerShape(24.dp),
+                        color = containerColor,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 72.dp)
+                            .semantics(mergeDescendants = true) {
+                                role = Role.RadioButton
+                                selected = isSelected
+                            }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 24.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.weight(1f).padding(vertical = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
                                     text = optionLabel,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    color = contentColor,
-                                    modifier = Modifier.weight(1f)
+                                    color = resolvedContentColor
                                 )
+<<<<<<< HEAD
+                                if (optionDescription != null) {
+                                    Text(
+                                        text = optionDescription,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = resolvedDescriptionColor
+=======
                                 
                                 if (isSelected) {
                                     Icon(
                                         imageVector = Icons.Rounded.Check,
                                         contentDescription = stringResource(R.string.cd_selected),
                                         tint = contentColor
+>>>>>>> origin/main
                                     )
                                 }
+                            }
+
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = null,
+                                    tint = resolvedContentColor
+                                )
                             }
                         }
                     }
@@ -375,11 +448,12 @@ fun SliderSettingsItem(
         steps: Int,
         onValueChange: (Float) -> Unit,
         onValueChangeFinished: (() -> Unit)? = null,
-        valueText: (Float) -> String
+        valueText: (Float) -> String,
+        modifier: Modifier = Modifier
 ) {
     Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+            modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -653,11 +727,12 @@ fun ActionSettingsItem(
     onPrimaryAction: () -> Unit,
     secondaryActionLabel: String? = null,
     onSecondaryAction: (() -> Unit)? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainer,
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+        modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(

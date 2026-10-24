@@ -21,12 +21,21 @@ import com.material.music.data.database.SongArtistCrossRef
 import com.material.music.data.database.SongEntity
 import com.material.music.data.database.SourceType
 import com.material.music.data.database.serializeArtistRefs
+<<<<<<< HEAD
+import com.material.music.data.diagnostics.AdvancedPerformanceDiagnostics
+import com.material.music.data.diagnostics.PerformanceMetrics
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.ArtistRef
 import com.material.music.data.media.AudioMetadataReader
 import com.material.music.data.media.normalizeArtistMetadataValues
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.UserPreferencesRepository
 import com.material.music.data.repository.LyricsRepository
+<<<<<<< HEAD
+import com.material.music.data.repository.ArtistImageRepository
+=======
+>>>>>>> origin/main
 import com.material.music.data.service.PlaybackActivityTracker
 import com.material.music.utils.AlbumArtCacheManager
 import com.material.music.utils.AlbumArtUtils
@@ -44,6 +53,7 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -103,7 +113,9 @@ constructor(
         private val musicDao: MusicDao,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val lyricsRepository: LyricsRepository,
-        private val cloudSyncCoordinator: CloudSyncCoordinator
+        private val cloudSyncCoordinator: CloudSyncCoordinator,
+        private val artistImageRepository: ArtistImageRepository,
+        private val localLibraryChangeTracker: LocalLibraryChangeTracker
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val contentResolver: ContentResolver = appContext.contentResolver
@@ -130,18 +142,30 @@ constructor(
                     val syncMode = SyncMode.valueOf(syncModeName)
                     val requestedForceMetadata = inputData.getBoolean(INPUT_FORCE_METADATA, false)
                     val requestedRunMaintenance = inputData.getBoolean(INPUT_RUN_MAINTENANCE, true)
+                    // User-facing local syncs (auto-add of a just-downloaded file, foreground
+                    // catch-up, pull-to-refresh) opt out of the playback deferral: the user is
+                    // waiting to see the new song, and these are cheap maintenance-free delta
+                    // scans, so running them during playback costs negligible battery/thermal.
+                    val bypassPlaybackDeferral =
+                        inputData.getBoolean(INPUT_BYPASS_PLAYBACK_DEFERRAL, false)
 
                     if (!hasMediaReadPermission()) {
                         Timber.tag(TAG).w(
                             "Skipping sync: media read permission not granted (setup not finished?)"
                         )
+                        // Nothing can be read without the permission, so pending changes must not
+                        // keep scheduling follow-up syncs.
+                        localLibraryChangeTracker.onLocalScanStarted()
                         return@withContext Result.success()
                     }
 
                     if (
-                        syncMode == SyncMode.INCREMENTAL &&
-                        PlaybackActivityTracker.isPlaybackActive &&
-                        runAttemptCount < MAX_PLAYBACK_DEFERRALS
+                        shouldDeferSyncForPlayback(
+                            mode = syncMode,
+                            bypass = bypassPlaybackDeferral,
+                            playbackActive = PlaybackActivityTracker.isPlaybackActive,
+                            runAttemptCount = runAttemptCount
+                        )
                     ) {
                         Timber.tag(TAG).d(
                             "SyncWorker deferring INCREMENTAL sync (playback active, attempt=$runAttemptCount)"
@@ -152,6 +176,16 @@ constructor(
                     Timber.tag(TAG)
                         .i("Starting MediaStore synchronization (Mode: $syncMode, ForceMetadata: $requestedForceMetadata)...")
                     val startTime = System.currentTimeMillis()
+                    AdvancedPerformanceDiagnostics.recordEventIfEnabled(
+                        type = AdvancedPerformanceDiagnostics.EventTypes.WORKER,
+                        name = "sync_worker_start"
+                    ) {
+                        mapOf(
+                            "mode" to syncMode.name,
+                            "forceMetadata" to requestedForceMetadata.toString(),
+                            "attempt" to runAttemptCount.toString()
+                        )
+                    }
 
                     val artistDelimiters = userPreferencesRepository.artistDelimitersFlow.first()
                     val artistWordDelimiters = userPreferencesRepository.artistWordDelimitersFlow.first()
@@ -172,6 +206,12 @@ constructor(
                     val directoryResolver = DirectoryRuleResolver(allowedDirs, blockedDirs)
                     
                     val lastSyncTimestamp = userPreferencesRepository.getLastSyncTimestamp()
+                    // Libraries synced before the accent fix stored titles whose é/ç/à had
+                    // been turned into U+FFFD. Incremental syncs only re-read changed files,
+                    // so re-read MediaStore once without a cutoff to restore them.
+                    val metadataCharsetRepairPending =
+                        userPreferencesRepository.getMetadataCharsetRepairVersion() <
+                            CURRENT_METADATA_CHARSET_REPAIR_VERSION
 
                     minSongDurationMs = userPreferencesRepository.getMinSongDuration()
                     minTracksPerAlbum = userPreferencesRepository.minTracksPerAlbumFlow.first()
@@ -180,9 +220,17 @@ constructor(
                         .d(
                             "Artist delimiters=$artistDelimiters, groupByAlbumArtist=$groupByAlbumArtist, " +
                                 "rescanRequired=$rescanRequired, directoryRulesChanged=$directoryRulesChanged " +
-                                "(current=$directoryRulesVersion, applied=$lastAppliedDirectoryRulesVersion)"
+                                "(current=$directoryRulesVersion, applied=$lastAppliedDirectoryRulesVersion), " +
+                                "metadataCharsetRepairPending=$metadataCharsetRepairPending"
                         )
 
+<<<<<<< HEAD
+                    // Snapshot before the first MediaStore read: a change reported after this
+                    // point may be missing from this run and gets a follow-up sync.
+                    localLibraryChangeTracker.onLocalScanStarted()
+
+=======
+>>>>>>> origin/main
                     var hasUnindexedSongs = false
                     if (syncMode != SyncMode.REBUILD) {
                         val localSongIds = musicDao.getAllMediaStoreSongIds().toHashSet()
@@ -220,10 +268,30 @@ constructor(
                     // Newly visible files can retain timestamps older than the last sync.
                     // Reconcile missing IDs without forcing unchanged songs through metadata
                     // processing, so a partial album import can recover on the next scan.
+<<<<<<< HEAD
+                    // The charset repair also reads without a cutoff, but leaves forceProcessAll
+                    // alone, so rows whose stored text already matches the newly normalized
+                    // MediaStore text are skipped by the per-row comparison.
+                    val fetchTimestamp = localFetchTimestampSeconds(
+                        plan = syncPlan,
+                        hasUnindexedSongs = hasUnindexedSongs,
+                        metadataCharsetRepairPending = metadataCharsetRepairPending,
+                        lastSyncTimestampMs = lastSyncTimestamp
+                    )
+
+                    if (hasUnindexedSongs && !syncPlan.forceProcessAll) {
+                        Timber.tag(TAG).i("Recovering unindexed MediaStore songs without a timestamp cutoff.")
+                    }
+                    if (metadataCharsetRepairPending && !syncPlan.forceProcessAll) {
+                        Timber.tag(TAG).i(
+                            "Re-checking stored metadata text once without a timestamp cutoff (charset repair v$CURRENT_METADATA_CHARSET_REPAIR_VERSION)."
+                        )
+=======
                     val fetchTimestamp = if (!syncPlan.forceProcessAll && !hasUnindexedSongs) {
                         incrementalFetchTimestampSeconds(lastSyncTimestamp)
                     } else {
                         0L
+>>>>>>> origin/main
                     }
 
                     if (hasUnindexedSongs && !syncPlan.forceProcessAll) {
@@ -241,6 +309,7 @@ constructor(
                         directoryResolver,
                         syncPlan.forceProcessAll,
                         syncPlan.resetExistingLocalData,
+                        metadataCharsetRepairPending,
                         progressBatchSize
                     ) { current, total, phaseOrdinal ->
                         setProgress(
@@ -350,14 +419,42 @@ constructor(
                     }
 
                     userPreferencesRepository.setLastSyncTimestamp(startTime)
+                    if (metadataCharsetRepairPending) {
+                        userPreferencesRepository.setMetadataCharsetRepairVersion(
+                            CURRENT_METADATA_CHARSET_REPAIR_VERSION
+                        )
+                    }
 
                     val endTime = System.currentTimeMillis()
                     Timber.tag(TAG)
                         .i("Synchronization finished successfully in ${endTime - startTime}ms.")
 
+                    // Diagnostics: record scan duration + how many songs were processed this run,
+                    // so the performance report can attribute lag to scanning.
+                    PerformanceMetrics.recordTiming(
+                        PerformanceMetrics.Timings.FULL_SCAN,
+                        endTime - startTime
+                    )
+                    PerformanceMetrics.increment(PerformanceMetrics.Counters.SCAN_RUNS)
+                    PerformanceMetrics.increment(
+                        PerformanceMetrics.Counters.SONGS_SCANNED,
+                        songsToInsert.size.toLong()
+                    )
+
                     val totalSongs = musicDao.getSongCount().first()
                     if (!syncPlan.runMaintenance) {
                         Timber.tag(TAG).d("Skipping library maintenance phases for local-only sync.")
+                        AdvancedPerformanceDiagnostics.recordEventIfEnabled(
+                            type = AdvancedPerformanceDiagnostics.EventTypes.WORKER,
+                            name = "sync_worker_success"
+                        ) {
+                            mapOf(
+                                "mode" to syncMode.name,
+                                "durationMs" to (System.currentTimeMillis() - startTime).toString(),
+                                "totalSongs" to totalSongs.toString()
+                            )
+                        }
+                        artistImageRepository.clearCache()
                         return@withContext Result.success(
                             workDataOf(OUTPUT_TOTAL_SONGS to totalSongs)
                         )
@@ -441,9 +538,26 @@ constructor(
 
                     val finalTotalSongs = musicDao.getSongCount().first()
 
+                    AdvancedPerformanceDiagnostics.recordEventIfEnabled(
+                        type = AdvancedPerformanceDiagnostics.EventTypes.WORKER,
+                        name = "sync_worker_success"
+                    ) {
+                        mapOf(
+                            "mode" to syncMode.name,
+                            "durationMs" to (System.currentTimeMillis() - startTime).toString(),
+                            "totalSongs" to finalTotalSongs.toString()
+                        )
+                    }
+                    artistImageRepository.clearCache()
                     Result.success(workDataOf(OUTPUT_TOTAL_SONGS to finalTotalSongs))
                 } catch (e: Exception) {
                     Timber.tag(TAG).e(e, "Error during MediaStore synchronization")
+                    AdvancedPerformanceDiagnostics.recordEventIfEnabled(
+                        type = AdvancedPerformanceDiagnostics.EventTypes.WORKER,
+                        name = "sync_worker_failure"
+                    ) {
+                        mapOf("error" to (e.message ?: e.javaClass.simpleName))
+                    }
                     Result.failure()
                 }
             }
@@ -753,8 +867,17 @@ constructor(
             val genre: String?
     )
 
-    private fun isSongUnchanged(raw: RawSongData, existing: SongEntity?): Boolean {
+    private fun isSongUnchanged(
+        raw: RawSongData,
+        existing: SongEntity?,
+        metadataCharsetRepairPending: Boolean
+    ): Boolean {
         if (existing == null) return false
+        // The stored album artist can come from embedded tags, so it isn't compared below. During
+        // the one-time charset repair, a replacement character in it still marks the row as damaged.
+        if (metadataCharsetRepairPending && existing.albumArtist?.contains('\uFFFD') == true) {
+            return false
+        }
 
         val lastSlash = raw.filePath.lastIndexOf('/')
         val parentDir = if (lastSlash > 0) raw.filePath.substring(0, lastSlash) else ""
@@ -784,6 +907,7 @@ constructor(
             directoryResolver: DirectoryRuleResolver,
             forceProcessAll: Boolean,
             resetExistingLocalData: Boolean,
+            metadataCharsetRepairPending: Boolean,
             progressBatchSize: Int,
             onProgress: suspend (current: Int, total: Int, phaseOrdinal: Int) -> Unit
     ): List<ScannedSong> = traceAsyncSection("SyncWorker.fetchMusicFromMediaStore") {
@@ -927,7 +1051,7 @@ constructor(
                 
                 batch.forEach { raw ->
                     val existing = existingMap[raw.id]
-                    if (!isSongUnchanged(raw, existing)) {
+                    if (!isSongUnchanged(raw, existing, metadataCharsetRepairPending)) {
                         results.add(raw)
                     }
                 }
@@ -1167,7 +1291,20 @@ constructor(
         const val INPUT_FORCE_METADATA = "input_force_metadata"
         const val INPUT_RUN_MAINTENANCE = "input_run_maintenance"
         const val INPUT_SYNC_MODE = "input_sync_mode"
-        private const val MAX_PLAYBACK_DEFERRALS = 5
+        // When true, an INCREMENTAL sync ignores the "defer while playback active"
+        // gate. Set for user-facing local delta scans so a just-downloaded song
+        // still lands in the library immediately while the user is listening.
+        const val INPUT_BYPASS_PLAYBACK_DEFERRAL = "input_bypass_playback_deferral"
+        // Tags requests that wait while music plays, so SyncManager can tell a sync sitting
+        // in its playback-deferral backoff apart from other pending work.
+        const val TAG_PLAYBACK_DEFERRABLE =
+            "com.material.music.data.worker.SyncWorker.PlaybackDeferrable"
+        // INCREMENTAL syncs back off this many times while playback is active
+        // before running anyway. With WorkManager's exponential backoff
+        // (30s -> 60s -> 2m -> 4m -> 8m -> ...), 5 retries cover ~16 minutes.
+        internal const val MAX_PLAYBACK_DEFERRALS = 5
+        /** See [UserPreferencesRepository.getMetadataCharsetRepairVersion]. */
+        const val CURRENT_METADATA_CHARSET_REPAIR_VERSION = 1
 
         const val PROGRESS_CURRENT = "progress_current"
         const val PROGRESS_TOTAL = "progress_total"
@@ -1193,18 +1330,22 @@ constructor(
                                         INPUT_SYNC_MODE to SyncMode.INCREMENTAL.name
                                 )
                         )
+                        .addTag(TAG_PLAYBACK_DEFERRABLE)
                         .build()
 
         fun incrementalSyncWork(
-            runMaintenance: Boolean = true
+            runMaintenance: Boolean = true,
+            bypassPlaybackDeferral: Boolean = false
         ) =
                 OneTimeWorkRequestBuilder<SyncWorker>()
                         .setInputData(
                                 workDataOf(
                                         INPUT_SYNC_MODE to SyncMode.INCREMENTAL.name,
-                                        INPUT_RUN_MAINTENANCE to runMaintenance
+                                        INPUT_RUN_MAINTENANCE to runMaintenance,
+                                        INPUT_BYPASS_PLAYBACK_DEFERRAL to bypassPlaybackDeferral
                                 )
                         )
+                        .apply { if (!bypassPlaybackDeferral) addTag(TAG_PLAYBACK_DEFERRABLE) }
                         .build()
 
         private val heavySyncConstraints: Constraints =

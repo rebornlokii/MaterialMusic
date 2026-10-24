@@ -1,16 +1,33 @@
 package com.material.music.data.stats
 
 import com.google.common.truth.Truth.assertThat
+<<<<<<< HEAD
+import com.material.music.R
+import com.material.music.data.model.ArtistRef
+import com.material.music.data.model.Song
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalDate
+import java.time.Month
+import java.time.ZoneId
+import java.time.format.TextStyle
+import java.util.Locale
+=======
 import com.material.music.data.model.ArtistRef
 import com.material.music.data.model.Song
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+>>>>>>> origin/main
 import java.util.concurrent.TimeUnit
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.io.path.createTempDirectory
 import kotlinx.coroutines.test.runTest
+<<<<<<< HEAD
+import org.junit.jupiter.api.Assumptions.assumeTrue
+=======
+>>>>>>> origin/main
 import org.junit.jupiter.api.Test
 
 class PlaybackStatsRepositoryTest {
@@ -223,12 +240,239 @@ class PlaybackStatsRepositoryTest {
         assertThat(summary.topGenres.single().uniqueArtists).isEqualTo(2)
     }
 
+<<<<<<< HEAD
+    @Test
+    fun `loadSummary credits a multi-genre song to each of its genres`() = runTest {
+        val repository = createRepository()
+        val start = LocalDate.of(2026, 4, 10)
+            .atTime(15, 0)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+        fun play(songId: String, offsetMs: Long, durationMs: Long) = PlaybackStatsRepository.PlaybackEvent(
+            songId = songId,
+            timestamp = start + offsetMs + durationMs,
+            durationMs = durationMs,
+            startTimestamp = start + offsetMs,
+            endTimestamp = start + offsetMs + durationMs
+        )
+
+        val summary = repository.buildSummaryFromEvents(
+            range = StatsTimeRange.DAY,
+            songs = listOf(
+                song("song-1", genre = "House; Electronic"),
+                song("song-2", genre = "house"),
+                song("song-3", genre = null)
+            ),
+            allEvents = listOf(
+                play("song-1", offsetMs = 0L, durationMs = 60_000L),
+                play("song-2", offsetMs = 120_000L, durationMs = 30_000L),
+                play("song-3", offsetMs = 240_000L, durationMs = 10_000L)
+            ),
+            nowMillis = start + 600_000L
+        )
+
+        val genres = summary.topGenres.associate { it.genre to it.totalDurationMs }
+        assertThat(genres).containsExactly(
+            "House", 90_000L,
+            "Electronic", 60_000L,
+            "Unknown Genre", 10_000L
+        )
+        assertThat(summary.topGenres.single { it.genre == "House" }.playCount).isEqualTo(2)
+    }
+
+    @Test
+    fun `hasListeningActivity is false for an empty summary and true when a play falls in range`() {
+        val repository = createRepository()
+        val start = LocalDate.of(2026, 4, 10)
+            .atTime(9, 0)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+        val now = start + 60_000L
+
+        val empty = repository.buildSummaryFromEvents(
+            range = StatsTimeRange.WEEK,
+            songs = listOf(song("song-1")),
+            allEvents = emptyList(),
+            nowMillis = now
+        )
+        val active = repository.buildSummaryFromEvents(
+            range = StatsTimeRange.WEEK,
+            songs = listOf(song("song-1")),
+            allEvents = listOf(event("song-1", start, durationMs = 30_000L)),
+            nowMillis = now
+        )
+
+        assertThat(empty.hasListeningActivity()).isFalse()
+        assertThat(active.hasListeningActivity()).isTrue()
+    }
+
+    @Test
+    fun `month timeline week labels use the localized week string`() {
+        val repository = createRepository(weekLabel = { week -> "$week. Hafta" })
+        val start = LocalDate.of(2026, 4, 10)
+            .atTime(9, 0)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
+        val summary = repository.buildSummaryFromEvents(
+            range = StatsTimeRange.MONTH,
+            songs = listOf(song("song-1")),
+            allEvents = listOf(event("song-1", start, durationMs = 30_000L)),
+            nowMillis = start + 60_000L
+        )
+
+        assertThat(summary.timeline.map { it.label })
+            .containsExactly("1. Hafta", "2. Hafta", "3. Hafta", "4. Hafta")
+            .inOrder()
+    }
+
+    @Test
+    fun `weekday month and peak day labels follow the default locale`() {
+        val turkish = Locale.forLanguageTag("tr-TR")
+        withDefaultLocale(turkish) {
+            val repository = createRepository()
+            val zoneId = ZoneId.systemDefault()
+            // Wednesday 2026-04-08, inside the week and the year that end on Friday 2026-04-10.
+            val start = LocalDate.of(2026, 4, 8)
+                .atTime(10, 0)
+                .atZone(zoneId)
+                .toInstant()
+                .toEpochMilli()
+            val now = LocalDate.of(2026, 4, 10)
+                .atTime(18, 0)
+                .atZone(zoneId)
+                .toInstant()
+                .toEpochMilli()
+            val events = listOf(event("song-1", start, durationMs = 120_000L))
+
+            val week = repository.buildSummaryFromEvents(
+                range = StatsTimeRange.WEEK,
+                songs = listOf(song("song-1")),
+                allEvents = events,
+                nowMillis = now
+            )
+            val year = repository.buildSummaryFromEvents(
+                range = StatsTimeRange.YEAR,
+                songs = listOf(song("song-1")),
+                allEvents = events,
+                nowMillis = now
+            )
+
+            assertThat(week.timeline.map { it.label })
+                .containsExactlyElementsIn(
+                    DayOfWeek.values().map { it.getDisplayName(TextStyle.SHORT_STANDALONE, turkish) }
+                )
+                .inOrder()
+            assertThat(year.timeline.map { it.label })
+                .containsExactlyElementsIn(
+                    Month.values().map { it.getDisplayName(TextStyle.SHORT_STANDALONE, turkish) }
+                )
+                .inOrder()
+            assertThat(week.peakDayLabel)
+                .isEqualTo(DayOfWeek.WEDNESDAY.getDisplayName(TextStyle.FULL, turkish))
+        }
+    }
+
+    @Test
+    fun `year month labels use the standalone form rather than the in-date form`() {
+        val russian = Locale.forLanguageTag("ru-RU")
+        val mayInDate = Month.MAY.getDisplayName(TextStyle.SHORT, russian)
+        val mayStandalone = Month.MAY.getDisplayName(TextStyle.SHORT_STANDALONE, russian)
+        // Russian's in-date May is genitive ("of May"); only meaningful while the forms differ.
+        assumeTrue(mayInDate != mayStandalone)
+        withDefaultLocale(russian) {
+            val repository = createRepository()
+            val start = LocalDate.of(2026, 5, 12)
+                .atTime(9, 0)
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+
+            val year = repository.buildSummaryFromEvents(
+                range = StatsTimeRange.YEAR,
+                songs = listOf(song("song-1")),
+                allEvents = listOf(event("song-1", start, durationMs = 30_000L)),
+                nowMillis = start + 60_000L
+            )
+
+            assertThat(year.timeline.map { it.label })
+                .containsExactlyElementsIn(
+                    Month.values().map { it.getDisplayName(TextStyle.SHORT_STANDALONE, russian) }
+                )
+                .inOrder()
+            assertThat(year.timeline.map { it.label }).doesNotContain(mayInDate)
+        }
+    }
+
+    @Test
+    fun `day timeline hour labels stay english am pm so the screen can reformat them`() {
+        withDefaultLocale(Locale.forLanguageTag("tr-TR")) {
+            val repository = createRepository()
+            val start = LocalDate.of(2026, 4, 10)
+                .atTime(9, 0)
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+
+            val summary = repository.buildSummaryFromEvents(
+                range = StatsTimeRange.DAY,
+                songs = listOf(song("song-1")),
+                allEvents = listOf(event("song-1", start, durationMs = 30_000L)),
+                nowMillis = start + 60_000L
+            )
+
+            assertThat(summary.timeline).hasSize(6)
+            summary.timeline.forEach { entry ->
+                assertThat(entry.label).matches("^[0-9]{1,2}(am|pm)$")
+            }
+        }
+    }
+
+    private fun withDefaultLocale(locale: Locale, block: () -> Unit) {
+        val previous = Locale.getDefault()
+        Locale.setDefault(locale)
+        try {
+            block()
+        } finally {
+            Locale.setDefault(previous)
+        }
+    }
+
+    private fun event(songId: String, startMillis: Long, durationMs: Long) =
+        PlaybackStatsRepository.PlaybackEvent(
+            songId = songId,
+            timestamp = startMillis + durationMs,
+            durationMs = durationMs,
+            startTimestamp = startMillis,
+            endTimestamp = startMillis + durationMs
+        )
+
+    private fun createRepository(
+        weekLabel: (Int) -> String = { week -> "Week $week" }
+    ): PlaybackStatsRepository {
+=======
     private fun createRepository(): PlaybackStatsRepository {
+>>>>>>> origin/main
         val uniqueDir = createTempDirectory(
             "playback-stats-test-${Instant.now().toEpochMilli()}-"
         ).toFile()
         val testContext = mockk<android.content.Context>(relaxed = true)
         every { testContext.filesDir } returns uniqueDir
+<<<<<<< HEAD
+        every {
+            testContext.getString(R.string.presentation_batch_g_stats_week_label, *anyVararg())
+        } answers {
+            // MockK may hand the vararg over as one array argument or as separate arguments.
+            val formatArgs = args.drop(1).flatMap { arg ->
+                if (arg is Array<*>) arg.toList() else listOf(arg)
+            }
+            weekLabel(formatArgs.first() as Int)
+        }
+=======
+>>>>>>> origin/main
         return PlaybackStatsRepository(testContext)
     }
 

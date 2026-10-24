@@ -12,14 +12,27 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.media3.common.Player
+<<<<<<< HEAD
+import com.material.music.data.diagnostics.AdvancedPerformanceDiagnostics
+=======
+>>>>>>> origin/main
 import com.material.music.data.model.PlaybackQueueSnapshot
 import com.material.music.data.model.Playlist
 import com.material.music.data.model.SortOption
 import com.material.music.data.model.FolderSource
 import com.material.music.data.model.LyricsSourcePreference
+<<<<<<< HEAD
+import com.material.music.data.model.AudioOutputMode
 import com.material.music.data.model.TransitionSettings
 import com.material.music.data.equalizer.EqualizerPreset
 import com.material.music.data.model.StorageFilter
+import com.material.music.data.update.UpdateChannel
+import com.material.music.utils.PlaybackSpeedUtils
+=======
+import com.material.music.data.model.TransitionSettings
+import com.material.music.data.equalizer.EqualizerPreset
+import com.material.music.data.model.StorageFilter
+>>>>>>> origin/main
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.text.get
@@ -28,6 +41,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -68,6 +82,15 @@ enum class AlbumArtQuality(val maxSize: Int, val label: String) {
     ORIGINAL(0, "Original - Maximum quality")
 }
 
+data class AdvancedPerformanceDiagnosticsSettings(
+    val enabled: Boolean,
+    val sessionStartedEpochMs: Long?,
+    val expiresAtEpochMs: Long?
+) {
+    fun isActive(nowEpochMs: Long = System.currentTimeMillis()): Boolean =
+        enabled && expiresAtEpochMs?.let { nowEpochMs < it } == true
+}
+
 @Singleton
 class UserPreferencesRepository
 @Inject
@@ -78,8 +101,19 @@ constructor(
 
     private val backupExcludedKeyNames = setOf(
         PreferencesKeys.INITIAL_SETUP_DONE.name,
+        // Describes this device's artwork cache, not a user choice — restoring another
+        // device's value would misreport what the local cache was built from.
+        PreferencesKeys.FOLDER_ALBUM_ART_CACHE_STATE.name,
+        // Describes which text repair this install's library database went through, not a user
+        // choice — restoring another device's value could skip or repeat the repair here.
+        PreferencesKeys.METADATA_CHARSET_REPAIR_VERSION.name,
         "listenbrainz_token",
-        "lastfm_session_key"
+        "lastfm_session_key",
+        // Update settings describe this install (F-Droid vs. GitHub signed), not user taste;
+        // restoring them onto the other channel's install would offer a cross-signed update.
+        PreferencesKeys.UPDATE_CHANNEL.name,
+        PreferencesKeys.UPDATE_AUTO_CHECK.name,
+        PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION.name
     )
 
     private object PreferencesKeys {
@@ -100,6 +134,8 @@ constructor(
         val ARTISTS_SORT_OPTION = stringPreferencesKey("artists_sort_option")
         val PLAYLISTS_SORT_OPTION = stringPreferencesKey("playlists_sort_option")
         val FOLDERS_SORT_OPTION = stringPreferencesKey("folders_sort_option")
+        val FOLDER_SONGS_SORT_OPTION = stringPreferencesKey("folder_songs_sort_option")
+        val GENRES_SORT_OPTION = stringPreferencesKey("genres_sort_option")
         val LIKED_SONGS_SORT_OPTION = stringPreferencesKey("liked_songs_sort_option")
 
         val LAST_LIBRARY_TAB_INDEX =
@@ -118,6 +154,8 @@ constructor(
 
         val GLOBAL_TRANSITION_SETTINGS = stringPreferencesKey("global_transition_settings_json")
         val LIBRARY_TABS_ORDER = stringPreferencesKey("library_tabs_order")
+        val LIBRARY_TABS_FOLDERS_MIGRATED = booleanPreferencesKey("library_tabs_folders_migrated")
+        val LIBRARY_TABS_GENRES_MIGRATED = booleanPreferencesKey("library_tabs_genres_migrated")
         val IS_FOLDER_FILTER_ACTIVE = booleanPreferencesKey("is_folder_filter_active")
         val IS_FOLDERS_PLAYLIST_VIEW = booleanPreferencesKey("is_folders_playlist_view")
         val HIDE_LOCAL_MEDIA = booleanPreferencesKey("hide_local_media")
@@ -129,7 +167,11 @@ constructor(
         val FOLDER_BACK_GESTURE_NAVIGATION = booleanPreferencesKey("folder_back_gesture_navigation")
         val USE_SMOOTH_CORNERS = booleanPreferencesKey("use_smooth_corners")
         val KEEP_PLAYING_IN_BACKGROUND = booleanPreferencesKey("keep_playing_in_background")
+        val KEEP_SCREEN_AWAKE_WHILE_PLAYING =
+                booleanPreferencesKey("keep_screen_awake_while_playing")
         val IS_CROSSFADE_ENABLED = booleanPreferencesKey("is_crossfade_enabled")
+        val AUDIO_OUTPUT_MODE = stringPreferencesKey("audio_output_mode_v1")
+        val SMART_CROSSFADE_ENABLED = booleanPreferencesKey("smart_crossfade_enabled")
         val HI_FI_MODE_ENABLED = booleanPreferencesKey("hi_fi_mode_enabled")
         val CROSSFADE_DURATION = intPreferencesKey("crossfade_duration")
         val PLAYBACK_SPEED = androidx.datastore.preferences.core.floatPreferencesKey("playback_speed")
@@ -159,6 +201,8 @@ constructor(
         val ARTIST_WORD_DELIMITERS = stringPreferencesKey("artist_word_delimiters")
         val EXTRACT_ARTISTS_FROM_TITLE = booleanPreferencesKey("extract_artists_from_title")
         val GROUP_BY_ALBUM_ARTIST = booleanPreferencesKey("group_by_album_artist")
+        val ARTIST_ALBUMS_COLLAPSED_BY_DEFAULT =
+                booleanPreferencesKey("artist_albums_collapsed_by_default")
         val ARTIST_SETTINGS_RESCAN_REQUIRED =
                 booleanPreferencesKey("artist_settings_rescan_required")
 
@@ -186,6 +230,7 @@ constructor(
         val DIRECTORY_RULES_VERSION = intPreferencesKey("directory_rules_version")
         val LAST_APPLIED_DIRECTORY_RULES_VERSION =
             intPreferencesKey("last_applied_directory_rules_version")
+        val METADATA_CHARSET_REPAIR_VERSION = intPreferencesKey("metadata_charset_repair_version")
 
         val LYRICS_SYNC_OFFSETS = stringPreferencesKey("lyrics_sync_offsets_json")
 
@@ -196,8 +241,19 @@ constructor(
 
         val ALBUM_ART_QUALITY = stringPreferencesKey("album_art_quality")
         val ALBUM_ART_CACHE_LIMIT_MB = intPreferencesKey("album_art_cache_limit_mb")
+        val USE_FOLDER_ALBUM_ART = booleanPreferencesKey("use_folder_album_art")
+        val FOLDER_ALBUM_ART_CACHE_STATE = booleanPreferencesKey("folder_album_art_cache_state")
         val TAP_BACKGROUND_CLOSES_PLAYER = booleanPreferencesKey("tap_background_closes_player")
+        val MINI_PLAYER_SWIPE_TO_SKIP = booleanPreferencesKey("mini_player_swipe_to_skip")
+        val AUTOPLAY_ON_SKIP = booleanPreferencesKey("autoplay_on_skip")
+        val PREVIOUS_BUTTON_BEHAVIOR = stringPreferencesKey("previous_button_behavior")
         val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
+        val ADVANCED_PERFORMANCE_DIAGNOSTICS_ENABLED =
+            booleanPreferencesKey("advanced_performance_diagnostics_enabled")
+        val ADVANCED_PERFORMANCE_DIAGNOSTICS_STARTED_AT =
+            longPreferencesKey("advanced_performance_diagnostics_started_at_epoch_ms")
+        val ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT =
+            longPreferencesKey("advanced_performance_diagnostics_expires_at_epoch_ms")
         val IMMERSIVE_LYRICS_ENABLED = booleanPreferencesKey("immersive_lyrics_enabled")
         val IMMERSIVE_LYRICS_TIMEOUT = longPreferencesKey("immersive_lyrics_timeout")
         val LYRICS_FONT_SIZE_MULTIPLIER = androidx.datastore.preferences.core.floatPreferencesKey("lyrics_font_size_multiplier")
@@ -208,9 +264,12 @@ constructor(
         val IS_GENRE_GRID_VIEW = booleanPreferencesKey("is_genre_grid_view")
 
         val IS_ALBUMS_LIST_VIEW = booleanPreferencesKey("is_albums_list_view")
+        val IS_PLAYLISTS_GRID_VIEW = booleanPreferencesKey("is_playlists_grid_view")
+        val SHOW_SCROLLBAR = booleanPreferencesKey("show_scrollbar")
 
         val COLLAGE_PATTERN = stringPreferencesKey("collage_pattern")
         val COLLAGE_AUTO_ROTATE = booleanPreferencesKey("collage_auto_rotate")
+        val SIDEBAR_SHORTCUTS = stringSetPreferencesKey("sidebar_shortcuts")
 
         val LAST_PLAYLIST_ID = stringPreferencesKey("last_playlist_id")
         val LAST_PLAYLIST_NAME = stringPreferencesKey("last_playlist_name")
@@ -221,6 +280,35 @@ constructor(
 
         val REPLAYGAIN_ENABLED = booleanPreferencesKey("replaygain_enabled")
         val REPLAYGAIN_USE_ALBUM_GAIN = booleanPreferencesKey("replaygain_use_album_gain")
+
+        val UPDATE_CHANNEL = stringPreferencesKey("update_channel")
+        val UPDATE_AUTO_CHECK = booleanPreferencesKey("update_auto_check")
+        val UPDATE_LAST_NOTIFIED_VERSION = stringPreferencesKey("update_last_notified_version")
+    }
+
+    /** Null until the user picks a channel; the updater then follows the installed build. */
+    val updateChannelFlow: Flow<UpdateChannel?> = dataStore.data.map { preferences ->
+        UpdateChannel.fromStorageKey(preferences[PreferencesKeys.UPDATE_CHANNEL])
+    }
+
+    suspend fun setUpdateChannel(channel: UpdateChannel) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.UPDATE_CHANNEL] = channel.storageKey }
+    }
+
+    /** Null until the user toggles it; the default depends on the installed channel. */
+    val updateAutoCheckFlow: Flow<Boolean?> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.UPDATE_AUTO_CHECK]
+    }
+
+    suspend fun setUpdateAutoCheck(enabled: Boolean) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.UPDATE_AUTO_CHECK] = enabled }
+    }
+
+    suspend fun getLastNotifiedUpdateVersion(): String? =
+        dataStore.data.first()[PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION]
+
+    suspend fun setLastNotifiedUpdateVersion(version: String) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION] = version }
     }
 
     val appRebrandDialogShownFlow: Flow<Boolean> =
@@ -245,14 +333,29 @@ constructor(
         }
     }
 
-    val hiFiModeEnabledFlow: Flow<Boolean> =
-        dataStore.data.map { preferences ->
-            preferences[PreferencesKeys.HI_FI_MODE_ENABLED] ?: false
-        }
+    val smartCrossfadeEnabledFlow: Flow<Boolean> =
+            dataStore.data.map { preferences ->
+                preferences[PreferencesKeys.SMART_CROSSFADE_ENABLED] ?: false
+            }
 
-    suspend fun setHiFiModeEnabled(enabled: Boolean) {
+    suspend fun setSmartCrossfadeEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.HI_FI_MODE_ENABLED] = enabled
+            preferences[PreferencesKeys.SMART_CROSSFADE_ENABLED] = enabled
+        }
+    }
+
+    val audioOutputModeFlow: Flow<AudioOutputMode> =
+        dataStore.data.map { preferences ->
+            AudioOutputMode.fromStorageKey(
+                value = preferences[PreferencesKeys.AUDIO_OUTPUT_MODE],
+                legacyHiFiEnabled = preferences[PreferencesKeys.HI_FI_MODE_ENABLED] ?: false
+            )
+        }.distinctUntilChanged()
+
+    suspend fun setAudioOutputMode(mode: AudioOutputMode) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.AUDIO_OUTPUT_MODE] = mode.storageKey
+            preferences.remove(PreferencesKeys.HI_FI_MODE_ENABLED)
         }
     }
 
@@ -279,14 +382,20 @@ constructor(
         }
     }
 
+    /**
+     * Normalized to hundredths on read and write, so legacy noisy values such as 0.74999994f,
+     * NaN or backup imports outside the range come back as a clean, supported speed.
+     */
     val playbackSpeedFlow: Flow<Float> =
             dataStore.data.map { preferences ->
-                (preferences[PreferencesKeys.PLAYBACK_SPEED] ?: 1.0f).coerceIn(0.25f, 3.0f)
-            }
+                PlaybackSpeedUtils.normalize(
+                    preferences[PreferencesKeys.PLAYBACK_SPEED] ?: PlaybackSpeedUtils.DEFAULT_SPEED
+                )
+            }.distinctUntilChanged()
 
     suspend fun setPlaybackSpeed(speed: Float) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.PLAYBACK_SPEED] = speed.coerceIn(0.25f, 3.0f)
+            preferences[PreferencesKeys.PLAYBACK_SPEED] = PlaybackSpeedUtils.normalize(speed)
         }
     }
 
@@ -458,6 +567,18 @@ constructor(
         }
     }
 
+    /** Display-only: the artist page reads it when it opens, so no rescan is needed. */
+    val artistAlbumsCollapsedByDefaultFlow: Flow<Boolean> =
+            dataStore.data.map { preferences ->
+                preferences[PreferencesKeys.ARTIST_ALBUMS_COLLAPSED_BY_DEFAULT] ?: false
+            }.distinctUntilChanged()
+
+    suspend fun setArtistAlbumsCollapsedByDefault(collapsed: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.ARTIST_ALBUMS_COLLAPSED_BY_DEFAULT] = collapsed
+        }
+    }
+
     val artistSettingsRescanRequiredFlow: Flow<Boolean> =
             dataStore.data.map { preferences ->
                 preferences[PreferencesKeys.ARTIST_SETTINGS_RESCAN_REQUIRED] ?: false
@@ -494,6 +615,18 @@ constructor(
 
     suspend fun getLastAppliedDirectoryRulesVersion(): Int {
         return lastAppliedDirectoryRulesVersionFlow.first()
+    }
+
+    /**
+     * Version of the metadata text repair the stored library was synced with. Bumping
+     * `SyncWorker.CURRENT_METADATA_CHARSET_REPAIR_VERSION` makes the next sync re-check every
+     * song once.
+     */
+    suspend fun getMetadataCharsetRepairVersion(): Int =
+        dataStore.data.first()[PreferencesKeys.METADATA_CHARSET_REPAIR_VERSION] ?: 0
+
+    suspend fun setMetadataCharsetRepairVersion(version: Int) {
+        dataStore.edit { it[PreferencesKeys.METADATA_CHARSET_REPAIR_VERSION] = version }
     }
 
     suspend fun setLastSyncTimestamp(timestamp: Long) {
@@ -718,6 +851,40 @@ constructor(
         }
     }
 
+    /** Grid layout for the Playlists tab and the Folders tab's playlist view. */
+    val isPlaylistsGridViewFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.IS_PLAYLISTS_GRID_VIEW] ?: false
+        }
+
+    suspend fun setPlaylistsGridView(isGrid: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.IS_PLAYLISTS_GRID_VIEW] = isGrid
+        }
+    }
+
+    val showScrollbarFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.SHOW_SCROLLBAR] ?: true
+        }
+
+    suspend fun setShowScrollbar(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SHOW_SCROLLBAR] = enabled
+        }
+    }
+
+    val sidebarShortcutsFlow: Flow<Set<String>> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.SIDEBAR_SHORTCUTS] ?: SidebarShortcutKeys.DEFAULT
+        }
+
+    suspend fun setSidebarShortcuts(shortcuts: Set<String>) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SIDEBAR_SHORTCUTS] = shortcuts
+        }
+    }
+
     val lastDailyMixUpdateFlow: Flow<Long> =
             dataStore.data.map { preferences ->
                 preferences[PreferencesKeys.LAST_DAILY_MIX_UPDATE] ?: 0L
@@ -797,6 +964,11 @@ constructor(
             dataStore.data.map { preferences ->
                 preferences[PreferencesKeys.KEEP_PLAYING_IN_BACKGROUND] ?: true
             }
+
+    val keepScreenAwakeWhilePlayingFlow: Flow<Boolean> =
+            dataStore.data.map { preferences ->
+                preferences[PreferencesKeys.KEEP_SCREEN_AWAKE_WHILE_PLAYING] ?: false
+            }.distinctUntilChanged()
 
     val resumeOnHeadsetReconnectFlow: Flow<Boolean> =
             dataStore.data.map { preferences ->
@@ -1038,6 +1210,46 @@ constructor(
                         .storageKey
             }
 
+    val folderSongsSortOptionFlow: Flow<String> =
+            dataStore.data.map { preferences ->
+                resolveFolderSongsSortOption(preferences).storageKey
+            }
+
+    /**
+     * Folder songs used to follow the folder sort: Name (Z-A) listed them Z-A too. Until a folder
+     * songs sort is stored, that order is derived from the folder sort so updating keeps it.
+     */
+    private fun resolveFolderSongsSortOption(preferences: Preferences): SortOption {
+        val stored = preferences[PreferencesKeys.FOLDER_SONGS_SORT_OPTION]
+        if (stored != null) {
+            return SortOption.fromStorageKey(
+                    stored,
+                    SortOption.FOLDER_SONGS,
+                    SortOption.FolderSongTitleAZ
+            )
+        }
+        val folderSort = SortOption.fromStorageKey(
+                preferences[PreferencesKeys.FOLDERS_SORT_OPTION],
+                SortOption.FOLDERS,
+                SortOption.FolderNameAZ
+        )
+        return if (folderSort == SortOption.FolderNameZA) {
+            SortOption.FolderSongTitleZA
+        } else {
+            SortOption.FolderSongTitleAZ
+        }
+    }
+
+    val genresSortOptionFlow: Flow<String> =
+            dataStore.data.map { preferences ->
+                SortOption.fromStorageKey(
+                                preferences[PreferencesKeys.GENRES_SORT_OPTION],
+                                SortOption.GENRES,
+                                SortOption.GenreNameAZ
+                        )
+                        .storageKey
+            }
+
     val likedSongsSortOptionFlow: Flow<String> =
             dataStore.data.map { preferences ->
                 SortOption.fromStorageKey(
@@ -1076,6 +1288,18 @@ constructor(
     suspend fun setFoldersSortOption(optionKey: String) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.FOLDERS_SORT_OPTION] = optionKey
+        }
+    }
+
+    suspend fun setFolderSongsSortOption(optionKey: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.FOLDER_SONGS_SORT_OPTION] = optionKey
+        }
+    }
+
+    suspend fun setGenresSortOption(optionKey: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.GENRES_SORT_OPTION] = optionKey
         }
     }
 
@@ -1137,11 +1361,22 @@ constructor(
                     SortOption.FOLDERS,
                     SortOption.FolderNameAZ
             )
+            // Stored once, so the folder songs sort stops following a later folder sort change.
+            val folderSongsSort = resolveFolderSongsSortOption(preferences).storageKey
+            if (preferences[PreferencesKeys.FOLDER_SONGS_SORT_OPTION] != folderSongsSort) {
+                preferences[PreferencesKeys.FOLDER_SONGS_SORT_OPTION] = folderSongsSort
+            }
             migrateSortPreference(
                     preferences,
                     PreferencesKeys.LIKED_SONGS_SORT_OPTION,
                     SortOption.LIKED,
                     SortOption.LikedSongDateLiked
+            )
+            migrateSortPreference(
+                    preferences,
+                    PreferencesKeys.GENRES_SORT_OPTION,
+                    SortOption.GENRES,
+                    SortOption.GenreNameAZ
             )
         }
     }
@@ -1199,6 +1434,21 @@ constructor(
         /** Default word-based delimiters (matched case-insensitively with whitespace boundaries) */
         val DEFAULT_ARTIST_WORD_DELIMITERS = listOf("featuring", "feat.", "feat", "ft.", "ft", "vs.", "vs", "versus", "with", "prod.", "prod")
         const val DEFAULT_ALBUM_ART_CACHE_LIMIT_MB = 200
+
+        /**
+         * Synchronous read of the folder-cover-art opt-in.
+         *
+         * [com.material.music.utils.AlbumArtUtils] resolves artwork from a Coil fetcher
+         * and a ContentProvider, both off the main thread, and it cannot proceed without knowing
+         * this value: resolving under a wrong assumption persists a cache entry or a "no art"
+         * marker that later reads then trust. The mirror is normally pushed in long before any
+         * artwork is requested, so this only runs if a very early request wins that race.
+         */
+        fun readUseFolderAlbumArtBlocking(context: Context): Boolean = runBlocking {
+            runCatching {
+                context.applicationContext.dataStore.data.first()[PreferencesKeys.USE_FOLDER_ALBUM_ART]
+            }.getOrNull() ?: false
+        }
     }
 
     val navBarCornerRadiusFlow: Flow<Int> =
@@ -1265,6 +1515,12 @@ constructor(
     suspend fun setKeepPlayingInBackground(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.KEEP_PLAYING_IN_BACKGROUND] = enabled
+        }
+    }
+
+    suspend fun setKeepScreenAwakeWhilePlaying(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.KEEP_SCREEN_AWAKE_WHILE_PLAYING] = enabled
         }
     }
 
@@ -1389,6 +1645,18 @@ constructor(
         }
     }
 
+    val lyricsFontSizeFlow: Flow<Float> = dataStore.data
+        .map { preferences ->
+            sanitizeLyricsFontSize(preferences[LYRICS_FONT_SIZE_SP_KEY] ?: DEFAULT_LYRICS_FONT_SIZE_SP)
+        }
+        .distinctUntilChanged()
+
+    suspend fun setLyricsFontSize(fontSizeSp: Float) {
+        dataStore.edit { preferences ->
+            preferences[LYRICS_FONT_SIZE_SP_KEY] = sanitizeLyricsFontSize(fontSizeSp)
+        }
+    }
+
     val libraryTabsOrderFlow: Flow<String?> = dataStore.data
         .map { preferences ->
             preferences[PreferencesKeys.LIBRARY_TABS_ORDER]
@@ -1402,23 +1670,50 @@ constructor(
         dataStore.edit { preferences -> preferences.remove(PreferencesKeys.LIBRARY_TABS_ORDER) }
     }
 
+    /**
+     * One-shot backfill of the Folders tab for orders saved before it existed.
+     *
+     * The stored order doubles as the list of *visible* tabs, so this must never run more
+     * than once: re-adding FOLDERS on every launch would undo a user who deliberately hid
+     * that tab.
+     */
     suspend fun migrateTabOrder() {
         dataStore.edit { preferences ->
-            val orderJson = preferences[PreferencesKeys.LIBRARY_TABS_ORDER]
-            if (orderJson != null) {
-                try {
-                    val order = json.decodeFromString<MutableList<String>>(orderJson)
-                    if (!order.contains("FOLDERS")) {
-                        val likedIndex = order.indexOf("LIKED")
-                        if (likedIndex != -1) {
-                            order.add(likedIndex + 1, "FOLDERS")
-                        } else {
-                            order.add("FOLDERS")
-                        }
-                        preferences[PreferencesKeys.LIBRARY_TABS_ORDER] = json.encodeToString(order)
-                    }
-                } catch (e: Exception) {
-                }
+            if (preferences[PreferencesKeys.LIBRARY_TABS_FOLDERS_MIGRATED] == true) return@edit
+            preferences[PreferencesKeys.LIBRARY_TABS_FOLDERS_MIGRATED] = true
+
+            val orderJson = preferences[PreferencesKeys.LIBRARY_TABS_ORDER] ?: return@edit
+            val order = runCatching {
+                json.decodeFromString<MutableList<String>>(orderJson)
+            }.getOrNull() ?: return@edit // Abort on malformed data; don't overwrite user data.
+
+            if ("FOLDERS" !in order) {
+                val insertAfter = order.indexOf("LIKED").takeIf { it != -1 } ?: order.lastIndex
+                order.add(insertAfter + 1, "FOLDERS")
+                preferences[PreferencesKeys.LIBRARY_TABS_ORDER] = json.encodeToString(order)
+            }
+        }
+    }
+
+    /**
+     * One-shot backfill of the Genres tab, appended last, for orders saved before it existed.
+     *
+     * Like [migrateTabOrder] it runs once, so a user who later hides Genres keeps it hidden.
+     * Appending keeps every existing tab at its index, which the remembered last tab relies on.
+     */
+    suspend fun migrateGenresTab() {
+        dataStore.edit { preferences ->
+            if (preferences[PreferencesKeys.LIBRARY_TABS_GENRES_MIGRATED] == true) return@edit
+            preferences[PreferencesKeys.LIBRARY_TABS_GENRES_MIGRATED] = true
+
+            val orderJson = preferences[PreferencesKeys.LIBRARY_TABS_ORDER] ?: return@edit
+            val order = runCatching {
+                json.decodeFromString<MutableList<String>>(orderJson)
+            }.getOrNull() ?: return@edit // Abort on malformed data; don't overwrite user data.
+
+            if (order.isNotEmpty() && "GENRES" !in order) {
+                order.add("GENRES")
+                preferences[PreferencesKeys.LIBRARY_TABS_ORDER] = json.encodeToString(order)
             }
         }
     }
@@ -1566,6 +1861,43 @@ constructor(
     }
 
     /**
+     * Whether a cover image sitting next to the audio file (cover.jpg, folder.jpg, …) should be
+     * used as album art in preference to embedded artwork. Off by default: folder images are only
+     * trusted when the user explicitly opts in, because generic directories can hold unrelated
+     * pictures. See [com.material.music.utils.AlbumArtUtils.findExternalAlbumArtFile].
+     */
+    val useFolderAlbumArtFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.USE_FOLDER_ALBUM_ART] ?: false
+        }.distinctUntilChanged()
+
+    suspend fun setUseFolderAlbumArt(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USE_FOLDER_ALBUM_ART] = enabled
+        }
+    }
+
+    /**
+     * The effective folder-cover state the artwork cache was last built under, or null if it has
+     * never been recorded.
+     *
+     * Persisted because the cache it describes is: covers live in `filesDir` and outlive the
+     * process, so an in-memory flag could not tell whether entries were produced with or without
+     * folder access. Effective means the preference *and* the image permission — losing the
+     * permission silently changes what gets cached just as much as switching the setting off.
+     */
+    val folderAlbumArtCacheStateFlow: Flow<Boolean?> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.FOLDER_ALBUM_ART_CACHE_STATE]
+        }
+
+    suspend fun setFolderAlbumArtCacheState(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.FOLDER_ALBUM_ART_CACHE_STATE] = enabled
+        }
+    }
+
+    /**
      * Whether tapping the background area of the player sheet closes it.
      * Default is false to avoid accidental dismissals while interacting with the full player.
      */
@@ -1580,6 +1912,51 @@ constructor(
         }
     }
 
+    /**
+     * Whether horizontal swipes on the mini player change track, moving dismissal to a downward
+     * swipe. Off by default, where short swipes change track and long swipes dismiss.
+     */
+    val miniPlayerSwipeToSkipFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.MINI_PLAYER_SWIPE_TO_SKIP] ?: false
+        }
+
+    suspend fun setMiniPlayerSwipeToSkip(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.MINI_PLAYER_SWIPE_TO_SKIP] = enabled
+        }
+    }
+
+    /**
+     * Whether skipping to another song from the app's own controls while paused starts
+     * playback. On by default.
+     */
+    val autoplayOnSkipFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.AUTOPLAY_ON_SKIP] ?: true
+        }.distinctUntilChanged()
+
+    suspend fun setAutoplayOnSkip(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.AUTOPLAY_ON_SKIP] = enabled
+        }
+    }
+
+    /**
+     * What previous does partway through a song. Applies to the app's own controls and to the
+     * session (notification, lock screen, headset keys, Android Auto, widget). Restarts by default.
+     */
+    val previousButtonBehaviorFlow: Flow<PreviousButtonBehavior> =
+        dataStore.data.map { preferences ->
+            PreviousButtonBehavior.fromStorageKey(preferences[PreferencesKeys.PREVIOUS_BUTTON_BEHAVIOR])
+        }.distinctUntilChanged()
+
+    suspend fun setPreviousButtonBehavior(behavior: PreviousButtonBehavior) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.PREVIOUS_BUTTON_BEHAVIOR] = behavior.storageKey
+        }
+    }
+
     val hapticsEnabledFlow: Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[PreferencesKeys.HAPTICS_ENABLED] ?: true
@@ -1588,6 +1965,45 @@ constructor(
     suspend fun setHapticsEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.HAPTICS_ENABLED] = enabled
+        }
+    }
+
+    val advancedPerformanceDiagnosticsSettingsFlow: Flow<AdvancedPerformanceDiagnosticsSettings> =
+        dataStore.data.map { preferences ->
+            AdvancedPerformanceDiagnosticsSettings(
+                enabled = preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_ENABLED] ?: false,
+                sessionStartedEpochMs =
+                    preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_STARTED_AT],
+                expiresAtEpochMs =
+                    preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT]
+            )
+        }.distinctUntilChanged()
+
+    suspend fun setAdvancedPerformanceDiagnosticsEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            if (enabled) {
+                val now = System.currentTimeMillis()
+                preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_ENABLED] = true
+                preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_STARTED_AT] = now
+                preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT] =
+                    now + AdvancedPerformanceDiagnostics.DEFAULT_SESSION_DURATION_MS
+            } else {
+                preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_ENABLED] = false
+                preferences.remove(PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_STARTED_AT)
+                preferences.remove(PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT)
+            }
+        }
+    }
+
+    suspend fun disableExpiredAdvancedPerformanceDiagnostics(nowEpochMs: Long = System.currentTimeMillis()) {
+        dataStore.edit { preferences ->
+            val enabled = preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_ENABLED] ?: false
+            val expiresAt = preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT]
+            if (enabled && (expiresAt == null || nowEpochMs >= expiresAt)) {
+                preferences[PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_ENABLED] = false
+                preferences.remove(PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_STARTED_AT)
+                preferences.remove(PreferencesKeys.ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT)
+            }
         }
     }
 

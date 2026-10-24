@@ -6,6 +6,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.material.music.data.model.Song
 import com.material.music.data.navidrome.model.NavidromeSong
+<<<<<<< HEAD
+import com.material.music.data.stream.CloudMusicUtils
+=======
+>>>>>>> origin/main
 
 /**
  * Represents a song cached from a Navidrome/Subsonic server.
@@ -83,6 +87,7 @@ fun NavidromeSongEntity.toSong(): Song {
         sampleRate = null,
         year = year,
         trackNumber = trackNumber,
+        discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
         dateAdded = dateAdded,
         isFavorite = false,
         navidromeId = navidromeId

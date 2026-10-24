@@ -4,16 +4,17 @@ import android.net.Uri
 import coil.ImageLoader
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
-import coil.fetch.SourceResult
 import coil.request.Options
 import com.material.music.data.navidrome.NavidromeRepository
+<<<<<<< HEAD
+import kotlinx.coroutines.CancellationException
+=======
 import com.material.music.data.network.navidrome.NavidromeApiService
+>>>>>>> origin/main
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.Path.Companion.toPath
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
@@ -68,17 +69,7 @@ class NavidromeCoilFetcher(
         val sizeParam = uri.getQueryParameter("size")?.toIntOrNull() ?: 500
 
         val cachedFile = File(cacheDir, "navidrome_cover_${coverArtId}_$sizeParam.jpg")
-        if (cachedFile.exists() && cachedFile.length() > 0) {
-            Timber.v("$TAG: Using cached cover for $coverArtId")
-            return SourceResult(
-                source = coil.decode.ImageSource(
-                    file = cachedFile.absolutePath.toPath(),
-                    fileSystem = okio.FileSystem.SYSTEM
-                ),
-                mimeType = "image/jpeg",
-                dataSource = coil.decode.DataSource.DISK
-            )
-        }
+        RemoteArtworkCache.cachedResult(cachedFile)?.let { return it }
 
         val coverArtUrl = repository.getCoverArtUrl(coverArtId, sizeParam)
         if (coverArtUrl.isNullOrBlank()) {
@@ -89,52 +80,14 @@ class NavidromeCoilFetcher(
         }
 
         return try {
-            downloadImage(coverArtUrl, cachedFile)
+            val request = Request.Builder().url(coverArtUrl).get().build()
+            RemoteArtworkCache.download(okHttpClient, request, cachedFile)
         } catch (e: Exception) {
+            // A cancelled fetch (its list item scrolled away) is not a failed download.
+            if (e is CancellationException) throw e
             if (shouldLogFailure("download_$coverArtId")) {
                 Timber.w(e, "$TAG: Failed to download cover art for $coverArtId")
             }
-            null
-        }
-    }
-
-    private suspend fun downloadImage(url: String, cacheFile: File): FetchResult? {
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        return try {
-            okHttpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    Timber.w("$TAG: HTTP ${response.code} for $url")
-                    return null
-                }
-
-                val bytes = response.body.bytes()
-
-                if (bytes.isEmpty()) {
-                    Timber.w("$TAG: Empty response body for $url")
-                    return null
-                }
-
-                FileOutputStream(cacheFile).use { fos ->
-                    fos.write(bytes)
-                }
-
-                Timber.v("$TAG: Cached cover art (${bytes.size} bytes)")
-
-                SourceResult(
-                    source = coil.decode.ImageSource(
-                        file = cacheFile.absolutePath.toPath(),
-                        fileSystem = okio.FileSystem.SYSTEM
-                    ),
-                    mimeType = response.header("Content-Type") ?: "image/jpeg",
-                    dataSource = coil.decode.DataSource.NETWORK
-                )
-            }
-        } catch (e: Exception) {
-            Timber.w(e, "$TAG: Failed to download image from $url")
             null
         }
     }

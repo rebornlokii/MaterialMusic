@@ -87,3 +87,118 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         db.addColumnIfMissing("songs", "mb_artist_id", "`mb_artist_id` TEXT")
     }
 }
+<<<<<<< HEAD
+
+/**
+ * v3 -> v4: audio bookmarks — named position markers inside a track (audiobooks, DJ sets,
+ * podcasts), grouped per song on the Bookmarks screen.
+ *
+ * `audio_bookmarks` snapshots song metadata at save time so a bookmark stays presentable even
+ * if the underlying song leaves the library. Additive and idempotent, per the Auto Backup
+ * drift guard above.
+ */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS `audio_bookmarks` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `song_id` TEXT NOT NULL,
+                    `song_title` TEXT NOT NULL,
+                    `artist_name` TEXT NOT NULL,
+                    `album_art_uri` TEXT,
+                    `title` TEXT NOT NULL,
+                    `timestamp_ms` INTEGER NOT NULL,
+                    `created_time` INTEGER NOT NULL
+                )
+            """.trimIndent()
+        )
+    }
+}
+
+/** v4 -> v5: app-private offline copies of Navidrome and Jellyfin tracks. */
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS `offline_tracks` (
+                    `download_id` TEXT NOT NULL,
+                    `attempt_id` TEXT NOT NULL,
+                    `song_id` TEXT NOT NULL,
+                    `source_uri` TEXT NOT NULL,
+                    `provider` TEXT NOT NULL,
+                    `title` TEXT NOT NULL,
+                    `mime_type` TEXT,
+                    `local_path` TEXT,
+                    `state` TEXT NOT NULL,
+                    `bytes_downloaded` INTEGER NOT NULL,
+                    `total_bytes` INTEGER,
+                    `created_at` INTEGER NOT NULL,
+                    `updated_at` INTEGER NOT NULL,
+                    `error_message` TEXT,
+                    PRIMARY KEY(`download_id`)
+                )
+            """.trimIndent()
+        )
+        db.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_offline_tracks_source_uri` " +
+                "ON `offline_tracks` (`source_uri`)"
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_offline_tracks_song_id` " +
+                "ON `offline_tracks` (`song_id`)"
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_offline_tracks_state` " +
+                "ON `offline_tracks` (`state`)"
+        )
+    }
+}
+
+/**
+ * v5 -> v6: playlist positions are unique, while song ids may repeat.
+ *
+ * M3U playlists can intentionally contain the same track more than once. The previous
+ * `(playlist_id, song_id)` primary key silently collapsed those entries during persistence.
+ * Existing rows are copied in their current order and assigned dense positions so even legacy
+ * databases with duplicate sort values migrate without dropping a song.
+ */
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP TABLE IF EXISTS `playlist_songs_v6`")
+        db.execSQL(
+            """
+                CREATE TABLE `playlist_songs_v6` (
+                    `playlist_id` TEXT NOT NULL,
+                    `song_id` TEXT NOT NULL,
+                    `sort_order` INTEGER NOT NULL,
+                    PRIMARY KEY(`playlist_id`, `sort_order`)
+                )
+            """.trimIndent()
+        )
+        db.execSQL(
+            """
+                INSERT INTO `playlist_songs_v6` (`playlist_id`, `song_id`, `sort_order`)
+                SELECT
+                    `playlist_id`,
+                    `song_id`,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY `playlist_id`
+                        ORDER BY `sort_order`, `rowid`
+                    ) - 1
+                FROM `playlist_songs`
+            """.trimIndent()
+        )
+        db.execSQL("DROP TABLE `playlist_songs`")
+        db.execSQL("ALTER TABLE `playlist_songs_v6` RENAME TO `playlist_songs`")
+        db.execSQL(
+            "CREATE INDEX `index_playlist_songs_playlist_id_sort_order` " +
+                "ON `playlist_songs` (`playlist_id`, `sort_order`)"
+        )
+        db.execSQL(
+            "CREATE INDEX `index_playlist_songs_song_id` ON `playlist_songs` (`song_id`)"
+        )
+    }
+}
+=======
+>>>>>>> origin/main

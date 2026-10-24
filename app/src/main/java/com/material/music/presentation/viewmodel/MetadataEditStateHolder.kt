@@ -3,7 +3,13 @@ package com.material.music.presentation.viewmodel
 import android.content.Context
 import android.net.Uri
 import com.material.music.data.media.CoverArtUpdate
+<<<<<<< HEAD
+import com.material.music.data.media.CustomMetadataChanges
 import com.material.music.data.media.ImageCacheManager
+import com.material.music.data.media.InterruptedSaveResumeResult
+=======
+import com.material.music.data.media.ImageCacheManager
+>>>>>>> origin/main
 import com.material.music.data.media.MetadataEditError
 import com.material.music.data.media.SongMetadataEditor
 import com.material.music.data.model.Lyrics
@@ -13,6 +19,7 @@ import com.material.music.utils.FileDeletionUtils
 import com.material.music.utils.LyricsUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -47,10 +54,20 @@ class MetadataEditStateHolder @Inject constructor(
                 MetadataEditError.TIMEOUT -> "The operation took too long and was cancelled."
                 MetadataEditError.FILE_CORRUPTED -> "The file appears to be corrupted or in an unsupported format."
                 MetadataEditError.IO_ERROR -> "An error occurred while accessing the file. Please try again."
+                // SongMetadataEditor always resolves this message from a string resource.
+                MetadataEditError.WRITE_INTERRUPTED -> errorMessage ?: "Saving was interrupted before the song file was fully written."
                 MetadataEditError.UNKNOWN, null -> errorMessage ?: "An unknown error occurred while editing metadata."
             }
         }
     }
+
+    /** MediaStore URIs of songs left cut off by an interrupted save that need write access to be restored. */
+    val songsAwaitingWriteAccess: Flow<List<Uri>>
+        get() = songMetadataEditor.songsAwaitingWriteAccess
+
+    /** Restores the songs left cut off by interrupted saves that can be written now. */
+    suspend fun resumeInterruptedWriteBacks(): InterruptedSaveResumeResult =
+        songMetadataEditor.resumeInterruptedWriteBacks()
 
     suspend fun saveMetadata(
         song: Song,
@@ -65,7 +82,8 @@ class MetadataEditStateHolder @Inject constructor(
         newDiscNumber: Int?,
         newReplayGainTrackGainDb: String? = null,
         newReplayGainAlbumGainDb: String? = null,
-        coverArtUpdate: CoverArtUpdate?
+        coverArtUpdate: CoverArtUpdate?,
+        customMetadataChanges: CustomMetadataChanges = CustomMetadataChanges()
     ): MetadataEditResult = withContext(Dispatchers.IO) {
         
         Timber.tag("MetadataEditStateHolder").d("Starting saveMetadata for: ${song.title}")
@@ -115,6 +133,7 @@ class MetadataEditStateHolder @Inject constructor(
             newDiscNumber = newDiscNumber,
             newReplayGainTrackGainDb = newReplayGainTrackGainDb,
             newReplayGainAlbumGainDb = newReplayGainAlbumGainDb,
+            customMetadataChanges = customMetadataChanges,
             coverArtUpdate = finalCoverArtUpdate,
             songId = resolvedSongId,
         )

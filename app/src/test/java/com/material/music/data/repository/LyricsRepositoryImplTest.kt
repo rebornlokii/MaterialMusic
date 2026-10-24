@@ -267,6 +267,91 @@ class LyricsRepositoryImplTest {
     }
 
     @Test
+    fun fetchFromRemote_acceptsRomanizedTitleMatchForNonLatinSong() = runTest {
+        val apiService = mockk<LrcLibApiService>(relaxed = true)
+        val lyricsDao = mockk<LyricsDao>(relaxed = true)
+        val romanizedLyrics = lrcResponse(
+            name = "Nabi",
+            artistName = "IU",
+            duration = 200.0
+        )
+        coEvery { lyricsDao.getLyrics(107L) } returns null
+        coEvery { apiService.searchLyrics(any(), any(), any(), any()) } returns arrayOf(romanizedLyrics)
+
+        val repository = LyricsRepositoryImpl(
+            context = testContext(),
+            lrcLibApiService = apiService,
+            lyricsDao = lyricsDao,
+            okHttpClient = mockk<OkHttpClient>(relaxed = true),
+            userPreferencesRepository = userPreferencesRepository()
+        )
+        val song = testSong(
+            id = "107",
+            title = "나비",
+            artist = "IU",
+            duration = 200_000L
+        )
+
+        val result = repository.fetchFromRemote(song)
+
+        assertThat(result.isSuccess).isTrue()
+        coVerify(exactly = 1) { lyricsDao.insert(any()) }
+    }
+
+    @Test
+    fun fetchFromRemote_prefersLrclibWordSyncedLyricsfile() = runTest {
+        val apiService = mockk<LrcLibApiService>(relaxed = true)
+        val lyricsDao = mockk<LyricsDao>(relaxed = true)
+        val wordSynced = lrcResponse(
+            name = "Word Song",
+            artistName = "Word Artist",
+            duration = 180.0,
+            lyricsfile = """
+                version: '1.0'
+                lines:
+                  - text: 'Hello world'
+                    start_ms: 1000
+                    end_ms: 3000
+                    words:
+                      - text: 'Hello '
+                        start_ms: 1000
+                        end_ms: 1800
+                      - text: 'world'
+                        start_ms: 1800
+                        end_ms: 3000
+            """.trimIndent(),
+        )
+        coEvery { lyricsDao.getLyrics(106L) } returns null
+        coEvery { apiService.searchLyrics(any(), any(), any(), any()) } returns arrayOf(wordSynced)
+
+        val repository = LyricsRepositoryImpl(
+            context = testContext(),
+            lrcLibApiService = apiService,
+            lyricsDao = lyricsDao,
+            okHttpClient = mockk<OkHttpClient>(relaxed = true),
+            userPreferencesRepository = userPreferencesRepository(),
+        )
+        val song = testSong(
+            id = "106",
+            title = "Word Song",
+            artist = "Word Artist",
+            duration = 180_000L,
+        )
+
+        val result = repository.fetchFromRemote(song)
+
+        assertThat(result.isSuccess).isTrue()
+        val (lyrics, rawLyrics) = result.getOrThrow()
+        assertThat(lyrics.synced!!.single().words).hasSize(2)
+        assertThat(lyrics.synced!!.single().words!!.map { it.time })
+            .containsExactly(1000, 1800).inOrder()
+        assertThat(rawLyrics).contains("<00:01.00>Hello ")
+        coVerify(exactly = 1) {
+            lyricsDao.insert(match { it.isSynced && it.content == rawLyrics })
+        }
+    }
+
+    @Test
     fun fetchFromRemote_doesNotTreatArtistNameInFilePathAsVariant() = runTest {
         val apiService = mockk<LrcLibApiService>(relaxed = true)
         val lyricsDao = mockk<LyricsDao>(relaxed = true)
@@ -371,7 +456,8 @@ class LyricsRepositoryImplTest {
     private fun lrcResponse(
         name: String,
         artistName: String,
-        duration: Double
+        duration: Double,
+        lyricsfile: String? = null,
     ): LrcLibResponse {
         return LrcLibResponse(
             id = name.hashCode(),
@@ -380,7 +466,8 @@ class LyricsRepositoryImplTest {
             albumName = "Album",
             duration = duration,
             plainLyrics = null,
-            syncedLyrics = "[00:01.00]First line\n[00:05.00]Second line"
+            syncedLyrics = "[00:01.00]First line\n[00:05.00]Second line",
+            lyricsfile = lyricsfile,
         )
     }
 }

@@ -62,7 +62,11 @@ class BackupFileValidator @Inject constructor(
         }
 
         if (format == BackupFormatDetector.Format.UNKNOWN) {
+<<<<<<< HEAD
+            errors.add(ValidationError("FORMAT_UNKNOWN", "File is not a recognized MaterialMusic backup format."))
+=======
             errors.add(ValidationError("FORMAT_UNKNOWN", "File is not a recognized Material Music backup format."))
+>>>>>>> origin/main
             return BackupValidationResult.Invalid(errors)
         }
 

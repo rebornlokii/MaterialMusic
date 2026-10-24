@@ -6,6 +6,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.material.music.data.jellyfin.model.JellyfinSong
 import com.material.music.data.model.Song
+<<<<<<< HEAD
+import com.material.music.data.stream.CloudMusicUtils
+=======
+>>>>>>> origin/main
 
 @Entity(
     tableName = "jellyfin_songs",
@@ -54,6 +58,7 @@ fun JellyfinSongEntity.toSong(): Song {
         sampleRate = null,
         year = year,
         trackNumber = trackNumber,
+        discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
         dateAdded = dateAdded,
         isFavorite = false
     )

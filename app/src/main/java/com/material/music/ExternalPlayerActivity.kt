@@ -20,11 +20,19 @@ import android.content.Intent.EXTRA_STREAM
 import androidx.media3.common.util.UnstableApi
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.ThemePreferencesRepository
+<<<<<<< HEAD
+import com.material.music.data.preferences.ThemePreset
+=======
+>>>>>>> origin/main
 import javax.inject.Inject
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @AndroidEntryPoint
 class ExternalPlayerActivity : ComponentActivity() {
+
+    override fun attachBaseContext(newBase: android.content.Context) {
+        super.attachBaseContext(com.material.music.utils.AppLocaleManager.wrapContext(newBase))
+    }
 
     private val playerViewModel: PlayerViewModel by viewModels()
     @Inject
@@ -46,12 +54,17 @@ class ExternalPlayerActivity : ComponentActivity() {
         setContent {
             val systemDarkTheme = isSystemInDarkTheme()
             val appThemeMode by themePreferencesRepository.appThemeModeFlow.collectAsStateWithLifecycle(initialValue = AppThemeMode.FOLLOW_SYSTEM)
+            val themePreset by themePreferencesRepository.themePresetFlow.collectAsStateWithLifecycle(initialValue = ThemePreset.DEFAULT)
             val useDarkTheme = when (appThemeMode) {
                 AppThemeMode.DARK -> true
                 AppThemeMode.LIGHT -> false
                 else -> systemDarkTheme
             }
+<<<<<<< HEAD
+            MaterialMusicTheme(darkTheme = useDarkTheme, themePreset = themePreset) {
+=======
             MaterialMusicTheme(darkTheme = useDarkTheme) {
+>>>>>>> origin/main
                 ExternalPlayerOverlay(
                     playerViewModel = playerViewModel,
                     onDismiss = { finish() },

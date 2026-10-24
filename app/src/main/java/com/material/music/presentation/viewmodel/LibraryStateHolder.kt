@@ -2,13 +2,20 @@ package com.material.music.presentation.viewmodel
 
 import android.content.ComponentCallbacks2
 import android.os.Trace
+import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+<<<<<<< HEAD
+import com.material.music.data.model.Album
+import com.material.music.data.model.Artist
+import com.material.music.data.model.Genre
+=======
 import androidx.compose.ui.graphics.toArgb
 import com.material.music.data.model.Album
 import com.material.music.data.model.Artist
+>>>>>>> origin/main
 import com.material.music.data.model.LibraryTabId
 import com.material.music.data.model.MusicFolder
 import com.material.music.data.model.Song
@@ -29,13 +36,41 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val ENABLE_FOLDERS_STORAGE_FILTER = false
-private data class GenreSeed(
-    val id: String,
-    val name: String
+/** [com.material.music.data.model.Genre.id] of the bucket for songs without a genre tag. */
+internal const val UNKNOWN_GENRE_ID = "unknown"
+
+/**
+ * Orders genres for the Library's Genres tab. The Unknown bucket (songs without a genre tag)
+ * always stays last, whatever the sort.
+ */
+internal fun sortGenresList(genres: List<Genre>, sortOption: SortOption): List<Genre> {
+    val (unknown, known) = genres.partition { it.id == UNKNOWN_GENRE_ID }
+    val byName = compareBy<Genre> { it.name.lowercase(Locale.ROOT) }.thenBy { it.id }
+    val sorted = when (sortOption) {
+        SortOption.GenreNameZA -> known.sortedWith(
+            compareByDescending<Genre> { it.name.lowercase(Locale.ROOT) }.thenBy { it.id }
+        )
+        SortOption.GenreSongCountDesc -> known.sortedWith(
+            compareByDescending<Genre> { it.songCount }.then(byName)
+        )
+        SortOption.GenreSongCountAsc -> known.sortedWith(
+            compareBy<Genre> { it.songCount }.then(byName)
+        )
+        else -> known.sortedWith(byName)
+    }
+    return sorted + unknown
+}
+
+/** The Genres tab's list together with the sort it was ordered by. */
+@Immutable
+data class LibraryGenresState(
+    val genres: ImmutableList<Genre>,
+    val sortOption: SortOption
 )
 
 /**
@@ -116,8 +151,14 @@ class LibraryStateHolder @Inject constructor(
     private val _currentFolderSortOption = MutableStateFlow<SortOption>(SortOption.FolderNameAZ)
     val currentFolderSortOption = _currentFolderSortOption.asStateFlow()
 
+    private val _currentFolderSongSortOption = MutableStateFlow<SortOption>(SortOption.FolderSongTitleAZ)
+    val currentFolderSongSortOption = _currentFolderSongSortOption.asStateFlow()
+
     private val _currentFavoriteSortOption = MutableStateFlow<SortOption>(SortOption.LikedSongDateLiked)
     val currentFavoriteSortOption = _currentFavoriteSortOption.asStateFlow()
+
+    private val _currentGenreSortOption = MutableStateFlow<SortOption>(SortOption.GenreNameAZ)
+    val currentGenreSortOption = _currentGenreSortOption.asStateFlow()
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val albumsPagingFlow: kotlinx.coroutines.flow.Flow<androidx.paging.PagingData<Album>> =
@@ -155,6 +196,14 @@ class LibraryStateHolder @Inject constructor(
         .flatMapLatest { filter -> musicRepository.getFavoriteSongCountFlow(filter) }
         .flowOn(Dispatchers.IO)
 
+<<<<<<< HEAD
+    // Genre already carries its colors and song count, so equal lists can be dropped here.
+    val genres: kotlinx.coroutines.flow.Flow<ImmutableList<Genre>> =
+        musicRepository.getGenres()
+            .distinctUntilChanged()
+            .map { genres -> genres.toImmutableList() }
+            .flowOn(Dispatchers.Default)
+=======
     val genres: kotlinx.coroutines.flow.Flow<ImmutableList<com.material.music.data.model.Genre>> =
         musicRepository.getGenres()
         .map { genres ->
@@ -183,11 +232,14 @@ class LibraryStateHolder @Inject constructor(
                 .toImmutableList()
         }
         .flowOn(Dispatchers.Default)
+>>>>>>> origin/main
 
 
     private var scope: CoroutineScope? = null
+    private val owners = OwnerStack<CoroutineScope> { it }
 
     fun initialize(scope: CoroutineScope) {
+        owners.push(scope)
         this.scope = scope
         scope.launch {
             val songSortKey = userPreferencesRepository.songsSortOptionFlow.first()
@@ -202,26 +254,47 @@ class LibraryStateHolder @Inject constructor(
             val folderSortKey = userPreferencesRepository.foldersSortOptionFlow.first()
             _currentFolderSortOption.value = SortOption.FOLDERS.find { it.storageKey == folderSortKey } ?: SortOption.FolderNameAZ
 
+            val folderSongSortKey = userPreferencesRepository.folderSongsSortOptionFlow.first()
+            _currentFolderSongSortOption.value = SortOption.FOLDER_SONGS.find { it.storageKey == folderSongSortKey } ?: SortOption.FolderSongTitleAZ
+
             val likedSortKey = userPreferencesRepository.likedSongsSortOptionFlow.first()
             _currentFavoriteSortOption.value = SortOption.LIKED.find { it.storageKey == likedSortKey } ?: SortOption.LikedSongDateLiked
+
+            val genreSortKey = userPreferencesRepository.genresSortOptionFlow.first()
+            _currentGenreSortOption.value = SortOption.GENRES.find { it.storageKey == genreSortKey } ?: SortOption.GenreNameAZ
 
             _currentStorageFilter.value = userPreferencesRepository.lastStorageFilterFlow.first()
         }
     }
 
     fun onCleared(owner: CoroutineScope) {
+<<<<<<< HEAD
+        // A stale PlayerViewModel clearing leaves the newer binding alone; the current one
+        // clearing hands the holder back to the previous live PlayerViewModel. Going scope-less
+        // instead would make sorting and library loading silently no-op until process restart.
+        owners.remove(owner) { next -> scope = next }
+        // The library collectors die with the scope they were launched in, whichever binding
+        // that was, so move them to the scope that is current now.
+        if (observerScope === owner) {
+            cancelLibraryObservers()
+            if (scope != null) startObservingLibraryData()
+        }
+=======
         // Only the scope that currently owns the binding may sever it. A stale
         // PlayerViewModel clearing after a newer instance already re-initialized this
         // singleton must not leave it scope-less (sorting and library loading would
         // silently no-op until process restart).
         if (scope !== owner) return
         scope = null
+>>>>>>> origin/main
     }
 
     private var songsJob: Job? = null
     private var albumsJob: Job? = null
     private var artistsJob: Job? = null
     private var foldersJob: Job? = null
+    /** The scope the library collectors were launched in, or null while they are stopped. */
+    private var observerScope: CoroutineScope? = null
     @Volatile
     private var needsReloadAfterTrim: Boolean = false
 
@@ -237,6 +310,7 @@ class LibraryStateHolder @Inject constructor(
 
         Timber.tag("LibraryStateHolder").d("startObservingLibraryData called.")
         needsReloadAfterTrim = false
+        observerScope = scope
 
         songsJob = scope?.launch {
             _isLoadingLibrary.value = true
@@ -386,6 +460,32 @@ class LibraryStateHolder @Inject constructor(
                 sortFoldersList(_musicFolders.value, sortOption).toImmutableList()
             }
             _musicFolders.value = sorted
+        }
+    }
+
+    /** The Folders tab orders the open folder's songs itself; this only stores the choice. */
+    fun sortFolderSongs(sortOption: SortOption, persist: Boolean = true) {
+        scope?.launch {
+            if (persist && _currentFolderSongSortOption.value.storageKey == sortOption.storageKey) {
+                return@launch
+            }
+            if (persist) {
+                userPreferencesRepository.setFolderSongsSortOption(sortOption.storageKey)
+            }
+            _currentFolderSongSortOption.value = sortOption
+        }
+    }
+
+    /** The Genres tab sorts the in-memory genre list itself, so only the option changes here. */
+    fun sortGenres(sortOption: SortOption, persist: Boolean = true) {
+        scope?.launch {
+            if (persist && _currentGenreSortOption.value.storageKey == sortOption.storageKey) {
+                return@launch
+            }
+            if (persist) {
+                userPreferencesRepository.setGenresSortOption(sortOption.storageKey)
+            }
+            _currentGenreSortOption.value = sortOption
         }
     }
 
@@ -552,14 +652,7 @@ class LibraryStateHolder @Inject constructor(
                 foldersJob?.isActive == true
         if (!hasLoadedData && !hasActiveCollectors) return
 
-        songsJob?.cancel()
-        albumsJob?.cancel()
-        artistsJob?.cancel()
-        foldersJob?.cancel()
-        songsJob = null
-        albumsJob = null
-        artistsJob = null
-        foldersJob = null
+        cancelLibraryObservers()
 
         _allSongs.value = persistentListOf()
         _allSongsById.value = emptyMap()
@@ -575,8 +668,16 @@ class LibraryStateHolder @Inject constructor(
         if (!needsReloadAfterTrim || scope == null) return
         startObservingLibraryData()
     }
-}
 
-private fun androidx.compose.ui.graphics.Color.toHexString(): String {
-    return String.format("#%08X", this.toArgb())
+    private fun cancelLibraryObservers() {
+        songsJob?.cancel()
+        albumsJob?.cancel()
+        artistsJob?.cancel()
+        foldersJob?.cancel()
+        songsJob = null
+        albumsJob = null
+        artistsJob = null
+        foldersJob = null
+        observerScope = null
+    }
 }

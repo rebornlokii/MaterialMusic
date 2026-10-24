@@ -37,6 +37,10 @@
 -keep class com.material.music.data.database.LyricsEntity { *; }
 -keep class com.material.music.data.database.SearchHistoryEntity { *; }
 -keep class com.material.music.data.database.TransitionRuleEntity { *; }
+<<<<<<< HEAD
+-keep class com.material.music.data.database.AudioBookmarkEntity { *; }
+=======
+>>>>>>> origin/main
 
 -keep class io.ktor.server.engine.** { *; }
 -keep class io.ktor.server.cio.** { *; }

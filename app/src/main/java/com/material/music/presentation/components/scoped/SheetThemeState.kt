@@ -19,6 +19,10 @@ import androidx.compose.ui.util.lerp
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.ThemePreference
 import com.material.music.presentation.viewmodel.ColorSchemePair
+<<<<<<< HEAD
+import com.material.music.ui.theme.withAmoledSurfaces
+=======
+>>>>>>> origin/main
 
 /**
  * Theme state for the player sheet.
@@ -42,14 +46,16 @@ internal fun resolvePlayerSheetTargetScheme(
     hasAlbumArt: Boolean,
     currentSongActiveScheme: ColorScheme?,
     lastAlbumScheme: ColorScheme?,
-    systemColorScheme: ColorScheme
+    systemColorScheme: ColorScheme,
+    isAmoledTheme: Boolean = false,
 ): ColorScheme {
-    return when {
+    val base = when {
         !isAlbumArtTheme || !hasAlbumArt -> systemColorScheme
         currentSongActiveScheme != null -> currentSongActiveScheme
         lastAlbumScheme != null -> lastAlbumScheme
         else -> systemColorScheme
     }
+    return if (isAmoledTheme) base.withAmoledSurfaces() else base
 }
 
 @Composable
@@ -60,7 +66,8 @@ internal fun rememberSheetThemeState(
     currentSong: Song?,
     themedAlbumArtUri: String?,
     preparingSongId: String?,
-    systemColorScheme: ColorScheme
+    systemColorScheme: ColorScheme,
+    isAmoledTheme: Boolean = false
 ): SheetThemeState {
     val isAlbumArtTheme = playerThemePreference == ThemePreference.ALBUM_ART
     val hasAlbumArt = !currentSong?.albumArtUriString.isNullOrBlank()
@@ -105,21 +112,26 @@ internal fun rememberSheetThemeState(
 
     val lastAlbumSchemeSnapshot = lastAlbumScheme
 
-    val rawAlbumColorScheme = resolvePlayerSheetTargetScheme(
-        isAlbumArtTheme = isAlbumArtTheme,
-        hasAlbumArt = hasAlbumArt,
-        currentSongActiveScheme = currentSongActiveScheme,
-        lastAlbumScheme = lastAlbumSchemeSnapshot,
-        systemColorScheme = systemColorScheme
-    )
+    // Remembered so the AMOLED copy keeps its identity and does not restart the color animation.
+    val rawAlbumColorScheme = remember(
+        isAlbumArtTheme,
+        hasAlbumArt,
+        currentSongActiveScheme,
+        lastAlbumSchemeSnapshot,
+        systemColorScheme,
+        isAmoledTheme
+    ) {
+        resolvePlayerSheetTargetScheme(
+            isAlbumArtTheme = isAlbumArtTheme,
+            hasAlbumArt = hasAlbumArt,
+            currentSongActiveScheme = currentSongActiveScheme,
+            lastAlbumScheme = lastAlbumSchemeSnapshot,
+            systemColorScheme = systemColorScheme,
+            isAmoledTheme = isAmoledTheme
+        )
+    }
 
-    val rawMiniPlayerScheme = resolvePlayerSheetTargetScheme(
-        isAlbumArtTheme = isAlbumArtTheme,
-        hasAlbumArt = hasAlbumArt,
-        currentSongActiveScheme = currentSongActiveScheme,
-        lastAlbumScheme = lastAlbumSchemeSnapshot,
-        systemColorScheme = systemColorScheme
-    )
+    val rawMiniPlayerScheme = rawAlbumColorScheme
 
     val albumColorScheme = rememberBatchAnimatedColorScheme(rawAlbumColorScheme)
     val miniPlayerScheme = rememberBatchAnimatedColorScheme(rawMiniPlayerScheme)
