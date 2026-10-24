@@ -392,7 +392,8 @@ class PlayerViewModelTest {
     @Test
     fun `playlist playback keeps the playlist id on the initial media item`() = runTest {
         mockkStatic(Uri::class)
-        mockkConstructor(Bundle::class, relaxed = true)
+        mockkConstructor(Bundle::class)
+        every { anyConstructed<Bundle>().putString(any(), any()) } returns Unit
         val playbackUri = mockk<Uri>(relaxed = true)
         every { Uri.parse(any()) } returns playbackUri
         every { playbackUri.scheme } returns "content"

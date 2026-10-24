@@ -39,6 +39,7 @@ import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Dataset
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -432,9 +433,13 @@ fun Breadcrumbs(
         FilledTonalIconButton(
             onClick = onNavigateBack,
             modifier = Modifier.size(36.dp),
-            enabled = currentFolder != null
+            enabled = true
         ) {
-            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.auth_cd_back))
+            val icon = if (currentFolder == null) Icons.Rounded.Home else Icons.AutoMirrored.Rounded.ArrowBack
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(R.string.auth_cd_back)
+            )
         }
         Spacer(Modifier.width(8.dp))
 

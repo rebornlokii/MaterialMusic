@@ -668,10 +668,11 @@ fun LyricsSheet(
                     resetImmersiveTimer()
                 }
         ) {
-            val initialSyncedLineIndex = remember(lyrics, playbackPositionFlow, lyricsSyncOffset) {
+            val initialPlaybackPosition by playbackPositionFlow.collectAsStateWithLifecycle()
+            val initialSyncedLineIndex = remember(lyrics, initialPlaybackPosition, lyricsSyncOffset) {
                 resolveCurrentLineIndex(
                     lines = lyrics?.synced.orEmpty(),
-                    position = (playbackPositionFlow.value + lyricsSyncOffset).coerceAtLeast(0L)
+                    position = (initialPlaybackPosition + lyricsSyncOffset).coerceAtLeast(0L)
                 ).coerceAtLeast(0)
             }
             val syncedListState = rememberLazyListState(
@@ -1936,10 +1937,11 @@ internal fun resolveCurrentLineIndex(
 ): Int {
     if (lines.isEmpty()) return -1
 
-    return lines.withIndex().lastOrNull { (index, line) ->
-        val nextTime = lines.getOrNull(index + 1)?.time ?: Int.MAX_VALUE
+    val sortedLines = lines.sortedBy { it.time }
+    return sortedLines.withIndex().lastOrNull { (index, line) ->
+        val nextTime = sortedLines.getOrNull(index + 1)?.time ?: Int.MAX_VALUE
         val lineEndTime = resolveLineEndTimeMs(line, nextTime)
-        position in line.time.toLong()..<lineEndTime
+        position >= line.time.toLong() && position < lineEndTime
     }?.index ?: -1
 }
 

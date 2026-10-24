@@ -779,7 +779,7 @@ object LyricsUtils {
         }
 
         return if (isSynced && syncedLines.isNotEmpty()) {
-            val sortedSyncedLines = syncedLines.sortedBy { it.time }
+            val sortedSyncedLines = syncedLines.sortedBy { it.time }.distinctBy { it.time to it.line }
             val pairedLines = pairTranslationLines(sortedSyncedLines).map { line ->
                 line.copy(romanization = MultiLangRomanizer.romanizeLine(line.line, entireLyricsHasKana))
             }
