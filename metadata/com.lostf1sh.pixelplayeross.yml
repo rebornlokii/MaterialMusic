@@ -3,14 +3,14 @@ Categories:
   - Online Media Player
 License: GPL-3.0-or-later
 AuthorName: lostf1sh
-SourceCode: https://github.com/PixelPlayerHQ/PixelPlayerOSS
-IssueTracker: https://github.com/PixelPlayerHQ/PixelPlayerOSS/issues
-Changelog: https://github.com/PixelPlayerHQ/PixelPlayerOSS/blob/HEAD/CHANGELOG.md
+SourceCode: https://github.com/MaterialMusicHQ/MaterialMusic
+IssueTracker: https://github.com/MaterialMusicHQ/MaterialMusic/issues
+Changelog: https://github.com/MaterialMusicHQ/MaterialMusic/blob/HEAD/CHANGELOG.md
 
-AutoName: PixelPlayerOSS
+AutoName: MaterialMusic
 
 RepoType: git
-Repo: https://github.com/PixelPlayerHQ/PixelPlayerOSS.git
+Repo: https://github.com/MaterialMusicHQ/MaterialMusic.git
 
 Builds:
   - versionName: 0.1.0

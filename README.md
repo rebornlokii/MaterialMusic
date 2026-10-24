@@ -1,17 +1,17 @@
 
 <p align="center">
-  <img src="assets/PixelPlayerOSS.svg" alt="App Icon" height="250"/>
+  <img src="assets/MaterialMusic.svg" alt="App Icon" height="250"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/PixelPlayerHQ/PixelPlayerOSS/releases/latest">
-    <img src="https://img.shields.io/github/v/release/PixelPlayerHQ/PixelPlayerOSS?include_prereleases&logo=github&style=for-the-badge&label=Latest%20Release" alt="Latest release">
+  <a href="https://github.com/MaterialMusicHQ/MaterialMusic/releases/latest">
+    <img src="https://img.shields.io/github/v/release/MaterialMusicHQ/MaterialMusic?include_prereleases&logo=github&style=for-the-badge&label=Latest%20Release" alt="Latest release">
   </a>
-  <a href="https://f-droid.org/packages/com.lostf1sh.pixelplayeross/">
-    <img src="https://img.shields.io/f-droid/v/com.lostf1sh.pixelplayeross?logo=fdroid&style=for-the-badge&label=F-Droid" alt="F-Droid version">
+  <a href="https://f-droid.org/packages/com.material.music/">
+    <img src="https://img.shields.io/f-droid/v/com.material.music?logo=fdroid&style=for-the-badge&label=F-Droid" alt="F-Droid version">
   </a>
-  <a href="https://github.com/PixelPlayerHQ/PixelPlayerOSS/releases">
-    <img src="https://img.shields.io/github/downloads/PixelPlayerHQ/PixelPlayerOSS/total?logo=github&style=for-the-badge" alt="Total downloads">
+  <a href="https://github.com/MaterialMusicHQ/MaterialMusic/releases">
+    <img src="https://img.shields.io/github/downloads/MaterialMusicHQ/MaterialMusic/total?logo=github&style=for-the-badge" alt="Total downloads">
   </a>
   <a href="https://github.com/sponsors/lostf1sh">
     <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub Sponsors">
@@ -21,23 +21,23 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshot1.jpeg" alt="PixelPlayerOSS home screen" width="205"/>
-  <img src="assets/screenshot2.jpeg" alt="PixelPlayerOSS now playing screen" width="205"/>
-  <img src="assets/screenshot3.jpeg" alt="PixelPlayerOSS library screen" width="205"/>
-  <img src="assets/screenshot4.jpeg" alt="PixelPlayerOSS lyrics screen" width="205"/>
+  <img src="assets/screenshot1.jpeg" alt="MaterialMusic home screen" width="205"/>
+  <img src="assets/screenshot2.jpeg" alt="MaterialMusic now playing screen" width="205"/>
+  <img src="assets/screenshot3.jpeg" alt="MaterialMusic library screen" width="205"/>
+  <img src="assets/screenshot4.jpeg" alt="MaterialMusic lyrics screen" width="205"/>
 </p>
 
 ## What It Is
 
-PixelPlayerOSS is an Android music player maintained by [@lostf1sh](https://github.com/lostf1sh). It focuses on local playback, self-hosted music libraries, expressive Material 3 UI, and user-controlled online lookups.
+MaterialMusic is an Android music player maintained by [@lostf1sh](https://github.com/lostf1sh). It focuses on local playback, self-hosted music libraries, expressive Material 3 UI, and user-controlled online lookups.
 
 The app works offline by default. Optional online services are disabled until you enable them in setup or settings.
 
-Package name: `com.lostf1sh.pixelplayeross`
+Package name: `com.material.music`
 
 ## Why This Exists
 
-PixelPlayerOSS keeps the player FOSS-oriented and removes integrations that are not part of that direction.
+MaterialMusic keeps the player FOSS-oriented and removes integrations that are not part of that direction.
 
 Removed integrations include Telegram, NetEase, QQ Music, Google Drive, Gemini, Cast, Wear OS, Play Store billing, Firebase, Crashlytics, and Google Play Services runtime dependencies.
 
@@ -58,7 +58,7 @@ Cloud playback is limited to self-hosted sources: Navidrome/Subsonic and Jellyfi
 
 ## Online Services
 
-PixelPlayerOSS separates offline playback from network lookups.
+MaterialMusic separates offline playback from network lookups.
 
 | Service | Purpose | Default |
 | --- | --- | --- |
@@ -83,8 +83,8 @@ LRCLIB and Deezer can be enabled during first-run setup or later from `Settings 
 Clone the repository:
 
 ```sh
-git clone https://github.com/PixelPlayerHQ/PixelPlayerOSS.git
-cd PixelPlayerOSS
+git clone https://github.com/MaterialMusicHQ/MaterialMusic.git
+cd MaterialMusic
 ```
 
 Build the debug APK:
@@ -119,22 +119,22 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :baselineprofile:generateBaseli
 
 ## Download
 
-PixelPlayerOSS is available on F-Droid:
+MaterialMusic is available on F-Droid:
 
-<a href="https://f-droid.org/packages/com.lostf1sh.pixelplayeross/">
+<a href="https://f-droid.org/packages/com.material.music/">
   <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
 </a>
 
 GitHub releases are available at:
 
 ```text
-https://github.com/PixelPlayerHQ/PixelPlayerOSS/releases
+https://github.com/MaterialMusicHQ/MaterialMusic/releases
 ```
 
 Obtainium app id:
 
 ```text
-com.lostf1sh.pixelplayeross
+com.material.music
 ```
 
 Public releases are planned on a regular weekly cadence when `main` passes the release checklist.
@@ -145,7 +145,7 @@ F-Droid listing metadata lives in `fastlane/metadata/android/en-US`; build/relea
 
 ### Alpha builds
 
-Every merge into `main` automatically publishes a pre-release tagged like `v0.3.0-alpha.N` on the [releases page](https://github.com/PixelPlayerHQ/PixelPlayerOSS/releases). These are cutting-edge builds for testing new changes before they reach a stable release — expect rough edges.
+Every merge into `main` automatically publishes a pre-release tagged like `v0.3.0-alpha.N` on the [releases page](https://github.com/MaterialMusicHQ/MaterialMusic/releases). These are cutting-edge builds for testing new changes before they reach a stable release — expect rough edges.
 
 To install one, download the APK for your device from the release assets and sideload it: `arm64-v8a` fits most modern devices, `armeabi-v7a` is for older 32-bit ones.
 
@@ -153,12 +153,12 @@ Alpha builds are signed with a dedicated CI key, so they update over each other,
 
 ## Support
 
-If PixelPlayerOSS is useful to you, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/lostf1sh).
+If MaterialMusic is useful to you, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/lostf1sh).
 
 ## Project Structure
 
 ```text
-app/src/main/java/com/lostf1sh/pixelplayeross/
+app/src/main/java/com/material/music/
 - data/             Room, repositories, preferences, services, workers
 - di/               Hilt modules and qualifiers
 - presentation/     Compose screens, components, navigation, ViewModels
@@ -206,10 +206,10 @@ Security policy: [SECURITY.md](SECURITY.md)
 
 ## License
 
-PixelPlayerOSS is licensed under the [GNU General Public License v3.0](LICENSE) (`SPDX-License-Identifier: GPL-3.0-or-later`).
+MaterialMusic is licensed under the [GNU General Public License v3.0](LICENSE) (`SPDX-License-Identifier: GPL-3.0-or-later`).
 
 ```
-PixelPlayerOSS
+MaterialMusic
 Copyright (C) 2026 Theo Vilardo
 
 This program is free software: you can redistribute it and/or modify

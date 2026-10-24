@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lostf1sh.pixelplayeross.baselineprofile"
+    namespace = "com.material.music.baselineprofile"
     compileSdk = 37
 
     compileOptions {
