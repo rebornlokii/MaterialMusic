@@ -96,8 +96,6 @@ internal data class ClusterHighlightFrame(
 internal const val MAX_TRAILING_SYLLABLE_SWEEP_MS = 1_200L
 /** PixelPlayer's animated-lyrics word pop: the word being sung scales up by this much. */
 private const val ACTIVE_WORD_SCALE = 1.10f
-private const val MAX_WORD_EMPHASIS_DURATION_MS = 240L
-private const val ACTIVE_WORD_SCALE_DELTA = 0.08f
 
 /** Width of the soft sweep edge, relative to the font size. */
 private const val SWEEP_FEATHER_EM = 0.5f
@@ -155,24 +153,6 @@ internal fun resolveClusterHighlightFrame(
     val endMs = resolveSyllableEndMs(words, index, nextClusterStartMs, lineEndMs)
     val fraction = ((positionMs - startMs).toFloat() / (endMs - startMs).toFloat()).coerceIn(0f, 1f)
     return ClusterHighlightFrame(syllableIndex = index, fraction = fraction)
-}
-
-/**
- * A short pop when a word starts, settling within [MAX_WORD_EMPHASIS_DURATION_MS]. Applied in a
- * graphics layer so it never changes layout; reduced-motion users always get the stable 1x size.
- */
-internal fun resolveWordEmphasisScale(
-    positionMs: Long,
-    wordStartMs: Long,
-    wordEndMs: Long,
-    motionEnabled: Boolean
-): Float {
-    if (!motionEnabled || positionMs < wordStartMs) return 1f
-    val emphasisEnd = minOf(wordEndMs, wordStartMs + MAX_WORD_EMPHASIS_DURATION_MS)
-        .coerceAtLeast(wordStartMs + 1L)
-    val progress = ((positionMs - wordStartMs).toFloat() / (emphasisEnd - wordStartMs).toFloat())
-        .coerceIn(0f, 1f)
-    return 1f + ACTIVE_WORD_SCALE_DELTA * (1f - progress)
 }
 
 /**
