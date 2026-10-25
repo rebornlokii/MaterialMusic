@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,6 +51,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -72,6 +74,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.material.music.R
@@ -119,14 +122,22 @@ fun SongShareCardBottomSheet(
     val storyCaptureController = rememberCaptureController()
     var selectedFormat by rememberSaveable(song.id) { mutableStateOf(SongShareCardFormat.SQUARE) }
     var isWorking by remember { mutableStateOf(false) }
+    var isMorphing by remember { mutableStateOf(false) }
 
     fun selectedController(): CaptureController = when (selectedFormat) {
         SongShareCardFormat.SQUARE -> squareCaptureController
         SongShareCardFormat.STORY -> storyCaptureController
     }
 
+    fun selectFormat(format: SongShareCardFormat) {
+        if (selectedFormat != format) {
+            isMorphing = true
+            selectedFormat = format
+        }
+    }
+
     fun captureAndShare() {
-        if (isWorking) return
+        if (isWorking || isMorphing) return
         isWorking = true
         scope.launch {
             try {
@@ -146,7 +157,7 @@ fun SongShareCardBottomSheet(
     }
 
     fun captureAndSave() {
-        if (isWorking) return
+        if (isWorking || isMorphing) return
         isWorking = true
         scope.launch {
             try {
@@ -191,15 +202,16 @@ fun SongShareCardBottomSheet(
                 selectedFormat = selectedFormat,
                 squareCaptureController = squareCaptureController,
                 storyCaptureController = storyCaptureController,
+                onMorphingChanged = { isMorphing = it },
             )
 
             Spacer(Modifier.height(16.dp))
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                 SegmentedButton(
                     selected = selectedFormat == SongShareCardFormat.SQUARE,
-                    onClick = { selectedFormat = SongShareCardFormat.SQUARE },
+                    onClick = { selectFormat(SongShareCardFormat.SQUARE) },
                     shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-                    enabled = !isWorking,
+                    enabled = !isWorking && !isMorphing,
                     icon = {
                         Icon(Icons.Rounded.CropSquare, contentDescription = null, modifier = Modifier.size(18.dp))
                     },
@@ -208,9 +220,9 @@ fun SongShareCardBottomSheet(
                 }
                 SegmentedButton(
                     selected = selectedFormat == SongShareCardFormat.STORY,
-                    onClick = { selectedFormat = SongShareCardFormat.STORY },
+                    onClick = { selectFormat(SongShareCardFormat.STORY) },
                     shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-                    enabled = !isWorking,
+                    enabled = !isWorking && !isMorphing,
                     icon = {
                         Icon(Icons.Rounded.Smartphone, contentDescription = null, modifier = Modifier.size(18.dp))
                     },
@@ -226,7 +238,7 @@ fun SongShareCardBottomSheet(
             ) {
                 Button(
                     onClick = ::captureAndShare,
-                    enabled = !isWorking,
+                    enabled = !isWorking && !isMorphing,
                     modifier = Modifier.weight(1f).height(56.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(horizontal = 12.dp),
@@ -245,7 +257,7 @@ fun SongShareCardBottomSheet(
                 }
                 FilledTonalButton(
                     onClick = ::captureAndSave,
-                    enabled = !isWorking,
+                    enabled = !isWorking && !isMorphing,
                     modifier = Modifier.weight(1f).height(56.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(horizontal = 12.dp),
@@ -259,36 +271,18 @@ fun SongShareCardBottomSheet(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun SongShareCardPreview(
     song: Song,
     selectedFormat: SongShareCardFormat,
     squareCaptureController: CaptureController,
     storyCaptureController: CaptureController,
+    onMorphingChanged: (Boolean) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val maxCardHeight = (screenHeight * 0.47f).coerceIn(260.dp, 440.dp)
-    val motionSpec = spring<Float>(dampingRatio = 0.82f, stiffness = 360f)
-    val squareVisible by animateFloatAsState(
-        targetValue = if (selectedFormat == SongShareCardFormat.SQUARE) 1f else 0f,
-        animationSpec = motionSpec,
-        label = "squareShareCardVisibility",
-    )
-    val storyVisible by animateFloatAsState(
-        targetValue = if (selectedFormat == SongShareCardFormat.STORY) 1f else 0f,
-        animationSpec = motionSpec,
-        label = "storyShareCardVisibility",
-    )
-    val squareScale by animateFloatAsState(
-        targetValue = if (selectedFormat == SongShareCardFormat.SQUARE) 1f else 0.94f,
-        animationSpec = motionSpec,
-        label = "squareShareCardScale",
-    )
-    val storyScale by animateFloatAsState(
-        targetValue = if (selectedFormat == SongShareCardFormat.STORY) 1f else 0.94f,
-        animationSpec = motionSpec,
-        label = "storyShareCardScale",
-    )
+    val morphProgress = remember(song.id) { Animatable(0f) }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth().height(maxCardHeight),
@@ -297,43 +291,66 @@ private fun SongShareCardPreview(
         val squareSide = minOf(maxWidth, maxCardHeight)
         val storyHeight = minOf(maxCardHeight, maxWidth * (16f / 9f))
         val storyWidth = storyHeight * (9f / 16f)
+        val targetProgress = if (selectedFormat == SongShareCardFormat.STORY) 1f else 0f
 
-        // Both format trees stay composed and keep the same artwork warm in Coil's cache.
-        // The selected card is already measured and painted before it fades into view.
-        Box(
-            modifier = Modifier
-                .size(squareSide)
-                .graphicsLayer {
-                    alpha = squareVisible
-                    scaleX = squareScale
-                    scaleY = squareScale
+        LaunchedEffect(selectedFormat, squareSide, storyWidth, storyHeight) {
+            if (morphProgress.value != targetProgress) {
+                onMorphingChanged(true)
+                try {
+                    morphProgress.animateTo(
+                        targetValue = targetProgress,
+                        animationSpec = spring(dampingRatio = 0.82f, stiffness = 360f),
+                    )
+                } finally {
+                    onMorphingChanged(false)
                 }
-                .clip(RoundedCornerShape(28.dp))
-                .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(28.dp)),
-        ) {
-            SongShareCard(
-                song = song,
-                format = SongShareCardFormat.SQUARE,
-                modifier = Modifier.fillMaxSize().capturable(squareCaptureController),
-            )
+            }
         }
 
+        val progress = morphProgress.value
+        val previewWidth = lerp(squareSide, storyWidth, progress)
+        val previewHeight = lerp(squareSide, storyHeight, progress)
+        val cardShape = RoundedCornerShape(28.dp)
+
+        // Both format trees stay composed and keep the same artwork warm in Coil's cache.
+        // Their shared frame animates its aspect ratio while their layouts crossfade, so the
+        // switch feels like one card morphing instead of two static thumbnails swapping.
         Box(
             modifier = Modifier
-                .size(width = storyWidth, height = storyHeight)
-                .graphicsLayer {
-                    alpha = storyVisible
-                    scaleX = storyScale
-                    scaleY = storyScale
-                }
-                .clip(RoundedCornerShape(28.dp))
-                .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(28.dp)),
+                .size(width = previewWidth, height = previewHeight)
+                .clip(cardShape)
+                .border(1.dp, Color.White.copy(alpha = 0.12f), cardShape),
         ) {
-            SongShareCard(
-                song = song,
-                format = SongShareCardFormat.STORY,
-                modifier = Modifier.fillMaxSize().capturable(storyCaptureController),
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        alpha = 1f - progress
+                        scaleX = 1f - (progress * 0.06f)
+                        scaleY = 1f - (progress * 0.06f)
+                    }
+            ) {
+                SongShareCard(
+                    song = song,
+                    format = SongShareCardFormat.SQUARE,
+                    modifier = Modifier.fillMaxSize().capturable(squareCaptureController),
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        alpha = progress
+                        scaleX = 0.94f + (progress * 0.06f)
+                        scaleY = 0.94f + (progress * 0.06f)
+                    }
+            ) {
+                SongShareCard(
+                    song = song,
+                    format = SongShareCardFormat.STORY,
+                    modifier = Modifier.fillMaxSize().capturable(storyCaptureController),
+                )
+            }
         }
     }
 }
