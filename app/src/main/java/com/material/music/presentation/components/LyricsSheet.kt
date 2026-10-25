@@ -1558,9 +1558,13 @@ fun LyricLineRow(
         label = "lineColor"
     )
 
+    // PixelPlayer's animated mode: springy fisheye focus around the line being sung.
     val targetScale = if (decorativeMotionEnabled) when (focusDistance) {
-        0 -> if (immersiveMode) 1.02f else 1.07f; 1 -> 0.97f; else -> 0.92f
+        0 -> if (immersiveMode) 1.02f else 1.10f; 1 -> 0.95f; else -> 0.85f
     } else 1f
+    val targetPadding = if (decorativeMotionEnabled) when (focusDistance) {
+        0 -> 32.dp; 1 -> 16.dp; else -> 8.dp
+    } else 12.dp
     val targetAlpha = if (decorativeMotionEnabled) when (focusDistance) {
         0 -> 1.0f; 1 -> 0.6f; else -> 0.3f
     } else 1f
