@@ -13,9 +13,6 @@
   <a href="https://github.com/rebornlokii/MaterialMusic/releases">
     <img src="https://img.shields.io/github/downloads/rebornlokii/MaterialMusic/total?logo=github&style=for-the-badge" alt="Total downloads">
   </a>
-  <a href="https://github.com/sponsors/rebornlokii">
-    <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub Sponsors">
-  </a>
   <img src="https://img.shields.io/badge/Android-11%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android 11+">
   <img src="https://img.shields.io/badge/License-GPLv3-blue?style=for-the-badge" alt="GPLv3 license">
 </p>
@@ -150,10 +147,6 @@ Every merge into `main` automatically publishes a pre-release tagged like `v0.3.
 To install one, download the APK for your device from the release assets and sideload it: `arm64-v8a` fits most modern devices, `armeabi-v7a` is for older 32-bit ones.
 
 Alpha builds are signed with a dedicated CI key, so they update over each other, but switching between alpha and a stable or github install requires an uninstall/reinstall. In Obtainium, enable "Include prereleases" to get alphas automatically.
-
-## Support
-
-If MaterialMusic is useful to you, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/rebornlokii).
 
 ## Project Structure
 

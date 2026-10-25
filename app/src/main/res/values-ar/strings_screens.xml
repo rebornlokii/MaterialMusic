@@ -28,12 +28,6 @@
     <string name="about_signal_community_first">المجتمع أولاً</string>
     <string name="about_signal_material3">تصميم Material 3 معبر</string>
     <string name="about_signal_open_source">مفتوح المصدر</string>
-    <string name="about_support_body">ساعد في استمرار صيانة نسخة FOSS ومراجعتها واختبارها على أجهزة أندرويد حقيقية.</string>
-    <string name="about_support_chip_ci">التكامل المستمر والإصدارات</string>
-    <string name="about_support_chip_foss">صيانة نسخة FOSS</string>
-    <string name="about_support_chip_streaming">موسيقى مستضافة ذاتياً</string>
-    <string name="about_support_cta">ادعمنا على GitHub</string>
-    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">مشغل موسيقى مفتوح المصدر تم بناؤه مع مجتمعه.</string>
     <string name="about_version_format">الإصدار v%1$s</string>
     <string name="accounts_unable_open_screen">تعذر فتح هذه الشاشة في الوقت الحالي.</string>
@@ -296,5 +290,4 @@
     <string name="setup_theme_dark_description">مظهر Material 3 الداكن الافتراضي لتطبيق MaterialMusic.</string>
     <string name="home_empty_placeholder_subtitle">سيظهر مزيجك الموسيقي هنا عندما يعثر MaterialMusic على أغانٍ أو يزامن مصدراً.</string>
     <string name="crash_report_share_subject">تقرير تعطل MaterialMusic</string>
-    <string name="about_support_title">ادعم MaterialMusic</string>
 </resources>

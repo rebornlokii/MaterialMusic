@@ -28,12 +28,6 @@
     <string name="about_signal_community_first">Comunidad primero</string>
     <string name="about_signal_material3">Material 3 expresivo</string>
     <string name="about_signal_open_source">Código abierto</string>
-    <string name="about_support_body">Ayuda a mantener, revisar y probar la edición FOSS en dispositivos Android reales.</string>
-    <string name="about_support_chip_ci">CI y versiones</string>
-    <string name="about_support_chip_foss">Mantenimiento FOSS</string>
-    <string name="about_support_chip_streaming">Música autoalojada</string>
-    <string name="about_support_cta">Patrocinar en GitHub</string>
-    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">Música local primero, streaming autoalojado y diseño Material 3 en un solo reproductor FOSS.</string>
     <string name="about_version_format">Versión v%1$s</string>
     <string name="accounts_unable_open_screen">No se puede abrir esta pantalla ahora.</string>
@@ -284,5 +278,4 @@
     <string name="setup_theme_dark_description">El aspecto oscuro Material 3 predeterminado de MaterialMusic.</string>
     <string name="home_empty_placeholder_subtitle">Tu mezcla aparecerá aquí cuando MaterialMusic encuentre canciones o sincronice una fuente.</string>
     <string name="crash_report_share_subject">Informe de error de MaterialMusic</string>
-    <string name="about_support_title">Apoya a MaterialMusic</string>
 </resources>
