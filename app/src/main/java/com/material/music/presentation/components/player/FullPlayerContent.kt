@@ -104,6 +104,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bluetooth
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Cloud
+import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.Speaker
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.material.music.presentation.viewmodel.AudioBookmarksViewModel
@@ -123,6 +124,7 @@ import com.material.music.presentation.components.AlbumCarouselSection
 import com.material.music.presentation.components.AutoScrollingTextOnDemand
 import com.material.music.presentation.components.LocalMaterialTheme
 import com.material.music.presentation.components.LyricsSheet
+import com.material.music.presentation.components.SongShareCardBottomSheet
 import com.material.music.presentation.components.scoped.rememberSmoothProgress
 import com.material.music.presentation.components.subcomps.FetchLyricsDialog
 import com.material.music.presentation.viewmodel.LyricsSearchUiState
@@ -239,6 +241,7 @@ fun FullPlayerContent(
     var showArtistPicker by rememberSaveable { mutableStateOf(false) }
     var showSaveBookmarkDialog by rememberSaveable { mutableStateOf(false) }
     var showAudioOutputSheet by rememberSaveable { mutableStateOf(false) }
+    var showShareCardSheet by rememberSaveable { mutableStateOf(false) }
     val bookmarksViewModel: AudioBookmarksViewModel = hiltViewModel()
     
     val lyricsSearchUiState by playerViewModel.lyricsSearchUiState.collectAsStateWithLifecycle()
@@ -756,59 +759,93 @@ fun FullPlayerContent(
                         Row(
                             modifier = Modifier
                                 .padding(end = 14.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             val bluetoothOutputName = bluetoothName?.takeIf { isBluetoothEnabled }
-                            Box(
-                                modifier = Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .background(playerOnAccentColor.copy(alpha = 0.7f))
-                                    .clickable { showAudioOutputSheet = true },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = if (bluetoothOutputName != null) {
-                                        Icons.Rounded.Bluetooth
-                                    } else {
-                                        Icons.Rounded.Speaker
-                                    },
-                                    contentDescription = bluetoothOutputName
-                                        ?: stringResource(R.string.player_audio_output_title),
-                                    tint = playerAccentColor
-                                )
+                            val actionContainerColor = playerOnAccentColor.copy(alpha = 0.7f)
+                            val leadingShape = RoundedCornerShape(
+                                topStart = 50.dp,
+                                topEnd = 6.dp,
+                                bottomStart = 50.dp,
+                                bottomEnd = 6.dp
+                            )
+                            val trailingShape = RoundedCornerShape(
+                                topStart = 6.dp,
+                                topEnd = 50.dp,
+                                bottomStart = 6.dp,
+                                bottomEnd = 50.dp
+                            )
+
+                            // Keep playback controls together, and the save/share actions together.
+                            // The asymmetrical connected corners mirror PixelPlayer's output/queue pair.
+                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(leadingShape)
+                                        .background(actionContainerColor)
+                                        .clickable { showAudioOutputSheet = true },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = if (bluetoothOutputName != null) {
+                                            Icons.Rounded.Bluetooth
+                                        } else {
+                                            Icons.Rounded.Speaker
+                                        },
+                                        contentDescription = bluetoothOutputName
+                                            ?: stringResource(R.string.player_audio_output_title),
+                                        tint = playerAccentColor
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(trailingShape)
+                                        .background(actionContainerColor)
+                                        .clickable {
+                                            showSongInfoBottomSheet = true
+                                            onShowQueueClicked()
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.rounded_queue_music_24),
+                                        contentDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
+                                        tint = playerAccentColor
+                                    )
+                                }
                             }
-                            Box(
-                                modifier = Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .background(playerOnAccentColor.copy(alpha = 0.7f))
-                                    .clickable { showSaveBookmarkDialog = true },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Bookmark,
-                                    contentDescription = stringResource(R.string.audio_bookmarks_cd_add),
-                                    tint = playerAccentColor
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .background(playerOnAccentColor.copy(alpha = 0.7f))
-                                    .clickable {
-                                        showSongInfoBottomSheet = true
-                                        onShowQueueClicked()
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.rounded_queue_music_24),
-                                    contentDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
-                                    tint = playerAccentColor
-                                )
+                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(leadingShape)
+                                        .background(actionContainerColor)
+                                        .clickable { showSaveBookmarkDialog = true },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Bookmark,
+                                        contentDescription = stringResource(R.string.audio_bookmarks_cd_add),
+                                        tint = playerAccentColor
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(trailingShape)
+                                        .background(actionContainerColor)
+                                        .clickable { showShareCardSheet = true },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.IosShare,
+                                        contentDescription = stringResource(R.string.cd_share_song_card),
+                                        tint = playerAccentColor
+                                    )
+                                }
                             }
                         }
                     }
@@ -915,6 +952,19 @@ fun FullPlayerContent(
             sheetState = rememberModalSheetState(skipPartiallyExpanded = true),
             onDismiss = { showAudioOutputSheet = false }
         )
+    }
+
+    if (showShareCardSheet) {
+        MaterialTheme(
+            colorScheme = LocalMaterialTheme.current,
+            typography = MaterialTheme.typography,
+            shapes = MaterialTheme.shapes
+        ) {
+            SongShareCardBottomSheet(
+                song = song,
+                onDismiss = { showShareCardSheet = false },
+            )
+        }
     }
 }
 
