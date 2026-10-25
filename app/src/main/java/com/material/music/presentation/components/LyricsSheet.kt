@@ -1587,7 +1587,10 @@ fun LyricLineRow(
     )
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
-        animationSpec = tween(durationMillis = 140, easing = FastOutSlowInEasing),
+        animationSpec = if (decorativeMotionEnabled) spring<Float>(
+            stiffness = Spring.StiffnessLow,
+            dampingRatio = Spring.DampingRatioNoBouncy
+        ) else tween<Float>(durationMillis = 200),
         label = "lineAlpha"
     )
 
