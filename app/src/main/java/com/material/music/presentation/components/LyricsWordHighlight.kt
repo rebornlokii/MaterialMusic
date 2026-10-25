@@ -1,5 +1,9 @@
 package com.material.music.presentation.components
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -90,6 +94,8 @@ internal data class ClusterHighlightFrame(
 
 /** How long the last syllable of a line sweeps when the file gives no end for it. */
 internal const val MAX_TRAILING_SYLLABLE_SWEEP_MS = 1_200L
+/** PixelPlayer's animated-lyrics word pop: the word being sung scales up by this much. */
+private const val ACTIVE_WORD_SCALE = 1.10f
 private const val MAX_WORD_EMPHASIS_DURATION_MS = 240L
 private const val ACTIVE_WORD_SCALE_DELTA = 0.08f
 
@@ -292,16 +298,23 @@ private fun LyricWordCluster(
     }
     val layoutHolder = remember { TextLayoutHolder() }
 
-    val emphasisModifier = if (isActive && emphasisEnabled) {
-        Modifier.graphicsLayer {
-            val scale = resolveWordEmphasisScale(
-                positionMs = positionProvider(),
-                wordStartMs = cluster.startTimeMs,
-                wordEndMs = nextClusterStartMs ?: lineEndMs,
-                motionEnabled = true
+    val emphasisScale by animateFloatAsState(
+        targetValue = if (emphasisEnabled && isActive) ACTIVE_WORD_SCALE else 1f,
+        animationSpec = if (emphasisEnabled) {
+            spring<Float>(
+                stiffness = Spring.StiffnessVeryLow,
+                dampingRatio = Spring.DampingRatioMediumBouncy
             )
-            scaleX = scale
-            scaleY = scale
+        } else {
+            tween<Float>(durationMillis = 200)
+        },
+        label = "wordScale"
+    )
+
+    val emphasisModifier = if (emphasisEnabled) {
+        Modifier.graphicsLayer {
+            scaleX = emphasisScale
+            scaleY = emphasisScale
         }
     } else {
         Modifier
