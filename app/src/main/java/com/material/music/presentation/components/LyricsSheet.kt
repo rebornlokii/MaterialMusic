@@ -1551,10 +1551,10 @@ fun LyricLineRow(
     }
     val lineColor by animateColorAsState(
         targetValue = if (isCurrentLine) accentColor else unhighlightedColor,
-        animationSpec = tween(
-            durationMillis = if (decorativeMotionEnabled) 90 else 160,
-            easing = FastOutSlowInEasing
-        ),
+        animationSpec = if (decorativeMotionEnabled) spring<Color>(
+            stiffness = Spring.StiffnessVeryLow,
+            dampingRatio = Spring.DampingRatioMediumBouncy
+        ) else tween<Color>(durationMillis = 250),
         label = "lineColor"
     )
 
