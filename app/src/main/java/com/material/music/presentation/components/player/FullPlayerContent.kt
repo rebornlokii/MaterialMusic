@@ -541,6 +541,8 @@ fun FullPlayerContent(
             playbackMetadataMimeType = playbackAudioMetadata.mimeType,
             playbackMetadataBitrate = playbackAudioMetadata.bitrate,
             playbackMetadataSampleRate = playbackAudioMetadata.sampleRate,
+            playbackMetadataBitDepth = playbackAudioMetadata.bitDepth,
+            playbackMetadataChannelCount = playbackAudioMetadata.channelCount,
             currentPositionProvider = currentPositionProvider,
             totalDurationValue = totalDurationValue,
             showPlayerFileInfo = showPlayerFileInfo,
@@ -1118,6 +1120,8 @@ private fun FullPlayerProgressSection(
     playbackMetadataMimeType: String?,
     playbackMetadataBitrate: Int?,
     playbackMetadataSampleRate: Int?,
+    playbackMetadataBitDepth: Int?,
+    playbackMetadataChannelCount: Int?,
     currentPositionProvider: () -> Long,
     totalDurationValue: Long,
     showPlayerFileInfo: Boolean,
@@ -1147,6 +1151,8 @@ private fun FullPlayerProgressSection(
     } else {
         song.sampleRate
     }
+    val audioBitDepth = playbackMetadataBitDepth.takeIf { isMetadataForCurrentSong }
+    val audioChannelCount = playbackMetadataChannelCount.takeIf { isMetadataForCurrentSong }
 
     PlayerProgressBarSection(
         songId = song.id,
@@ -1156,6 +1162,8 @@ private fun FullPlayerProgressSection(
         audioMimeType = audioMimeType,
         audioBitrate = audioBitrate,
         audioSampleRate = audioSampleRate,
+        audioBitDepth = audioBitDepth,
+        audioChannelCount = audioChannelCount,
         showAudioFileInfo = showPlayerFileInfo,
         onSeek = onSeek,
         expansionFractionProvider = expansionFractionProvider,
@@ -1525,25 +1533,6 @@ private fun SongMetadataDisplaySection(
     }
 }
 
-private fun formatAudioMetaLabel(mimeType: String?, bitrate: Int?, sampleRate: Int?): String? {
-    val formatLabel = mimeTypeToFormat(mimeType)
-        .takeIf { it != "-" }
-        ?.uppercase(Locale.getDefault())
-
-    val parts = buildList {
-        sampleRate?.takeIf { it > 0 }?.let { add(String.format(Locale.US, "%.1f kHz", it / 1000.0)) }
-        bitrate?.takeIf { it > 0 }?.let { bitrateValue ->
-            val kbpsLabel = "${bitrateValue / 1000} kbps"
-            if (formatLabel != null) {
-                add("$kbpsLabel \u2022 $formatLabel")
-            } else {
-                add(kbpsLabel)
-            }
-        } ?: formatLabel?.let { add(it) }
-    }
-    return parts.takeIf { it.isNotEmpty() }?.joinToString(" \u2022 ")
-}
-
 @Composable
 private fun PlayerProgressBarSection(
     songId: String,
@@ -1553,6 +1542,8 @@ private fun PlayerProgressBarSection(
     audioMimeType: String?,
     audioBitrate: Int?,
     audioSampleRate: Int?,
+    audioBitDepth: Int?,
+    audioChannelCount: Int?,
     showAudioFileInfo: Boolean,
     onSeek: (Long) -> Unit,
     expansionFractionProvider: () -> Float,
@@ -1588,27 +1579,39 @@ private fun PlayerProgressBarSection(
         kotlin.math.abs(reportedDuration - hintDuration) <= 1500L -> reportedDuration
         else -> minOf(reportedDuration, hintDuration)
     }
-    val audioMetaLabel = remember(showAudioFileInfo, audioMimeType, audioBitrate, audioSampleRate) {
+    val audioQualityInfo = remember(
+        showAudioFileInfo, audioMimeType, audioBitrate, audioSampleRate, audioBitDepth, audioChannelCount
+    ) {
         if (showAudioFileInfo) {
-            formatAudioMetaLabel(
+            resolveAudioQualityInfo(
                 mimeType = audioMimeType,
                 bitrate = audioBitrate,
-                sampleRate = audioSampleRate
+                sampleRate = audioSampleRate,
+                bitDepth = audioBitDepth,
+                channelCount = audioChannelCount
             )
         } else {
             null
         }
     }
-    var displayAudioMetaLabel by remember(songId) { mutableStateOf<String?>(null) }
-    LaunchedEffect(songId, audioMetaLabel, showAudioFileInfo) {
+    var displayAudioQualityInfo by remember(songId) { mutableStateOf<AudioQualityInfo?>(null) }
+    LaunchedEffect(songId, audioQualityInfo, showAudioFileInfo) {
         if (!showAudioFileInfo) {
-            displayAudioMetaLabel = null
-        } else if (!audioMetaLabel.isNullOrBlank()) {
-            displayAudioMetaLabel = audioMetaLabel
+            displayAudioQualityInfo = null
+        } else if (audioQualityInfo != null) {
+            displayAudioQualityInfo = audioQualityInfo
         } else {
             kotlinx.coroutines.delay(500)
-            displayAudioMetaLabel = null
+            displayAudioQualityInfo = null
         }
+    }
+    var showAudioQualitySheet by rememberSaveable { mutableStateOf(false) }
+    val currentQualityInfo = displayAudioQualityInfo
+    if (showAudioQualitySheet && currentQualityInfo != null) {
+        AudioQualityBottomSheet(
+            info = currentQualityInfo,
+            onDismiss = { showAudioQualitySheet = false }
+        )
     }
     val durationForCalc = displayDurationValue.coerceAtLeast(1L)
     
@@ -1690,7 +1693,7 @@ private fun PlayerProgressBarSection(
                  ProgressPlaceholder(
                      color = placeholderColor,
                      onColor = placeholderOnColor,
-                     showAudioMetaChip = showAudioFileInfo && !displayAudioMetaLabel.isNullOrBlank()
+                     showAudioMetaChip = showAudioFileInfo && displayAudioQualityInfo != null
                  )
              }
         }
@@ -1732,7 +1735,8 @@ private fun PlayerProgressBarSection(
                 duration = displayDurationValue,
                 isVisible = isVisible,
                 textColor = timeTextColor,
-                audioMetaLabel = displayAudioMetaLabel,
+                audioQualityInfo = displayAudioQualityInfo,
+                onAudioQualityClick = { showAudioQualitySheet = true },
                 horizontalTrackInset = progressSectionHorizontalInset
             )
         }
@@ -1791,7 +1795,8 @@ private fun EfficientTimeLabels(
     duration: Long,
     isVisible: Boolean,
     textColor: Color,
-    audioMetaLabel: String?,
+    audioQualityInfo: AudioQualityInfo?,
+    onAudioQualityClick: () -> Unit,
     horizontalTrackInset: Dp
 ) {
     val coarsePositionMs by remember(isVisible, positionState) {
@@ -1833,24 +1838,25 @@ private fun EfficientTimeLabels(
             )
         }
 
-        if (!audioMetaLabel.isNullOrBlank()) {
+        if (audioQualityInfo != null) {
             Surface(
+                onClick = onAudioQualityClick,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(horizontal = 58.dp),
-                shape = RoundedCornerShape(999.dp),
-                color = textColor.copy(alpha = 0.14f),
+                color = Color.Transparent,
                 contentColor = textColor.copy(alpha = 0.96f)
             ) {
                 Text(
-                    text = audioMetaLabel,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp
+                    text = audioQualityInfo.badgeLabel(),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        letterSpacing = 0.4.sp
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }
         }
