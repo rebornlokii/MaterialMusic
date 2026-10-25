@@ -13,6 +13,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,18 +39,21 @@ import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.CropSquare
 import androidx.compose.material.icons.rounded.Smartphone
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -192,6 +196,7 @@ fun SongShareCardBottomSheet(
             Text(
                 text = stringResource(R.string.share_card_title),
                 style = MaterialTheme.typography.titleLarge,
+                fontFamily = GoogleSansFlex,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -206,28 +211,84 @@ fun SongShareCardBottomSheet(
             )
 
             Spacer(Modifier.height(16.dp))
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                SegmentedButton(
-                    selected = selectedFormat == SongShareCardFormat.SQUARE,
-                    onClick = { selectFormat(SongShareCardFormat.SQUARE) },
-                    shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-                    enabled = !isWorking && !isMorphing,
-                    icon = {
-                        Icon(Icons.Rounded.CropSquare, contentDescription = null, modifier = Modifier.size(18.dp))
-                    },
-                ) {
-                    Text(stringResource(R.string.share_card_format_square))
-                }
-                SegmentedButton(
-                    selected = selectedFormat == SongShareCardFormat.STORY,
-                    onClick = { selectFormat(SongShareCardFormat.STORY) },
-                    shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-                    enabled = !isWorking && !isMorphing,
-                    icon = {
-                        Icon(Icons.Rounded.Smartphone, contentDescription = null, modifier = Modifier.size(18.dp))
-                    },
-                ) {
-                    Text(stringResource(R.string.share_card_format_story))
+            ButtonGroup(
+                overflowIndicator = { menuState -> ButtonGroupDefaults.OverflowIndicator(menuState) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+            ) {
+                listOf(
+                    SongShareCardFormat.SQUARE to R.string.share_card_format_square,
+                    SongShareCardFormat.STORY to R.string.share_card_format_story,
+                ).forEachIndexed { index, (format, labelRes) ->
+                    customItem(
+                        buttonGroupContent = {
+                            val selected = selectedFormat == format
+                            val interactionSource = remember(format) { MutableInteractionSource() }
+                            ToggleButton(
+                                checked = selected,
+                                onCheckedChange = { checked -> if (checked) selectFormat(format) },
+                                modifier = Modifier
+                                    .weight(if (selected) 1.15f else 1f)
+                                    .animateWidth(interactionSource)
+                                    .height(52.dp),
+                                shapes = if (index == 0) {
+                                    ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                } else {
+                                    ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                },
+                                colors = ToggleButtonDefaults.toggleButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                    checkedContainerColor = MaterialTheme.colorScheme.primary,
+                                    checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+                                ),
+                                elevation = null,
+                                contentPadding = PaddingValues(horizontal = 12.dp),
+                                enabled = !isWorking && !isMorphing,
+                                interactionSource = interactionSource,
+                            ) {
+                                Icon(
+                                    imageVector = if (format == SongShareCardFormat.SQUARE) {
+                                        Icons.Rounded.CropSquare
+                                    } else {
+                                        Icons.Rounded.Smartphone
+                                    },
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = stringResource(labelRes),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = GoogleSansFlex,
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                        },
+                        menuContent = { menuState ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = stringResource(labelRes),
+                                        fontFamily = GoogleSansFlex,
+                                    )
+                                },
+                                leadingIcon = {
+                                    if (selectedFormat == format) {
+                                        Icon(Icons.Rounded.Check, contentDescription = null)
+                                    }
+                                },
+                                onClick = {
+                                    selectFormat(format)
+                                    menuState.dismiss()
+                                },
+                            )
+                        },
+                    )
                 }
             }
 
@@ -252,7 +313,11 @@ fun SongShareCardBottomSheet(
                     } else {
                         Icon(Icons.Rounded.IosShare, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.share_card_share))
+                        Text(
+                            text = stringResource(R.string.share_card_share),
+                            fontFamily = GoogleSansFlex,
+                            fontWeight = FontWeight.SemiBold,
+                        )
                     }
                 }
                 FilledTonalButton(
@@ -264,7 +329,11 @@ fun SongShareCardBottomSheet(
                 ) {
                     Icon(Icons.Rounded.Download, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.share_card_save))
+                    Text(
+                        text = stringResource(R.string.share_card_save),
+                        fontFamily = GoogleSansFlex,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
             }
         }
