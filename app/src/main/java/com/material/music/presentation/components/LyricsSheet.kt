@@ -1600,7 +1600,11 @@ fun LyricLineRow(
 
     val blurRadius by animateDpAsState(
         targetValue = targetBlur,
-        animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing),
+        animationSpec = if (decorativeMotionEnabled) {
+            tween<Dp>(durationMillis = 400)
+        } else {
+            tween<Dp>(durationMillis = 200)
+        },
         label = "lineBlur"
     )
     val lineBlurEffectCache = remember { BlurEffectCache() }
