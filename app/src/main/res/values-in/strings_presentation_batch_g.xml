@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">Antrekan + putar menghormati urutan pilihan Anda.</string>
     <string name="presentation_batch_g_album_sel_selected">terpilih</string>
     <string name="presentation_batch_g_app_tagline">Pemutar Musik</string>
-    <string name="sidebar_edit_shortcuts">Edit pintasan</string>
-    <string name="sidebar_shortcuts_dialog_title">Pintasan bilah sisi</string>
-    <string name="sidebar_open">Buka menu</string>
     <string name="presentation_batch_g_artist_cd_configure">Konfigurasikan</string>
     <string name="presentation_batch_g_artist_ex_1_in">\"Artis1/Artis2\"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Artis1, Artis2</string>

@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">Очередь + воспроизведение сохраняют порядок вашего выбора.</string>
     <string name="presentation_batch_g_album_sel_selected">выбрано</string>
     <string name="presentation_batch_g_app_tagline">Музыкальный плеер</string>
-    <string name="sidebar_edit_shortcuts">Изменить ярлыки</string>
-    <string name="sidebar_shortcuts_dialog_title">Ярлыки боковой панели</string>
-    <string name="sidebar_open">Открыть меню</string>
     <string name="presentation_batch_g_artist_cd_configure">Настроить</string>
     <string name="presentation_batch_g_artist_ex_1_in">"Artist1/Artist2"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Artist1, Artist2</string>

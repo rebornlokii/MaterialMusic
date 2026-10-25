@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">Kø og avspilling følger valgrekkefølgen din.</string>
     <string name="presentation_batch_g_album_sel_selected">valgt</string>
     <string name="presentation_batch_g_app_tagline">Musikkspiller</string>
-    <string name="sidebar_edit_shortcuts">Rediger snarveier</string>
-    <string name="sidebar_shortcuts_dialog_title">Snarveier i sidepanelet</string>
-    <string name="sidebar_open">Åpne meny</string>
     <string name="presentation_batch_g_artist_cd_configure">Konfigurer</string>
     <string name="presentation_batch_g_artist_ex_1_in">\"Artist1/Artist2\"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Artist1, Artist2</string>

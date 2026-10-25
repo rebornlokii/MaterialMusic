@@ -54,7 +54,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
@@ -62,7 +61,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -73,7 +71,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -110,7 +107,6 @@ import com.google.common.util.concurrent.MoreExecutors
 import com.material.music.data.preferences.AppThemeMode
 import com.material.music.data.preferences.NavBarStyle
 import com.material.music.data.preferences.sanitizeNavBarCornerRadius
-import com.material.music.data.preferences.SidebarShortcutKeys
 import com.material.music.data.preferences.ThemePreferencesRepository
 import com.material.music.data.preferences.ThemePreset
 import com.material.music.data.preferences.UserPreferencesRepository
@@ -118,10 +114,8 @@ import com.material.music.data.service.MusicService
 import com.material.music.data.worker.SyncManager
 import com.material.music.data.worker.SyncProgress
 import com.material.music.presentation.components.AllFilesAccessDialog
-import com.material.music.presentation.components.AppSidebarDrawer
 import com.material.music.presentation.components.CrashReportDialog
 import com.material.music.presentation.components.DismissUndoBar
-import com.material.music.presentation.components.DrawerDestination
 import com.material.music.presentation.components.MiniPlayerBottomSpacer
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.PlayerInternalNavigationBar
@@ -823,9 +817,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-
         LaunchedEffect(userPreferencesRepository) {
             userPreferencesRepository.clearDeprecatedPlayerSheetPreference()
         }
@@ -836,28 +827,6 @@ class MainActivity : ComponentActivity() {
             LocalAppHapticsConfig provides appHapticsConfig,
             LocalHapticFeedback provides scopedHapticFeedback,
             LocalShowScrollbar provides showScrollbar
-        ) {
-            val sidebarShortcuts by userPreferencesRepository.sidebarShortcutsFlow
-                .collectAsStateWithLifecycle(initialValue = SidebarShortcutKeys.DEFAULT)
-            AppSidebarDrawer(
-                drawerState = drawerState,
-                selectedRoute = currentRoute ?: Screen.Home.route,
-                enabledShortcuts = sidebarShortcuts,
-                onShortcutsChanged = { shortcuts ->
-                    scope.launch { userPreferencesRepository.setSidebarShortcuts(shortcuts) }
-                },
-                onDestinationSelected = { destination ->
-                    scope.launch { drawerState.close() }
-                    when (destination) {
-                        DrawerDestination.Home -> navController.navigateSafely(Screen.Home.route) {
-                            popUpTo(Screen.Home.route) { inclusive = true }
-                        }
-                        DrawerDestination.Stats -> navController.navigateSafely(Screen.Stats.route)
-                        DrawerDestination.Equalizer -> navController.navigateSafely(Screen.Equalizer.route)
-                        DrawerDestination.Bookmarks -> navController.navigateSafely(Screen.AudioBookmarks.route)
-                        DrawerDestination.Settings -> navController.navigateSafely(Screen.Settings.route)
-                    }
-                }
         ) {
             Row(modifier = Modifier.fillMaxSize()) {
                 if (useNavigationRail) {
@@ -1026,8 +995,7 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 paddingValues = innerPadding,
                                 userPreferencesRepository = userPreferencesRepository,
-                                onSearchBarActiveChange = { isSearchBarActive = it },
-                                onOpenSidebar = { scope.launch { drawerState.open() } }
+                                onSearchBarActiveChange = { isSearchBarActive = it }
                             )
                         }
 
@@ -1114,7 +1082,6 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
-            }
             }
         }
     }

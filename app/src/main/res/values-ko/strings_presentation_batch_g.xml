@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">대기열 추가 및 재생은 선택한 순서를 존중합니다.</string>
     <string name="presentation_batch_g_album_sel_selected">선택됨</string>
     <string name="presentation_batch_g_app_tagline">뮤직 플레이어</string>
-    <string name="sidebar_edit_shortcuts">바로가기 편집</string>
-    <string name="sidebar_shortcuts_dialog_title">사이드바 바로가기</string>
-    <string name="sidebar_open">메뉴 열기</string>
     <string name="presentation_batch_g_artist_cd_configure">구성</string>
     <string name="presentation_batch_g_artist_ex_1_in">\"Artist1/Artist2\"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Artist1, Artist2</string>

@@ -9,6 +9,7 @@ All notable changes to MaterialMusic will be documented in this file.
 
 ### Removed
 - The sponsor card on About and the Updates entry in Settings. Update notifications still open the updates screen.
+- The app sidebar and the Home top-bar menu button that opened it.
 
 ### Fixed
 - Navidrome/Subsonic (including Gonic) and Jellyfin covers no longer hold up other artwork while a slow server answers. A cover download kept one of the threads that decode every image in the app until the server replied, even after its list item had scrolled away, so a burst of slow covers left the rest of the library on placeholders. Downloads now run off those threads and stop as soon as their cover leaves the screen, and a cover shown in several places at once is downloaded once instead of once per place ([#118](https://github.com/rebornlokii/MaterialMusic/issues/118)).

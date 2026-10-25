@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">Queue + Abspielen beachtet die Auswahlreihenfolge.</string>
     <string name="presentation_batch_g_album_sel_selected">ausgewählt</string>
     <string name="presentation_batch_g_app_tagline">Musikplayer</string>
-    <string name="sidebar_edit_shortcuts">Shortcuts bearbeiten</string>
-    <string name="sidebar_shortcuts_dialog_title">Seitenleisten-Shortcuts</string>
-    <string name="sidebar_open">Menü öffnen</string>
     <string name="presentation_batch_g_artist_cd_configure">Konfigurieren</string>
     <string name="presentation_batch_g_artist_ex_1_in">\"Artist1/Artist2\"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Artist1, Artist2</string>

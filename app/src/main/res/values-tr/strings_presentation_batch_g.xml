@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">Kuyruğa ekle ve oynat, seçim sıranıza göre davranır.</string>
     <string name="presentation_batch_g_album_sel_selected">seçildi</string>
     <string name="presentation_batch_g_app_tagline">Müzik Çalar</string>
-    <string name="sidebar_edit_shortcuts">Kısayolları düzenle</string>
-    <string name="sidebar_shortcuts_dialog_title">Kenar çubuğu kısayolları</string>
-    <string name="sidebar_open">Menüyü aç</string>
     <string name="presentation_batch_g_artist_cd_configure">Yapılandır</string>
     <string name="presentation_batch_g_artist_ex_1_in">\"Sanatçı1/Sanatçı2\"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Sanatçı1, Sanatçı2</string>

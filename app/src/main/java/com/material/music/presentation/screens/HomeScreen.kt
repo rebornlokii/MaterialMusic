@@ -137,8 +137,7 @@ fun HomeScreen(
     playerViewModel: PlayerViewModel = sharedPlayerViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     navidromeViewModel: NavidromeDashboardViewModel = hiltViewModel(),
-    jellyfinViewModel: JellyfinDashboardViewModel = hiltViewModel(),
-    onOpenSidebar: () -> Unit
+    jellyfinViewModel: JellyfinDashboardViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val isBenchmarkMode = remember {
@@ -357,7 +356,6 @@ fun HomeScreen(
                     onStreamingClick = {
                           showStreamingProviderSheet = true
                     },
-                    onMenuClick = onOpenSidebar,
                     isScrolled = isScrolledPastThreshold.value
                 )
             }

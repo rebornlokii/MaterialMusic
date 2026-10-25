@@ -70,9 +70,6 @@
     <string name="presentation_batch_g_album_sel_queue_hint">ميزة (إضافة للقائمة وتشغيل) تحترم ترتيب تحديدك تماماً.</string>
     <string name="presentation_batch_g_album_sel_selected">محدد</string>
     <string name="presentation_batch_g_app_tagline">مشغل موسيقى</string>
-    <string name="sidebar_edit_shortcuts">تعديل الاختصارات</string>
-    <string name="sidebar_shortcuts_dialog_title">اختصارات الشريط الجانبي</string>
-    <string name="sidebar_open">فتح القائمة</string>
     <string name="presentation_batch_g_artist_cd_configure">تكوين</string>
     <string name="presentation_batch_g_artist_ex_1_in">\"Artist1/Artist2\"</string>
     <string name="presentation_batch_g_artist_ex_1_out">Artist1، Artist2</string>
