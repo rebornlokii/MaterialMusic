@@ -1577,6 +1577,14 @@ fun LyricLineRow(
         ) else tween<Float>(durationMillis = 200),
         label = "lineScale"
     )
+    val verticalPadding by animateDpAsState(
+        targetValue = targetPadding,
+        animationSpec = if (decorativeMotionEnabled) spring<Dp>(
+            stiffness = Spring.StiffnessVeryLow,
+            dampingRatio = Spring.DampingRatioMediumBouncy
+        ) else tween<Dp>(durationMillis = 200),
+        label = "linePadding"
+    )
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
         animationSpec = tween(durationMillis = 140, easing = FastOutSlowInEasing),
@@ -1593,10 +1601,6 @@ fun LyricLineRow(
         label = "lineBlur"
     )
     val lineBlurEffectCache = remember { BlurEffectCache() }
-
-    // Keep line height stable while the visual focus moves. Scaling happens in a graphics layer,
-    // so neither the word pulse nor the active-line transition can make the lazy list jump.
-    val verticalPadding = if (useAnimatedLyrics) 16.dp else 12.dp
 
     val baseModifier = if (useAnimatedLyrics && !immersiveMode) {
         when (lyricsAlignment) {
