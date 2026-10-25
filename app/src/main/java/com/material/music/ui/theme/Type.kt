@@ -52,6 +52,9 @@ val MontserratFamily = FontFamily(
     ),
 )
 
+/** The unrounded Google Sans Flex face (gflex_variable) used in exported share artwork. */
+val GoogleSansFlex = MontserratFamily
+
 val ExpTitleTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = MontserratFamily,

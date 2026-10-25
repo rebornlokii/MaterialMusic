@@ -42,7 +42,7 @@ import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Schedule
-import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Menu
@@ -71,7 +71,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
 import com.material.music.R
 import com.material.music.data.model.Song
 import com.material.music.data.offline.CloudOfflineRepository
@@ -80,7 +79,6 @@ import com.material.music.presentation.components.subcomps.AutoSizingTextToFill
 import com.material.music.utils.formatDuration
 import com.material.music.utils.shapes.RoundedStarShape
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.material.music.data.media.CoverArtUpdate
 import com.material.music.data.media.CustomMetadataChanges
@@ -131,6 +129,7 @@ fun SongInfoBottomSheet(
 ) {
     val context = LocalContext.current
     var showEditSheet by remember { mutableStateOf(false) }
+    var showShareCardSheet by remember { mutableStateOf(false) }
     var showArtistPicker by remember { mutableStateOf(false) }
     var showTonePickerDialog by remember { mutableStateOf(false) }
     var toneConfirmationTarget by remember { mutableStateOf<ToneTarget?>(null) }
@@ -482,33 +481,13 @@ fun SongInfoBottomSheet(
                                                     modifier = Modifier
                                                         .weight(0.25f)
                                                         .fillMaxHeight(),
-                                                    onClick = {
-                                                        try {
-                                                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                                                type = "audio/*"
-                                                                putExtra(Intent.EXTRA_STREAM, song.contentUriString.toUri())
-                                                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                                            }
-                                                            context.startActivity(
-                                                                Intent.createChooser(
-                                                                    shareIntent,
-                                                                    context.getString(R.string.song_info_share_chooser_title)
-                                                                )
-                                                            )
-                                                        } catch (e: Exception) {
-                                                            Toast.makeText(
-                                                            context,
-                                                            context.getString(R.string.error_share_song_format, e.localizedMessage ?: ""),
-                                                            Toast.LENGTH_LONG
-                                                        ).show()
-                                                        }
-                                                    },
+                                                    onClick = { showShareCardSheet = true },
                                                     shape = CircleShape
                                                 ) {
                                                     Icon(
                                                         modifier = Modifier.size(FloatingActionButtonDefaults.LargeIconSize),
-                                                        imageVector = Icons.Rounded.Share,
-                                                        contentDescription = stringResource(R.string.cd_share_song_file)
+                                                        imageVector = Icons.Rounded.IosShare,
+                                                        contentDescription = stringResource(R.string.cd_share_song_card)
                                                     )
                                                 }
                                             }
@@ -849,6 +828,14 @@ fun SongInfoBottomSheet(
                 }
             }
         }
+    }
+
+    if (showShareCardSheet) {
+        SongShareCardBottomSheet(
+            song = song,
+            onDismiss = { showShareCardSheet = false },
+            dimBackground = false,
+        )
     }
 
     EditSongSheet(
