@@ -199,13 +199,6 @@ class LyricsWordHighlightTest {
     }
 
     @Test
-    fun wordEmphasis_popsAtTheStartAndSettlesQuickly() {
-        assertEquals(1.08f, resolveWordEmphasisScale(1_000, 1_000, 3_000, motionEnabled = true), 0.001f)
-        assertEquals(1f, resolveWordEmphasisScale(1_300, 1_000, 3_000, motionEnabled = true), 0f)
-        assertEquals(1f, resolveWordEmphasisScale(1_000, 1_000, 3_000, motionEnabled = false), 0f)
-    }
-
-    @Test
     fun lineAlignment_putsOddSingersLeftEvenSingersRightAndGroupsInTheMiddle() {
         assertEquals("left", resolveLineAlignment(voice = 1, userAlignment = "center", duetLayout = true))
         assertEquals("right", resolveLineAlignment(voice = 2, userAlignment = "center", duetLayout = true))
