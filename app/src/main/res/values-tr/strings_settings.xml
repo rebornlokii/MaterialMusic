@@ -295,8 +295,6 @@
 
     <!-- Updates -->
     <string name="updates_title">Güncellemeler</string>
-    <string name="updates_settings_subtitle">Sürüm denetimi ve yayın kanalı</string>
-    <string name="updates_check_row_title">Güncellemeleri denetle</string>
     <string name="updates_installed_version">Yüklü: %1$s</string>
     <string name="updates_channel_stable">Kararlı</string>
     <string name="updates_channel_alpha">Alfa</string>

@@ -282,8 +282,6 @@
     <string name="working_ellipsis">작업 중…</string>
     <string name="setcat_about_pixelplayer_title">MaterialMusic 정보</string>
     <string name="updates_title">업데이트</string>
-    <string name="updates_settings_subtitle">버전 확인 및 릴리스 채널</string>
-    <string name="updates_check_row_title">업데이트 확인</string>
     <string name="updates_installed_version">설치된 버전: %1$s</string>
     <string name="updates_channel_stable">안정</string>
     <string name="updates_channel_alpha">알파</string>

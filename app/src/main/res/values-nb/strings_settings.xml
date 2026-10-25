@@ -282,8 +282,6 @@
     <string name="working_ellipsis">Arbeider…</string>
     <string name="setcat_about_pixelplayer_title">Om MaterialMusic</string>
     <string name="updates_title">Oppdateringer</string>
-    <string name="updates_settings_subtitle">Versjonskontroll og utgivelseskanal</string>
-    <string name="updates_check_row_title">Se etter oppdateringer</string>
     <string name="updates_installed_version">Installert: %1$s</string>
     <string name="updates_channel_stable">Stabil</string>
     <string name="updates_channel_alpha">Alpha</string>

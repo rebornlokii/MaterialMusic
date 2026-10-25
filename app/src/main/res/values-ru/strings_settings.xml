@@ -282,8 +282,6 @@
     <string name="working_ellipsis">Выполняется…</string>
     <string name="setcat_about_pixelplayer_title">О MaterialMusic</string>
     <string name="updates_title">Обновления</string>
-    <string name="updates_settings_subtitle">Проверка версий и канал выпуска</string>
-    <string name="updates_check_row_title">Проверить обновления</string>
     <string name="updates_installed_version">Установлена: %1$s</string>
     <string name="updates_channel_stable">Стабильный</string>
     <string name="updates_channel_alpha">Альфа</string>

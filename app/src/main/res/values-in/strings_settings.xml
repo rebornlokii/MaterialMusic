@@ -282,8 +282,6 @@
     <string name="working_ellipsis">Bekerja…</string>
     <string name="setcat_about_pixelplayer_title">Tentang MaterialMusic</string>
     <string name="updates_title">Pembaruan</string>
-    <string name="updates_settings_subtitle">Pemeriksaan versi dan saluran rilis</string>
-    <string name="updates_check_row_title">Periksa pembaruan</string>
     <string name="updates_installed_version">Terpasang: %1$s</string>
     <string name="updates_channel_stable">Stabil</string>
     <string name="updates_channel_alpha">Alpha</string>

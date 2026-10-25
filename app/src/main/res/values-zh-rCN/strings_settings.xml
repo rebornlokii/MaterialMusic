@@ -297,8 +297,6 @@
     <string name="cd_clear_search">清空搜索</string>
     <string name="backup_history_modules_line">%1$d个模块 · 版本v%2$s · 数据库架构v%3$d</string>
     <string name="updates_title">更新</string>
-    <string name="updates_settings_subtitle">版本检查与发布渠道</string>
-    <string name="updates_check_row_title">检查更新</string>
     <string name="updates_installed_version">已安装：%1$s</string>
     <string name="updates_channel_stable">稳定版</string>
     <string name="updates_channel_alpha">Alpha 版</string>

@@ -282,8 +282,6 @@
     <string name="working_ellipsis">Travail en cours…</string>
     <string name="setcat_about_pixelplayer_title">À propos de MaterialMusic</string>
     <string name="updates_title">Mises à jour</string>
-    <string name="updates_settings_subtitle">Vérification des versions et canal de publication</string>
-    <string name="updates_check_row_title">Rechercher des mises à jour</string>
     <string name="updates_installed_version">Installée : %1$s</string>
     <string name="updates_channel_stable">Stable</string>
     <string name="updates_channel_alpha">Alpha</string>

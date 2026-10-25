@@ -341,8 +341,6 @@
 
     <!-- Updates -->
     <string name="updates_title">Updates</string>
-    <string name="updates_settings_subtitle">Version checks and release channel</string>
-    <string name="updates_check_row_title">Check for updates</string>
     <string name="updates_installed_version">Installed: %1$s</string>
     <string name="updates_channel_stable">Stable</string>
     <string name="updates_channel_alpha">Alpha</string>

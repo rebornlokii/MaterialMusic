@@ -282,8 +282,6 @@
     <string name="working_ellipsis">Elaborazione…</string>
     <string name="setcat_about_pixelplayer_title">Informazioni su MaterialMusic</string>
     <string name="updates_title">Aggiornamenti</string>
-    <string name="updates_settings_subtitle">Controllo versioni e canale di rilascio</string>
-    <string name="updates_check_row_title">Cerca aggiornamenti</string>
     <string name="updates_installed_version">Installata: %1$s</string>
     <string name="updates_channel_stable">Stabile</string>
     <string name="updates_channel_alpha">Alpha</string>
