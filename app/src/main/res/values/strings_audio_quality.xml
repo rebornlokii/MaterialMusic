@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_quality_dolby_atmos" translatable="false">Dolby Atmos</string>
+    <string name="audio_quality_dolby_ac4" translatable="false">Dolby AC-4</string>
+    <string name="audio_quality_dolby_truehd" translatable="false">Dolby TrueHD</string>
+    <string name="audio_quality_dolby_digital_plus" translatable="false">Dolby Digital Plus</string>
+    <string name="audio_quality_dolby_digital" translatable="false">Dolby Digital</string>
+    <string name="audio_quality_dts" translatable="false">DTS</string>
+    <string name="audio_quality_hi_res_lossless">Hi-Res Lossless</string>
+    <string name="audio_quality_lossless">Lossless</string>
+    <string name="audio_quality_unknown">Audio</string>
+
+    <string name="audio_quality_desc_dolby_atmos">Object-based spatial audio. Your device and output must support Atmos to hear the full effect.</string>
+    <string name="audio_quality_desc_dolby">Dolby encoded surround audio.</string>
+    <string name="audio_quality_desc_dts">DTS encoded surround audio.</string>
+    <string name="audio_quality_desc_hi_res_lossless">Bit-perfect audio above CD quality, with no data discarded.</string>
+    <string name="audio_quality_desc_lossless">Original quality preserved with no data discarded.</string>
+    <string name="audio_quality_desc_lossy">Compressed audio that trades some detail for a smaller file size.</string>
+
+    <string name="audio_quality_row_format">Format</string>
+    <string name="audio_quality_row_sample_rate">Sample rate</string>
+    <string name="audio_quality_row_bit_depth">Bit depth</string>
+    <string name="audio_quality_row_bitrate">Bitrate</string>
+    <string name="audio_quality_row_channels">Channels</string>
+    <string name="audio_quality_channels_mono">Mono</string>
+    <string name="audio_quality_channels_stereo">Stereo</string>
+    <string name="audio_quality_channels_count">%d channels</string>
+</resources>
