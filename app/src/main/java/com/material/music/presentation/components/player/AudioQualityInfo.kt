@@ -8,19 +8,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,7 +29,6 @@ import com.material.music.presentation.components.rememberModalSheetState
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.utils.AudioMetaUtils.mimeTypeToFormat
 import java.util.Locale
-import kotlinx.coroutines.launch
 
 internal enum class AudioQualityTier {
     DOLBY_ATMOS,
@@ -127,6 +126,22 @@ private fun AudioQualityInfo.description(): String = when (tier) {
 }
 
 @Composable
+internal fun AudioQualityInfo.badgeColors(): Pair<Color, Color> {
+    val colors = MaterialTheme.colorScheme
+    return when (tier) {
+        AudioQualityTier.DOLBY_ATMOS,
+        AudioQualityTier.DOLBY_AC4,
+        AudioQualityTier.DOLBY_TRUEHD,
+        AudioQualityTier.DOLBY_DIGITAL_PLUS,
+        AudioQualityTier.DOLBY_DIGITAL -> colors.primaryContainer to colors.onPrimaryContainer
+        AudioQualityTier.HI_RES_LOSSLESS,
+        AudioQualityTier.LOSSLESS -> colors.secondaryContainer to colors.onSecondaryContainer
+        AudioQualityTier.DTS -> colors.tertiaryContainer to colors.onTertiaryContainer
+        AudioQualityTier.LOSSY -> colors.surfaceContainerHighest to colors.onSurfaceVariant
+    }
+}
+
+@Composable
 private fun AudioQualityInfo.channelLabel(): String? {
     val count = channelCount ?: return null
     return when (count) {
@@ -143,7 +158,6 @@ internal fun AudioQualityBottomSheet(
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
     val colorScheme = MaterialTheme.colorScheme
 
     ModalBottomSheet(
@@ -162,16 +176,16 @@ internal fun AudioQualityBottomSheet(
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp, vertical = 16.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
                     text = info.badgeLabel(),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontFamily = RoundedSans,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = colorScheme.onSurface
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontFamily = RoundedSans,
+                    fontWeight = FontWeight.Bold,
+                    color = colorScheme.onSurface,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
                     text = info.description(),
@@ -201,17 +215,17 @@ internal fun AudioQualityBottomSheet(
 
             if (rows.isNotEmpty()) {
                 Surface(
-                    shape = RoundedCornerShape(24.dp),
-                    color = colorScheme.surfaceContainerHighest
+                    shape = RoundedCornerShape(26.dp),
+                    color = colorScheme.surfaceContainerLow
                 ) {
                     Column(
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                     ) {
                         rows.forEach { (label, value) ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 10.dp),
+                                    .padding(vertical = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -230,15 +244,6 @@ internal fun AudioQualityBottomSheet(
                         }
                     }
                 }
-            }
-
-            Button(
-                onClick = {
-                    scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.action_done))
             }
 
             Spacer(modifier = Modifier.height(12.dp))

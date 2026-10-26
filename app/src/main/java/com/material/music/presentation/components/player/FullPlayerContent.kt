@@ -1839,24 +1839,25 @@ private fun EfficientTimeLabels(
         }
 
         if (audioQualityInfo != null) {
+            val (badgeContainerColor, badgeContentColor) = audioQualityInfo.badgeColors()
             Surface(
                 onClick = onAudioQualityClick,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(horizontal = 58.dp),
-                color = Color.Transparent,
-                contentColor = textColor.copy(alpha = 0.96f)
+                shape = CircleShape,
+                color = badgeContainerColor,
+                contentColor = badgeContentColor
             ) {
                 Text(
                     text = audioQualityInfo.badgeLabel(),
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp,
                         letterSpacing = 0.4.sp
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                 )
             }
         }
