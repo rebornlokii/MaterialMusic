@@ -12,6 +12,7 @@ All notable changes to MaterialMusic will be documented in this file.
 - The app sidebar and the Home top-bar menu button that opened it.
 
 ### Fixed
+- Restoring a backup made by another build or by PixelPlayer works again in release builds. The package rename left the R8 rules pointing at the old `com.lostf1sh.pixelplayeross` package, so release builds renamed the backup models' JSON fields and could not read backups written with the stable field names.
 - Navidrome/Subsonic (including Gonic) and Jellyfin covers no longer hold up other artwork while a slow server answers. A cover download kept one of the threads that decode every image in the app until the server replied, even after its list item had scrolled away, so a burst of slow covers left the rest of the library on placeholders. Downloads now run off those threads and stop as soon as their cover leaves the screen, and a cover shown in several places at once is downloaded once instead of once per place ([#118](https://github.com/rebornlokii/MaterialMusic/issues/118)).
 
 ## [0.4.0] - 2026-10-17
