@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +34,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.CropSquare
 import androidx.compose.material.icons.rounded.Smartphone
@@ -434,10 +432,12 @@ private fun SongShareCard(
         val isStory = format == SongShareCardFormat.STORY
         val cardWidth = maxWidth.value
         val edgePadding = (cardWidth * if (isStory) 0.095f else 0.07f).dp
-        val titleSize = (cardWidth * if (isStory) 0.105f else 0.085f).coerceIn(22f, 42f).sp
-        val artistSize = (cardWidth * if (isStory) 0.055f else 0.048f).coerceIn(14f, 22f).sp
-        val artworkFraction = if (isStory) 0.78f else 0.45f
-        val artworkShape = RoundedCornerShape((cardWidth * 0.055f).coerceIn(16f, 26f).dp)
+        val titleSize = (cardWidth * if (isStory) 0.12f else 0.115f).coerceIn(24f, 54f).sp
+        val titleLineHeight = (titleSize.value * 1.08f).sp
+        val artistSize = (cardWidth * if (isStory) 0.05f else 0.045f).coerceIn(13f, 22f).sp
+        val badgeTile = (cardWidth * 0.10f).coerceIn(30f, 48f).dp
+        val badgeTextSize = (cardWidth * 0.052f).coerceIn(14f, 22f).sp
+        val badgeGap = (cardWidth * 0.028f).coerceIn(7f, 12f).dp
         val foreground = Color.White
 
         if (!song.albumArtUriString.isNullOrBlank()) {
@@ -471,10 +471,11 @@ private fun SongShareCard(
                 .background(
                     Brush.verticalGradient(
                         colorStops = arrayOf(
-                            0f to Color.Black.copy(alpha = 0.54f),
-                            0.30f to Color.Black.copy(alpha = 0.08f),
-                            0.56f to Color.Black.copy(alpha = 0.28f),
-                            1f to Color.Black.copy(alpha = 0.86f),
+                            0f to Color.Black.copy(alpha = 0.40f),
+                            0.20f to Color.Black.copy(alpha = 0.08f),
+                            0.50f to Color.Black.copy(alpha = 0.04f),
+                            0.74f to Color.Black.copy(alpha = 0.52f),
+                            1f to Color.Black.copy(alpha = 0.82f),
                         )
                     )
                 )
@@ -487,73 +488,36 @@ private fun SongShareCard(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(
+                Box(
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.16f))
-                        .padding(horizontal = (cardWidth * 0.035f).dp, vertical = (cardWidth * 0.022f).dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy((cardWidth * 0.022f).dp),
+                        .size(badgeTile)
+                        .clip(RoundedCornerShape((badgeTile.value * 0.30f).dp))
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center,
                 ) {
+                    // The launcher foreground already carries its adaptive-icon safe-zone
+                    // padding, so scale past it to let the mark fill the tile like the logo does.
                     Icon(
-                        painter = painterResource(R.drawable.pixelplayer_base_monochrome),
+                        painter = painterResource(R.mipmap.ic_launcher_foreground),
                         contentDescription = null,
-                        tint = foreground,
-                        modifier = Modifier.size((cardWidth * 0.065f).coerceIn(22f, 30f).dp),
-                    )
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        color = foreground,
-                        fontFamily = GoogleSansFlex,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = (cardWidth * 0.043f).coerceIn(13f, 18f).sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer(scaleX = 2f, scaleY = 2f),
                     )
                 }
-
-                Row(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.16f))
-                        .padding(horizontal = (cardWidth * 0.035f).dp, vertical = (cardWidth * 0.022f).dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.GraphicEq,
-                        contentDescription = null,
-                        tint = foreground,
-                        modifier = Modifier.size((cardWidth * 0.052f).coerceIn(17f, 22f).dp),
-                    )
-                    Text(
-                        text = stringResource(R.string.share_card_now_playing),
-                        color = foreground,
-                        fontFamily = GoogleSansFlex,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = (cardWidth * 0.035f).coerceIn(10f, 14f).sp,
-                        maxLines = 1,
-                    )
-                }
+                Spacer(Modifier.width(badgeGap))
+                Text(
+                    text = stringResource(R.string.app_name),
+                    color = foreground,
+                    fontFamily = GoogleSansFlex,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = badgeTextSize,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
-
-            SmartImage(
-                model = song.albumArtUriString,
-                contentDescription = stringResource(R.string.widget_album_art),
-                modifier = Modifier
-                    .fillMaxWidth(artworkFraction)
-                    .aspectRatio(1f)
-                    .align(Alignment.CenterHorizontally)
-                    .clip(artworkShape)
-                    .border(1.dp, Color.White.copy(alpha = 0.32f), artworkShape),
-                contentScale = ContentScale.Crop,
-                targetSize = coil.size.Size(1200, 1200),
-                crossfadeDurationMillis = 0,
-            )
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -566,7 +530,7 @@ private fun SongShareCard(
                     fontFamily = GoogleSansFlex,
                     fontWeight = FontWeight.Bold,
                     fontSize = titleSize,
-                    lineHeight = (titleSize.value * 1.08f).sp,
+                    lineHeight = titleLineHeight,
                     maxLines = if (isStory) 3 else 2,
                     overflow = TextOverflow.Ellipsis,
                 )
