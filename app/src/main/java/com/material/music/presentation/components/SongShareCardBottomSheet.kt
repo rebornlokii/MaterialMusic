@@ -82,7 +82,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.material.music.R
 import com.material.music.data.model.Song
-import com.material.music.ui.theme.GoogleSansFlex
 import com.material.music.ui.theme.RoundedSans
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.CaptureController
@@ -196,7 +195,7 @@ fun SongShareCardBottomSheet(
             Text(
                 text = stringResource(R.string.share_card_title),
                 style = MaterialTheme.typography.titleLarge,
-                fontFamily = GoogleSansFlex,
+                fontFamily = RoundedSans,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -262,7 +261,7 @@ fun SongShareCardBottomSheet(
                                 Text(
                                     text = stringResource(labelRes),
                                     style = MaterialTheme.typography.labelLarge,
-                                    fontFamily = GoogleSansFlex,
+                                    fontFamily = RoundedSans,
                                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
@@ -274,7 +273,7 @@ fun SongShareCardBottomSheet(
                                 text = {
                                     Text(
                                         text = stringResource(labelRes),
-                                        fontFamily = GoogleSansFlex,
+                                        fontFamily = RoundedSans,
                                     )
                                 },
                                 leadingIcon = {
@@ -315,7 +314,7 @@ fun SongShareCardBottomSheet(
                         Spacer(Modifier.width(8.dp))
                         Text(
                             text = stringResource(R.string.share_card_share),
-                            fontFamily = GoogleSansFlex,
+                            fontFamily = RoundedSans,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
@@ -331,7 +330,7 @@ fun SongShareCardBottomSheet(
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.share_card_save),
-                        fontFamily = GoogleSansFlex,
+                        fontFamily = RoundedSans,
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
