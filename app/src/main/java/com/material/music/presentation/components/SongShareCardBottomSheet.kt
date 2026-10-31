@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -82,6 +83,7 @@ import androidx.core.content.FileProvider
 import com.material.music.R
 import com.material.music.data.model.Song
 import com.material.music.ui.theme.GoogleSansFlex
+import com.material.music.ui.theme.RoundedSans
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.CaptureController
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
@@ -490,28 +492,31 @@ private fun SongShareCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                // Compose the launcher icon from its adaptive layers so the badge shows the
+                // same artwork as the home screen (adaptive-icon XML can't load as a Painter).
                 Box(
                     modifier = Modifier
                         .size(badgeTile)
-                        .clip(RoundedCornerShape((badgeTile.value * 0.30f).dp))
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center,
+                        .clip(RoundedCornerShape((badgeTile.value * 0.28f).dp)),
                 ) {
-                    // The launcher foreground already carries its adaptive-icon safe-zone
-                    // padding, so scale past it to let the mark fill the tile like the logo does.
-                    Icon(
+                    Image(
+                        painter = painterResource(R.mipmap.ic_launcher_background),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
+                    Image(
                         painter = painterResource(R.mipmap.ic_launcher_foreground),
                         contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer(scaleX = 2f, scaleY = 2f),
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
                     )
                 }
                 Spacer(Modifier.width(badgeGap))
                 Text(
                     text = stringResource(R.string.app_name),
                     color = foreground,
-                    fontFamily = GoogleSansFlex,
+                    fontFamily = RoundedSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = badgeTextSize,
                     maxLines = 1,
@@ -527,7 +532,7 @@ private fun SongShareCard(
                 Text(
                     text = song.title,
                     color = foreground,
-                    fontFamily = GoogleSansFlex,
+                    fontFamily = RoundedSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = titleSize,
                     lineHeight = titleLineHeight,
@@ -537,7 +542,7 @@ private fun SongShareCard(
                 Text(
                     text = song.displayArtist,
                     color = foreground.copy(alpha = 0.82f),
-                    fontFamily = GoogleSansFlex,
+                    fontFamily = RoundedSans,
                     fontWeight = FontWeight.Medium,
                     fontSize = artistSize,
                     maxLines = if (isStory) 2 else 1,
