@@ -127,6 +127,9 @@
     <string name="setcat_player_theme_dynamic">System Dynamic</string>
     <string name="setcat_show_player_file_info_title">Show player file info</string>
     <string name="setcat_show_player_file_info_subtitle">Show codec, bitrate, and sample rate in the player progress section.</string>
+    <string name="setcat_player_experiments">Player</string>
+    <string name="setcat_expressive_player_title">Expressive now playing</string>
+    <string name="setcat_expressive_player_subtitle">Try the redesigned player layout with prominent album art, a wavy progress bar, and compact controls.</string>
     <string name="setcat_album_art_palette_title">Album Art Palette Style</string>
     <string name="setcat_album_art_palette_subtitle">Current: %1$s. Open live preview and choose style.</string>
     <string name="setcat_carousel_style_label">Carousel Style</string>

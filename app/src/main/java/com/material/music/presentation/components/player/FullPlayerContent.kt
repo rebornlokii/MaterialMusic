@@ -54,6 +54,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -97,10 +98,13 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Bluetooth
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Cloud
@@ -204,6 +208,7 @@ fun FullPlayerContent(
     currentSheetState: PlayerSheetState,
     carouselStyle: String,
     loadingTweaks: FullPlayerLoadingTweaks,
+    expressiveNowPlayingEnabled: Boolean = false,
     isSheetDragGestureActive: Boolean = false,
     playerViewModel: PlayerViewModel,
     currentPositionProvider: () -> Long,
@@ -518,7 +523,7 @@ fun FullPlayerContent(
             song = song,
             currentPlaybackQueue = currentPlaybackQueue,
             currentMediaItemIndex = currentQueueIndex ?: currentMediaItemIndex,
-            carouselStyle = carouselStyle,
+            carouselStyle = if (expressiveNowPlayingEnabled) CarouselStyle.NO_PEEK else carouselStyle,
             loadingTweaks = loadingTweaks,
             isSheetDragGestureActive = isSheetDragGestureActive,
             expansionFractionProvider = expansionFractionProvider,
@@ -549,6 +554,7 @@ fun FullPlayerContent(
             currentPositionProvider = currentPositionProvider,
             totalDurationValue = totalDurationValue,
             showPlayerFileInfo = showPlayerFileInfo,
+            showInlineAudioQualityDetails = expressiveNowPlayingEnabled,
             onSeek = onSeek,
             expansionFractionProvider = expansionFractionProvider,
             isPlayingProvider = isPlayingProvider,
@@ -582,6 +588,48 @@ fun FullPlayerContent(
             onShuffleToggle = onShuffleToggle,
             onRepeatToggle = onRepeatToggle,
             onFavoriteToggle = onFavoriteToggle
+        )
+    }
+
+    val expressiveSongMetadataSection: @Composable () -> Unit = {
+        ExpressiveSongMetadataSection(
+            song = song,
+            currentSongArtists = currentSongArtists,
+            expansionFractionProvider = expansionFractionProvider,
+            textColor = playerOnBaseColor,
+            artistTextColor = playerOnBaseColor.copy(alpha = 0.72f),
+            gradientEdgeColor = LocalMaterialTheme.current.primaryContainer,
+            playerViewModel = playerViewModel,
+            isPlayingProvider = isPlayingProvider,
+            isFavoriteProvider = isFavoriteProvider,
+            onFavoriteToggle = onFavoriteToggle,
+            onClickArtist = onSongMetadataArtistClick
+        )
+    }
+
+    val expressiveTransportSection: @Composable () -> Unit = {
+        ExpressiveTransportSection(
+            isPlayingProvider = isPlayingProvider,
+            onPrevious = onPreviousWithOptimisticCarousel,
+            onPlayPause = onPlayPause,
+            onNext = onNextWithOptimisticCarousel,
+            playPauseColors = transportPlayPauseColors,
+            skipColors = expressiveSkipButtonColors(LocalMaterialTheme.current)
+        )
+    }
+
+    val expressiveBottomActions: @Composable () -> Unit = {
+        ExpressiveBottomActions(
+            isShuffleEnabled = isShuffleEnabledProvider(),
+            isShuffleTransitionInProgress = shuffleTransitionInProgress,
+            repeatMode = repeatModeProvider(),
+            onShuffleToggle = onShuffleToggle,
+            onRepeatToggle = onRepeatToggle,
+            onLyricsClick = onLyricsClick,
+            onQueueClick = {
+                showSongInfoBottomSheet = true
+                onShowQueueClicked()
+            }
         )
     }
 
@@ -710,7 +758,7 @@ fun FullPlayerContent(
                         titleContentColor = LocalMaterialTheme.current.onPrimaryContainer,
                     ),
                     title = {
-                        if (!isOutputConnecting) {
+                        if (!isOutputConnecting && !expressiveNowPlayingEnabled) {
                             AnimatedVisibility(visible = (!isExternalOutputActive)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
@@ -758,7 +806,46 @@ fun FullPlayerContent(
                         }
                     },
                     actions = {
-                        Row(
+                        if (expressiveNowPlayingEnabled) {
+                            Row(
+                                modifier = Modifier.padding(end = 14.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                ExpressiveHeaderAction(
+                                    containerColor = playerOnAccentColor.copy(alpha = 0.72f),
+                                    contentColor = playerAccentColor,
+                                    actionDescription = bluetoothName?.takeIf { isBluetoothEnabled }
+                                        ?: stringResource(R.string.player_audio_output_title),
+                                    onClick = { showAudioOutputSheet = true }
+                                ) {
+                                    Icon(
+                                        imageVector = if (bluetoothName?.takeIf { isBluetoothEnabled } != null) {
+                                            Icons.Rounded.Bluetooth
+                                        } else {
+                                            Icons.Rounded.Speaker
+                                        },
+                                        contentDescription = null,
+                                        tint = playerAccentColor
+                                    )
+                                }
+                                ExpressiveHeaderAction(
+                                    containerColor = playerOnAccentColor.copy(alpha = 0.72f),
+                                    contentColor = playerAccentColor,
+                                    actionDescription = stringResource(R.string.presentation_batch_g_player_cd_queue),
+                                    onClick = {
+                                        showSongInfoBottomSheet = true
+                                        onShowQueueClicked()
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.rounded_queue_music_24),
+                                        contentDescription = null,
+                                        tint = playerAccentColor
+                                    )
+                                }
+                            }
+                        } else Row(
                             modifier = Modifier
                                 .padding(end = 14.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -874,6 +961,15 @@ fun FullPlayerContent(
                     songMetadataSection = landscapeSongMetadataSection,
                     playerProgressSection = playerProgressSection,
                     controlsSection = controlsSection
+                )
+            } else if (expressiveNowPlayingEnabled) {
+                ExpressiveNowPlayingPortraitContent(
+                    paddingValues = paddingValues,
+                    albumCoverSection = albumCoverSection,
+                    songMetadataSection = expressiveSongMetadataSection,
+                    playerProgressSection = playerProgressSection,
+                    transportSection = expressiveTransportSection,
+                    bottomActionsSection = expressiveBottomActions
                 )
             } else {
                 FullPlayerPortraitContent(
@@ -1164,6 +1260,220 @@ private fun FullPlayerControlsSection(
 }
 
 @Composable
+private fun ExpressiveSongMetadataSection(
+    song: Song,
+    currentSongArtists: ImmutableList<Artist>,
+    expansionFractionProvider: () -> Float,
+    textColor: Color,
+    artistTextColor: Color,
+    gradientEdgeColor: Color,
+    playerViewModel: PlayerViewModel,
+    isPlayingProvider: () -> Boolean,
+    isFavoriteProvider: () -> Boolean,
+    onFavoriteToggle: () -> Unit,
+    onClickArtist: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 70.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        PlayerSongInfo(
+            title = song.title,
+            artist = song.displayArtist,
+            artistId = song.artistId,
+            artists = currentSongArtists,
+            expansionFractionProvider = expansionFractionProvider,
+            textColor = textColor,
+            artistTextColor = artistTextColor,
+            gradientEdgeColor = gradientEdgeColor,
+            playerViewModel = playerViewModel,
+            onClickArtist = onClickArtist,
+            modifier = Modifier.weight(1f),
+            isPlayingProvider = isPlayingProvider
+        )
+
+        val isFavorite = isFavoriteProvider()
+        FilledIconButton(
+            modifier = Modifier.size(48.dp),
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = LocalMaterialTheme.current.secondaryFixedDim,
+                contentColor = LocalMaterialTheme.current.onSecondaryFixed
+            ),
+            onClick = onFavoriteToggle
+        ) {
+            Icon(
+                painter = painterResource(
+                    if (isFavorite) R.drawable.round_favorite_24 else R.drawable.rounded_favorite_24
+                ),
+                contentDescription = stringResource(R.string.cd_favorite)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExpressiveTransportSection(
+    isPlayingProvider: () -> Boolean,
+    onPrevious: () -> Unit,
+    onPlayPause: () -> Unit,
+    onNext: () -> Unit,
+    playPauseColors: TransportButtonColors,
+    skipColors: TransportButtonColors
+) {
+    AnimatedPlaybackControls(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 2.dp),
+        isPlayingProvider = isPlayingProvider,
+        onPrevious = onPrevious,
+        onPlayPause = onPlayPause,
+        onNext = onNext,
+        height = 76.dp,
+        baseWeight = 1f,
+        playPauseBaseWeight = 1.32f,
+        expansionWeight = 1.42f,
+        compressionWeight = 0.82f,
+        pressAnimationSpec = tween(durationMillis = 240, easing = FastOutSlowInEasing),
+        playPauseCornerPlaying = 24.dp,
+        playPauseCornerPaused = 24.dp,
+        colorOtherButtons = skipColors.container,
+        colorPlayPause = playPauseColors.container,
+        tintPlayPauseIcon = playPauseColors.content,
+        tintOtherIcons = skipColors.content,
+        colorPreviousButton = skipColors.container,
+        colorNextButton = skipColors.container,
+        tintPreviousIcon = skipColors.content,
+        tintNextIcon = skipColors.content,
+        playPauseIconSize = 32.dp,
+        iconSize = 28.dp
+    )
+}
+
+@Composable
+private fun ExpressiveBottomActions(
+    isShuffleEnabled: Boolean,
+    isShuffleTransitionInProgress: Boolean,
+    repeatMode: Int,
+    onShuffleToggle: () -> Unit,
+    onRepeatToggle: () -> Unit,
+    onLyricsClick: () -> Unit,
+    onQueueClick: () -> Unit
+) {
+    val colors = LocalMaterialTheme.current
+    val rowShape = RoundedCornerShape(28.dp)
+    val inactiveColor = colors.onSurface.copy(alpha = 0.07f)
+    val lyricsDescription = stringResource(R.string.presentation_batch_g_player_cd_lyrics)
+    val queueDescription = stringResource(R.string.presentation_batch_g_player_cd_queue)
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .height(58.dp)
+                .clip(rowShape)
+                .background(colors.surfaceContainerLowest.copy(alpha = 0.72f))
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ToggleSegmentButton(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                active = isShuffleEnabled,
+                enabled = !isShuffleTransitionInProgress,
+                activeColor = colors.primaryFixed,
+                activeContentColor = colors.onPrimaryFixed,
+                inactiveColor = inactiveColor,
+                inactiveContentColor = colors.onSurface,
+                activeCornerRadius = 24.dp,
+                onClick = onShuffleToggle,
+                iconId = R.drawable.rounded_shuffle_24,
+                contentDesc = stringResource(R.string.cd_shuffle)
+            )
+
+            ToggleSegmentButton(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                active = repeatMode != Player.REPEAT_MODE_OFF,
+                activeColor = colors.secondaryFixed,
+                activeContentColor = colors.onSecondaryFixed,
+                inactiveColor = inactiveColor,
+                inactiveContentColor = colors.onSurface,
+                activeCornerRadius = 24.dp,
+                onClick = onRepeatToggle,
+                iconId = if (repeatMode == Player.REPEAT_MODE_ONE) {
+                    R.drawable.rounded_repeat_one_24
+                } else {
+                    R.drawable.rounded_repeat_24
+                },
+                contentDesc = stringResource(R.string.cd_repeat)
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clip(CircleShape)
+                    .background(inactiveColor)
+                    .clickable(onClick = onLyricsClick)
+                    .semantics { contentDescription = lyricsDescription },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.rounded_lyrics_24),
+                    contentDescription = null,
+                    tint = colors.onSurface
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .size(58.dp)
+                .clip(CircleShape)
+                .background(colors.surfaceContainerLowest.copy(alpha = 0.72f))
+                .clickable(onClick = onQueueClick)
+                .semantics { contentDescription = queueDescription },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = null,
+                tint = colors.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExpressiveHeaderAction(
+    containerColor: Color,
+    contentColor: Color,
+    actionDescription: String,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(containerColor)
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = actionDescription },
+        contentAlignment = Alignment.Center
+    ) {
+        androidx.compose.runtime.CompositionLocalProvider(LocalContentColor provides contentColor) {
+            content()
+        }
+    }
+}
+
+@Composable
 private fun FullPlayerProgressSection(
     song: Song,
     playbackMetadataMediaId: String?,
@@ -1175,6 +1485,7 @@ private fun FullPlayerProgressSection(
     currentPositionProvider: () -> Long,
     totalDurationValue: Long,
     showPlayerFileInfo: Boolean,
+    showInlineAudioQualityDetails: Boolean,
     onSeek: (Long) -> Unit,
     expansionFractionProvider: () -> Float,
     isPlayingProvider: () -> Boolean,
@@ -1215,6 +1526,7 @@ private fun FullPlayerProgressSection(
         audioBitDepth = audioBitDepth,
         audioChannelCount = audioChannelCount,
         showAudioFileInfo = showPlayerFileInfo,
+        showInlineAudioQualityDetails = showInlineAudioQualityDetails,
         onSeek = onSeek,
         expansionFractionProvider = expansionFractionProvider,
         isPlayingProvider = isPlayingProvider,
@@ -1377,6 +1689,46 @@ private fun FullPlayerPortraitContent(
         }
 
         controlsSection()
+    }
+}
+
+@Composable
+private fun ExpressiveNowPlayingPortraitContent(
+    paddingValues: PaddingValues,
+    albumCoverSection: @Composable (Modifier) -> Unit,
+    songMetadataSection: @Composable () -> Unit,
+    playerProgressSection: @Composable () -> Unit,
+    transportSection: @Composable () -> Unit,
+    bottomActionsSection: @Composable () -> Unit
+) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        val artworkWidth = (maxWidth - 48.dp).coerceAtLeast(0.dp)
+        val artworkHeight = minOf(artworkWidth + 16.dp, maxHeight * 0.48f)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp, vertical = 4.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            albumCoverSection(Modifier.height(artworkHeight))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(3.dp)
+            ) {
+                songMetadataSection()
+                playerProgressSection()
+            }
+
+            transportSection()
+            bottomActionsSection()
+        }
     }
 }
 
@@ -1595,6 +1947,7 @@ private fun PlayerProgressBarSection(
     audioBitDepth: Int?,
     audioChannelCount: Int?,
     showAudioFileInfo: Boolean,
+    showInlineAudioQualityDetails: Boolean,
     onSeek: (Long) -> Unit,
     expansionFractionProvider: () -> Float,
     isPlayingProvider: () -> Boolean,
@@ -1786,6 +2139,7 @@ private fun PlayerProgressBarSection(
                 isVisible = isVisible,
                 textColor = timeTextColor,
                 audioQualityInfo = displayAudioQualityInfo,
+                showInlineAudioQualityDetails = showInlineAudioQualityDetails,
                 onAudioQualityClick = { showAudioQualitySheet = true },
                 horizontalTrackInset = progressSectionHorizontalInset
             )
@@ -1846,6 +2200,7 @@ private fun EfficientTimeLabels(
     isVisible: Boolean,
     textColor: Color,
     audioQualityInfo: AudioQualityInfo?,
+    showInlineAudioQualityDetails: Boolean,
     onAudioQualityClick: () -> Unit,
     horizontalTrackInset: Dp
 ) {
@@ -1889,26 +2244,57 @@ private fun EfficientTimeLabels(
         }
 
         if (audioQualityInfo != null) {
-            val (badgeContainerColor, badgeContentColor) = audioQualityInfo.badgeColors()
-            Surface(
-                onClick = onAudioQualityClick,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 58.dp),
-                shape = CircleShape,
-                color = badgeContainerColor,
-                contentColor = badgeContentColor
-            ) {
-                Text(
-                    text = audioQualityInfo.badgeLabel(),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.4.sp
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                )
+            val qualityLabel = if (showInlineAudioQualityDetails) {
+                buildList {
+                    audioQualityInfo.sampleRate?.let {
+                        add(String.format(Locale.US, "%.1f kHz", it / 1000.0))
+                    }
+                    audioQualityInfo.bitrate?.let { add("${it / 1000} kbps") }
+                    audioQualityInfo.formatName?.let { add(it) }
+                }.joinToString(" • ").ifBlank { audioQualityInfo.badgeLabel() }
+            } else {
+                audioQualityInfo.badgeLabel()
+            }
+            if (showInlineAudioQualityDetails) {
+                Surface(
+                    onClick = onAudioQualityClick,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 58.dp),
+                    shape = CircleShape,
+                    color = Color.Transparent,
+                    contentColor = textColor
+                ) {
+                    Text(
+                        text = qualityLabel,
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+                    )
+                }
+            } else {
+                val (badgeContainerColor, badgeContentColor) = audioQualityInfo.badgeColors()
+                Surface(
+                    onClick = onAudioQualityClick,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 58.dp),
+                    shape = CircleShape,
+                    color = badgeContainerColor,
+                    contentColor = badgeContentColor
+                ) {
+                    Text(
+                        text = qualityLabel,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.4.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                    )
+                }
             }
         }
     }

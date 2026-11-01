@@ -55,6 +55,7 @@ fun AnimatedPlaybackControls(
     modifier: Modifier = Modifier,
     height: Dp = 90.dp,
     baseWeight: Float = 1f,
+    playPauseBaseWeight: Float = baseWeight,
     expansionWeight: Float = 1.1f,
     compressionWeight: Float = 0.65f,
     pressAnimationSpec: AnimationSpec<Float>,
@@ -125,7 +126,7 @@ fun AnimatedPlaybackControls(
         ) {
             fun weightFor(button: PlaybackButtonType): Float = when (lastClicked) {
                 button -> expansionWeight
-                null -> baseWeight
+                null -> if (button == PlaybackButtonType.PLAY_PAUSE) playPauseBaseWeight else baseWeight
                 else -> compressionWeight
             }
 
@@ -225,4 +226,3 @@ fun AnimatedPlaybackControls(
         }
     }
 }
-

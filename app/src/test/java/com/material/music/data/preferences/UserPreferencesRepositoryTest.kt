@@ -20,6 +20,28 @@ import java.nio.file.Files
 class UserPreferencesRepositoryTest {
 
     @Test
+    fun `expressive now playing is opt-in and persists`() = runTest {
+        val tempDir = Files.createTempDirectory("expressive-now-playing-preference-test")
+        try {
+            val repository = UserPreferencesRepository(
+                dataStore = PreferenceDataStoreFactory.create(
+                    scope = backgroundScope,
+                    produceFile = { tempDir.resolve("settings.preferences_pb").toFile() }
+                ),
+                json = Json
+            )
+
+            assertEquals(false, repository.expressiveNowPlayingEnabledFlow.first())
+
+            repository.setExpressiveNowPlayingEnabled(true)
+
+            assertTrue(repository.expressiveNowPlayingEnabledFlow.first())
+        } finally {
+            tempDir.toFile().deleteRecursively()
+        }
+    }
+
+    @Test
     fun `keep screen awake while playing is opt-in and persists`() = runTest {
         val tempDir = Files.createTempDirectory("user-preferences-repository-test")
         try {
