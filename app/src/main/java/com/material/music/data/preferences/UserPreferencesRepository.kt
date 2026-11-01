@@ -176,6 +176,7 @@ constructor(
         val SHOW_QUEUE_HISTORY = booleanPreferencesKey("show_queue_history")
         val PLAYBACK_QUEUE_SNAPSHOT = stringPreferencesKey("playback_queue_snapshot_v1")
         val FULL_PLAYER_SHOW_FILE_INFO = booleanPreferencesKey("full_player_show_file_info")
+        val EXPRESSIVE_NOW_PLAYING_ENABLED = booleanPreferencesKey("expressive_now_playing_enabled")
         val FULL_PLAYER_DELAY_ALL = booleanPreferencesKey("full_player_delay_all")
         val FULL_PLAYER_DELAY_ALBUM = booleanPreferencesKey("full_player_delay_album")
         val FULL_PLAYER_DELAY_METADATA = booleanPreferencesKey("full_player_delay_metadata")
@@ -974,6 +975,17 @@ constructor(
     suspend fun setShowPlayerFileInfo(show: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.FULL_PLAYER_SHOW_FILE_INFO] = show
+        }
+    }
+
+    val expressiveNowPlayingEnabledFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.EXPRESSIVE_NOW_PLAYING_ENABLED] ?: false
+        }.distinctUntilChanged()
+
+    suspend fun setExpressiveNowPlayingEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.EXPRESSIVE_NOW_PLAYING_ENABLED] = enabled
         }
     }
 

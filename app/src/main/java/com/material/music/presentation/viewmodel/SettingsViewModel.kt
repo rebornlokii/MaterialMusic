@@ -98,6 +98,7 @@ data class SettingsUiState(
     val appRebrandDialogShown: Boolean = false,
     val fullPlayerLoadingTweaks: FullPlayerLoadingTweaks = FullPlayerLoadingTweaks(),
     val showPlayerFileInfo: Boolean = true,
+    val expressiveNowPlayingEnabled: Boolean = false,
     val showScrollbar: Boolean = true,
     val albumArtQuality: AlbumArtQuality = AlbumArtQuality.MEDIUM,
     val albumArtCacheLimitMb: Int = 200,
@@ -418,6 +419,12 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.fullPlayerLoadingTweaksFlow.collect { tweaks ->
                 _uiState.update { it.copy(fullPlayerLoadingTweaks = tweaks) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.expressiveNowPlayingEnabledFlow.collect { enabled ->
+                _uiState.update { it.copy(expressiveNowPlayingEnabled = enabled) }
             }
         }
 
@@ -1037,6 +1044,12 @@ class SettingsViewModel @Inject constructor(
     fun setAlbumArtQuality(quality: AlbumArtQuality) {
         viewModelScope.launch {
             userPreferencesRepository.setAlbumArtQuality(quality)
+        }
+    }
+
+    fun setExpressiveNowPlayingEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setExpressiveNowPlayingEnabled(enabled)
         }
     }
 

@@ -1228,6 +1228,23 @@ fun SettingsCategoryScreen(
                             }
                         }
                         SettingsCategory.DEVELOPER -> {
+                            SettingsSubsection(title = stringResource(R.string.setcat_player_experiments)) {
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.setcat_expressive_player_title),
+                                    subtitle = stringResource(R.string.setcat_expressive_player_subtitle),
+                                    checked = uiState.expressiveNowPlayingEnabled,
+                                    onCheckedChange = settingsViewModel::setExpressiveNowPlayingEnabled,
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Style,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    },
+                                    modifier = Modifier.settingHighlight("item_developer_expressive_player", highlightKey)
+                                )
+                            }
+
                             SettingsSubsection(title = stringResource(R.string.setcat_experiments)) {
                                 SettingsItem(
                                     title = stringResource(R.string.setcat_experimental_title),
