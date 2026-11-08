@@ -17,13 +17,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.shape.AbsoluteSmoothCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.media3.common.Player
 import com.material.music.R
 import com.material.music.presentation.components.LocalMaterialTheme
 import com.material.music.presentation.components.ToggleSegmentButton
-import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape as SmoothCornerShape
+import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 
 @Composable
 fun BottomToggleRow(
