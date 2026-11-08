@@ -87,6 +87,7 @@ fun LyricsMoreBottomSheet(
     onShowRomanizationChange: (Boolean) -> Unit,
     immersiveLyricsEnabled: Boolean,
     isShuffleEnabled: Boolean,
+    isShuffleTransitionInProgress: Boolean = false,
     repeatMode: Int,
     isFavoriteProvider: () -> Boolean,
     onShuffleToggle: () -> Unit,
@@ -574,6 +575,7 @@ fun LyricsMoreBottomSheet(
                         .height(74.dp)
                         .padding(horizontal = 20.dp),
                     isShuffleEnabled = isShuffleEnabled,
+                    isShuffleTransitionInProgress = isShuffleTransitionInProgress,
                     repeatMode = repeatMode,
                     isFavoriteProvider = isFavoriteProvider,
                     onShuffleToggle = onShuffleToggle,
