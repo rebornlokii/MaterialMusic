@@ -37,6 +37,7 @@ fun BottomToggleRow(
     onFavoriteToggle: () -> Unit,
     onLyricsClick: (() -> Unit)? = null,
     onAddToPlaylistClick: (() -> Unit)? = null,
+    showFavoriteToggle: Boolean = true,
     activeColorMain: Color = MaterialTheme.colorScheme.primary,
     activeColorSecondary: Color = MaterialTheme.colorScheme.secondary,
     activeColorTertiary: Color = MaterialTheme.colorScheme.tertiary,
@@ -126,22 +127,24 @@ fun BottomToggleRow(
                     iconId = repeatIcon,
                     contentDesc = stringResource(R.string.cd_repeat)
                 )
-                ToggleSegmentButton(
-                    modifier = commonModifier,
-                    active = isFavorite,
-                    activeColor = activeColorTertiary,
-                    activeCornerRadius = rowCorners,
-                    activeContentColor = onActiveColorTertiary,
-                    inactiveColor = inactiveColor,
-                    inactiveContentColor = inactiveContentColor,
-                    onClick = onFavoriteToggle,
-                    iconId = if (isFavorite) R.drawable.round_favorite_24 else R.drawable.rounded_favorite_24,
-                    contentDesc = stringResource(R.string.cd_favorite)
-                )
-                if (onLyricsClick != null) {
+                if (showFavoriteToggle) {
+                    ToggleSegmentButton(
+                        modifier = commonModifier,
+                        active = isFavorite,
+                        activeColor = activeColorTertiary,
+                        activeCornerRadius = rowCorners,
+                        activeContentColor = onActiveColorTertiary,
+                        inactiveColor = inactiveColor,
+                        inactiveContentColor = inactiveContentColor,
+                        onClick = onFavoriteToggle,
+                        iconId = if (isFavorite) R.drawable.round_favorite_24 else R.drawable.rounded_favorite_24,
+                        contentDesc = stringResource(R.string.cd_favorite)
+                    )
+                } else if (onLyricsClick != null) {
                     Box(
                         modifier = Modifier
                             .weight(1f)
+                            .fillMaxHeight()
                             .clip(RoundedCornerShape(8.dp))
                             .background(inactiveColor)
                             .clickable(onClick = onLyricsClick)
@@ -151,7 +154,8 @@ fun BottomToggleRow(
                         Icon(
                             painter = painterResource(R.drawable.rounded_lyrics_24),
                             contentDescription = null,
-                            tint = inactiveContentColor
+                            tint = inactiveContentColor,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }

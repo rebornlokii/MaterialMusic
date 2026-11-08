@@ -639,6 +639,7 @@ private fun ExpressiveBottomActions(
         onFavoriteToggle = onFavoriteToggle,
         onLyricsClick = onLyricsClick,
         onAddToPlaylistClick = onAddToPlaylistClick,
+        showFavoriteToggle = false,
         activeColorMain = colors.primaryFixed,
         activeColorSecondary = colors.secondaryFixed,
         activeColorTertiary = colors.onSecondaryFixed,
