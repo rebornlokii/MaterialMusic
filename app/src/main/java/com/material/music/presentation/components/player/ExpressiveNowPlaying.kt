@@ -82,7 +82,7 @@ import com.material.music.data.model.Song
 import com.material.music.data.preferences.AlbumArtQuality
 import com.material.music.presentation.components.LocalMaterialTheme
 import com.material.music.presentation.components.MaxSafeAlbumArtDimensionPx
-import com.material.music.presentation.components.BottomToggleRow
+import com.material.music.presentation.components.player.BottomToggleRow
 import com.material.music.presentation.components.PlaylistBottomSheet
 import com.material.music.presentation.components.ToggleSegmentButton
 import com.material.music.presentation.components.rememberArtworkModelWithCacheVersion
