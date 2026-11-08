@@ -82,6 +82,7 @@ import com.material.music.data.model.Song
 import com.material.music.data.preferences.AlbumArtQuality
 import com.material.music.presentation.components.LocalMaterialTheme
 import com.material.music.presentation.components.MaxSafeAlbumArtDimensionPx
+import com.material.music.presentation.components.BottomToggleRow
 import com.material.music.presentation.components.PlaylistBottomSheet
 import com.material.music.presentation.components.ToggleSegmentButton
 import com.material.music.presentation.components.rememberArtworkModelWithCacheVersion
@@ -251,8 +252,10 @@ internal fun ExpressiveNowPlayingContent(
                 isShuffleEnabled = isShuffleEnabled,
                 isShuffleTransitionInProgress = isShuffleTransitionInProgress,
                 repeatMode = repeatMode,
+                isFavoriteProvider = isFavoriteProvider,
                 onShuffleToggle = onShuffleToggle,
                 onRepeatToggle = onRepeatToggle,
+                onFavoriteToggle = onFavoriteToggle,
                 onLyricsClick = onLyricsClick,
                 onAddToPlaylistClick = { showPlaylistSheet = true }
             )
@@ -610,93 +613,39 @@ private fun ExpressiveBottomActions(
     isShuffleEnabled: Boolean,
     isShuffleTransitionInProgress: Boolean,
     repeatMode: Int,
+    isFavoriteProvider: () -> Boolean,
     onShuffleToggle: () -> Unit,
     onRepeatToggle: () -> Unit,
+    onFavoriteToggle: () -> Unit,
     onLyricsClick: () -> Unit,
     onAddToPlaylistClick: () -> Unit
 ) {
     val colors = LocalMaterialTheme.current
     val groupColor = colors.surfaceContainerLowest.copy(alpha = 0.72f)
-    val inactiveColor = colors.onSurface.copy(alpha = 0.07f)
-    val lyricsDescription = stringResource(R.string.presentation_batch_g_player_cd_lyrics)
-    val addToPlaylistDescription = stringResource(R.string.cd_add_to_playlist)
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .height(58.dp)
-                .clip(CircleShape)
-                .background(groupColor)
-                .padding(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ToggleSegmentButton(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
-                active = isShuffleEnabled,
-                enabled = !isShuffleTransitionInProgress,
-                activeColor = colors.primaryFixed,
-                activeContentColor = colors.onPrimaryFixed,
-                inactiveColor = inactiveColor,
-                inactiveContentColor = colors.onSurface,
-                activeCornerRadius = 24.dp,
-                onClick = onShuffleToggle,
-                iconId = R.drawable.rounded_shuffle_24,
-                contentDesc = stringResource(R.string.cd_shuffle)
-            )
-            ToggleSegmentButton(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
-                active = repeatMode != Player.REPEAT_MODE_OFF,
-                activeColor = colors.secondaryFixed,
-                activeContentColor = colors.onSecondaryFixed,
-                inactiveColor = inactiveColor,
-                inactiveContentColor = colors.onSurface,
-                activeCornerRadius = 24.dp,
-                onClick = onRepeatToggle,
-                iconId = if (repeatMode == Player.REPEAT_MODE_ONE) {
-                    R.drawable.rounded_repeat_one_24
-                } else {
-                    R.drawable.rounded_repeat_24
-                },
-                contentDesc = stringResource(R.string.cd_repeat)
-            )
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(inactiveColor)
-                    .clickable(onClick = onLyricsClick)
-                    .semantics { contentDescription = lyricsDescription },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.rounded_lyrics_24),
-                    contentDescription = null,
-                    tint = colors.onSurface
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .size(58.dp)
-                .clip(CircleShape)
-                .background(groupColor)
-                .clickable(onClick = onAddToPlaylistClick)
-                .semantics { contentDescription = addToPlaylistDescription },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Add,
-                contentDescription = null,
-                tint = colors.onSurface
-            )
-        }
-    }
+    BottomToggleRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 66.dp, max = 86.dp)
+            .padding(horizontal = 5.dp)
+            .background(groupColor)
+            .padding(5.dp),
+        isShuffleEnabled = isShuffleEnabled,
+        isShuffleTransitionInProgress = isShuffleTransitionInProgress,
+        repeatMode = repeatMode,
+        isFavoriteProvider = isFavoriteProvider,
+        onShuffleToggle = onShuffleToggle,
+        onRepeatToggle = onRepeatToggle,
+        onFavoriteToggle = onFavoriteToggle,
+        onLyricsClick = onLyricsClick,
+        onAddToPlaylistClick = onAddToPlaylistClick,
+        activeColorMain = colors.primaryFixed,
+        activeColorSecondary = colors.secondaryFixed,
+        activeColorTertiary = colors.onSecondaryFixed,
+        onActiveColorMain = colors.onPrimaryFixed,
+        onActiveColorSecondary = colors.onSecondaryFixed,
+        onActiveColorTertiary = colors.onPrimaryFixed,
+        inactiveColor = colors.onSurface.copy(alpha = 0.07f),
+        inactiveContentColor = colors.onSurface
+    )
 }
