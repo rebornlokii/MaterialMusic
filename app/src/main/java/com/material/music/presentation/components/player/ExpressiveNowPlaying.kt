@@ -621,15 +621,11 @@ private fun ExpressiveBottomActions(
     onAddToPlaylistClick: () -> Unit
 ) {
     val colors = LocalMaterialTheme.current
-    val groupColor = colors.surfaceContainerLowest.copy(alpha = 0.72f)
 
     BottomToggleRow(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 66.dp, max = 86.dp)
-            .padding(horizontal = 5.dp)
-            .background(groupColor)
-            .padding(5.dp),
+            .heightIn(min = 66.dp, max = 86.dp),
         isShuffleEnabled = isShuffleEnabled,
         isShuffleTransitionInProgress = isShuffleTransitionInProgress,
         repeatMode = repeatMode,
@@ -647,6 +643,7 @@ private fun ExpressiveBottomActions(
         onActiveColorSecondary = colors.onSecondaryFixed,
         onActiveColorTertiary = colors.onPrimaryFixed,
         inactiveColor = colors.onSurface.copy(alpha = 0.07f),
-        inactiveContentColor = colors.onSurface
+        inactiveContentColor = colors.onSurface,
+        containerColor = colors.surfaceContainerLowest.copy(alpha = 0.72f)
     )
 }
