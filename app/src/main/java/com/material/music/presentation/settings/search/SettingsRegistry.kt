@@ -828,6 +828,18 @@ object SettingsRegistry {
                 keywordsStatic = listOf("experimental", "labs", "tweaks", "beta")
             ),
             SettingSpec(
+                id = "developer_expressive_player",
+                itemKey = "item_developer_expressive_player",
+                titleRes = R.string.setcat_expressive_player_title,
+                subtitleRes = R.string.setcat_expressive_player_subtitle,
+                category = SettingsCategory.DEVELOPER,
+                subscreenRoute = Screen.SettingsCategory.createRoute("developer"),
+                type = SettingType.SWITCH,
+                keywordsStatic = listOf("player", "now playing", "expressive", "redesign", "album art"),
+                getValue = { it.expressiveNowPlayingEnabled },
+                onToggle = { viewModel, checked -> viewModel.setExpressiveNowPlayingEnabled(checked) }
+            ),
+            SettingSpec(
                 id = "developer_daily_mix",
                 itemKey = "item_developer_daily_mix",
                 titleRes = R.string.setcat_force_daily_mix_title,

@@ -204,6 +204,7 @@ fun FullPlayerContent(
     currentSheetState: PlayerSheetState,
     carouselStyle: String,
     loadingTweaks: FullPlayerLoadingTweaks,
+    expressiveNowPlayingEnabled: Boolean = false,
     isSheetDragGestureActive: Boolean = false,
     playerViewModel: PlayerViewModel,
     currentPositionProvider: () -> Long,
@@ -322,7 +323,7 @@ fun FullPlayerContent(
 
     val isLandscape =
         LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-
+    val useExpressiveLayout = expressiveNowPlayingEnabled && !isLandscape
 
     val onLyricsClick = {
         val lyrics = lyricsProvider()
@@ -686,7 +687,7 @@ fun FullPlayerContent(
         },
         topBar = {
             AnimatedVisibility(
-                visible = !isLandscape,
+                visible = !isLandscape && !useExpressiveLayout,
                 enter = fadeIn(animationSpec = tween(350, easing = FastOutSlowInEasing)) +
                         slideInVertically(
                             initialOffsetY = { -it / 2 },
@@ -874,6 +875,39 @@ fun FullPlayerContent(
                     songMetadataSection = landscapeSongMetadataSection,
                     playerProgressSection = playerProgressSection,
                     controlsSection = controlsSection
+                )
+            } else if (useExpressiveLayout) {
+                ExpressiveNowPlayingContent(
+                    song = song,
+                    currentSongArtists = currentSongArtists,
+                    albumArtQuality = albumArtQuality,
+                    paddingValues = paddingValues,
+                    expansionFractionProvider = expansionFractionProvider,
+                    playerViewModel = playerViewModel,
+                    isPlayingProvider = isPlayingProvider,
+                    isFavoriteProvider = isFavoriteProvider,
+                    isShuffleEnabled = isShuffleEnabledProvider(),
+                    isShuffleTransitionInProgress = shuffleTransitionInProgress,
+                    repeatMode = repeatModeProvider(),
+                    bluetoothOutputName = bluetoothName?.takeIf { isBluetoothEnabled },
+                    progressSection = playerProgressSection,
+                    onCollapse = onCollapse,
+                    onAudioOutputClick = { showAudioOutputSheet = true },
+                    onQueueClick = {
+                        showSongInfoBottomSheet = true
+                        onShowQueueClicked()
+                    },
+                    onLyricsClick = onLyricsClick,
+                    onArtistClick = onSongMetadataArtistClick,
+                    onAlbumClick = {
+                        playerViewModel.triggerAlbumNavigationFromPlayer(song.albumId)
+                    },
+                    onFavoriteToggle = onFavoriteToggle,
+                    onPrevious = onPreviousWithOptimisticCarousel,
+                    onPlayPause = onPlayPause,
+                    onNext = onNextWithOptimisticCarousel,
+                    onShuffleToggle = onShuffleToggle,
+                    onRepeatToggle = onRepeatToggle
                 )
             } else {
                 FullPlayerPortraitContent(
@@ -2077,7 +2111,7 @@ private data class DelayedContentFrame(
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
-private fun PlayerSongInfo(
+internal fun PlayerSongInfo(
     title: String,
     artist: String,
     artistId: Long,
