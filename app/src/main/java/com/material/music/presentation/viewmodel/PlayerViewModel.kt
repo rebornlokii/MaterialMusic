@@ -1321,7 +1321,8 @@ class PlayerViewModel @Inject constructor(
         val tapBackgroundClosesPlayer: Boolean = false,
         val useSmoothCorners: Boolean = true,
         val playerThemePreference: String = ThemePreference.ALBUM_ART,
-        val miniPlayerSwipeToSkip: Boolean = false
+        val miniPlayerSwipeToSkip: Boolean = false,
+        val expressiveNowPlayingEnabled: Boolean = false
     )
 
     private val playerConfigSlicePart1 = combine(
@@ -1346,8 +1347,9 @@ class PlayerViewModel @Inject constructor(
         playerConfigSlicePart1,
         useSmoothCorners,
         playerThemePreference,
-        userPreferencesRepository.miniPlayerSwipeToSkipFlow
-    ) { p1, smoothCorners, themePref, swipeToSkip ->
+        userPreferencesRepository.miniPlayerSwipeToSkipFlow,
+        userPreferencesRepository.expressiveNowPlayingEnabledFlow
+    ) { p1, smoothCorners, themePref, swipeToSkip, expressiveNowPlaying ->
         PlayerConfigSlice(
             navBarCornerRadius = p1.navBarCornerRadius,
             navBarStyle = p1.navBarStyle,
@@ -1356,7 +1358,8 @@ class PlayerViewModel @Inject constructor(
             tapBackgroundClosesPlayer = p1.tapBackgroundClosesPlayer,
             useSmoothCorners = smoothCorners,
             playerThemePreference = themePref,
-            miniPlayerSwipeToSkip = swipeToSkip
+            miniPlayerSwipeToSkip = swipeToSkip,
+            expressiveNowPlayingEnabled = expressiveNowPlaying
         )
     }
         .distinctUntilChanged()

@@ -206,6 +206,7 @@ fun UnifiedPlayerSheetV2(
     val playerThemePreference = playerConfig.playerThemePreference
     // Horizontal swipes skip tracks and dismissal moves to a downward swipe.
     val miniPlayerSwipeToSkip = playerConfig.miniPlayerSwipeToSkip
+    val expressiveNowPlayingEnabled = playerConfig.expressiveNowPlayingEnabled
 
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
@@ -778,6 +779,7 @@ fun UnifiedPlayerSheetV2(
                                 currentSheetContentState = currentSheetContentState,
                                 carouselStyle = carouselStyle,
                                 fullPlayerLoadingTweaks = fullPlayerLoadingTweaks,
+                                expressiveNowPlayingEnabled = expressiveNowPlayingEnabled,
                                 isSheetDragGestureActive = sheetBackAndDragState.isDraggingPlayerArea,
                                 playerViewModel = playerViewModel,
                                 currentPositionProvider = positionToDisplayProvider,
@@ -803,6 +805,7 @@ fun UnifiedPlayerSheetV2(
                     infrequentPlayerState = infrequentPlayerState,
                     carouselStyle = carouselStyle,
                     fullPlayerLoadingTweaks = fullPlayerLoadingTweaks,
+                    expressiveNowPlayingEnabled = expressiveNowPlayingEnabled,
                     playerViewModel = playerViewModel,
                     currentPositionProvider = positionToDisplayProvider,
                     isOutputConnecting = isOutputConnecting,
