@@ -33,6 +33,23 @@ val enableAbiSplits = providers.gradleProperty("pixelplayer.enableAbiSplits")
     .getOrElse("true")
     .toBoolean()
 
+// Optional online assistance for Smart Mix. Neither value ships: without a key the feature is
+// simply the offline parser, which is the default build. Provide them in `local.properties`
+// (gitignored) or as `-PopenrouterApiKey=...` when building.
+val localProperties = Properties().apply {
+    val propFile = rootProject.file("local.properties")
+    if (propFile.exists()) propFile.inputStream().use { load(it) }
+}
+
+fun apiKey(property: String): String =
+    (localProperties.getProperty(property) ?: providers.gradleProperty(property).orNull)
+        ?.trim().orEmpty()
+
+val openRouterApiKey = apiKey("openrouterApiKey")
+val openRouterModel = (localProperties.getProperty("openrouterModel")
+    ?: providers.gradleProperty("openrouterModel").orNull)
+    ?.trim().orEmpty().ifBlank { "deepseek/deepseek-chat" }
+
 val enableComposeCompilerReports = providers.gradleProperty("pixelplayer.enableComposeCompilerReports")
     .getOrElse("false")
     .toBoolean()
@@ -85,6 +102,11 @@ android {
         versionName = (project.findProperty("APP_VERSION_NAME") as? String) ?: "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Built only when a key is supplied; both stay empty in a default build, which is
+        // exactly the offline-only configuration the feature falls back to.
+        buildConfigField("String", "OPENROUTER_API_KEY", "\"$openRouterApiKey\"")
+        buildConfigField("String", "OPENROUTER_MODEL", "\"$openRouterModel\"")
     }
 
     signingConfigs {

@@ -36,3 +36,10 @@ annotation class AppScope
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ListenBrainzRetrofit
+
+/**
+ * Qualifier for the Retrofit instance that talks to OpenRouter.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OpenRouterRetrofit
