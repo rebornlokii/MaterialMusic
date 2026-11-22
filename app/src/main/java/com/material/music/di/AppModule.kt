@@ -40,6 +40,7 @@ import com.material.music.data.preferences.dataStore
 import com.material.music.data.media.SongMetadataEditor
 import com.material.music.data.network.deezer.DeezerApiService
 import com.material.music.data.network.lyrics.LrcLibApiService
+import com.material.music.data.network.openrouter.OpenRouterApiService
 import com.material.music.data.repository.ArtistImageRepository
 import com.material.music.data.repository.AudioBookmarkRepository
 import com.material.music.data.repository.AudioBookmarkRepositoryImpl
@@ -498,6 +499,42 @@ object AppModule {
     @Singleton
     fun provideDeezerApiService(@DeezerRetrofit retrofit: Retrofit): DeezerApiService {
         return retrofit.create(DeezerApiService::class.java)
+    }
+
+    /**
+     * Provides a Retrofit instance for OpenRouter.
+     *
+     * The key is an optional build-time value, so a build without one still constructs this
+     * cleanly: the request is never sent, because `MixRequestRefiner` checks for the key and for
+     * a validated connection before it calls in. Own connection pool rather than the shared
+     * client, whose eight-second read timeout is tuned for artwork and would cut a slow model
+     * reply short. The authorization header is a per-request one instead of an interceptor, so a
+     * key can never leak into a request to any other host.
+     */
+    @Provides
+    @Singleton
+    @OpenRouterRetrofit
+    fun provideOpenRouterRetrofit(): Retrofit {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+            .build()
+        return Retrofit.Builder()
+            .baseUrl("https://openrouter.ai/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * Provides the OpenRouter API service.
+     */
+    @Provides
+    @Singleton
+    fun provideOpenRouterApiService(@OpenRouterRetrofit retrofit: Retrofit): OpenRouterApiService {
+        return retrofit.create(OpenRouterApiService::class.java)
     }
 
     /**

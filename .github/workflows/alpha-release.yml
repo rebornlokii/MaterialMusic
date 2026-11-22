@@ -79,11 +79,16 @@ jobs:
           } > keystore.properties
 
       - name: Build alpha release APKs
+        env:
+          # Injected at build time, never committed. A run with no secret simply has no key and
+          # Smart Mix parses requests locally.
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: >
           ./gradlew :app:assembleRelease
           -Ppixelplayer.enableAbiSplits=true
           -PAPP_VERSION_NAME=${{ steps.version.outputs.name }}
           -PAPP_VERSION_CODE=${{ steps.version.outputs.code }}
+          -PopenrouterApiKey="${OPENROUTER_API_KEY}"
 
       - name: Verify and rename split APKs
         run: |

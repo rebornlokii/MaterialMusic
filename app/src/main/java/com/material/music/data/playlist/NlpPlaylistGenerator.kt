@@ -1,5 +1,6 @@
 package com.material.music.data.playlist
 
+import com.material.music.BuildConfig
 import com.material.music.data.DailyMixManager
 import com.material.music.data.media.TagBpmReader
 import com.material.music.data.model.Song
@@ -39,6 +40,11 @@ import kotlin.random.Random
  * when the query actually expresses a tempo/energy preference — reads tag-embedded BPM from local
  * files so tempo matching can use real numbers. There is no on-device audio analysis: songs
  * without a tagged BPM simply fall back to the engine's genre-derived energy heuristic.
+ *
+ * A request may first pass through [MixRequestRefiner], which restates it in the vocabulary the
+ * engine parses. That is optional and invisible: with no key, no connection or a failed call the
+ * original text is parsed exactly as before, and either way selection and ordering are decided
+ * here, offline, against this library alone.
  */
 @Singleton
 class NlpPlaylistGenerator @Inject constructor(
@@ -48,6 +54,7 @@ class NlpPlaylistGenerator @Inject constructor(
     private val mixPreferences: MixPreferences,
     private val conceptTableLoader: ConceptTableLoader,
     private val artistGenreLoader: ArtistGenreLoader,
+    private val requestRefiner: MixRequestRefiner,
 ) {
 
     private val indexMutex = Mutex()
@@ -79,14 +86,30 @@ class NlpPlaylistGenerator @Inject constructor(
             val engagements = loadEngagements()
             val concepts = conceptTableLoader.load()
 
-            val parsed = PlaylistIntentEngine.parse(description, index, concepts)
+            // The request is restated into the engine's vocabulary when that is available and
+            // the request is not already simple. Selection still happens below, offline, against
+            // this library only.
+            val intent = requestRefiner.refine(description)
+            if (BuildConfig.DEBUG) {
+                // TEMPORARY: confirms on a real device which path ran. A restatement is only
+                // visible as a better mix, and every failure falls back silently, so without
+                // this a broken integration looks identical to a working one. Remove once the
+                // online path has been seen working.
+                Timber.tag(TAG).d(
+                    "Mix parse: %s | request=%s | scored=%s",
+                    intent.source, description, intent.prompt,
+                )
+            }
+            val parsed = PlaylistIntentEngine.parse(intent.prompt, index, concepts)
             // Tag BPM is only worth the file reads when the query cares about tempo/energy at all.
             val bpmBySongId = if (parsed.hasEnergySignal) readTagBpms(songs, fileSignatureOf(songs)) else emptyMap()
 
             val now = System.currentTimeMillis()
             val mixContext = buildMixContext(parsed.normalizedQuery, now)
+            // The engine scores the refined prompt; the log records which one that was, since a
+            // restatement changes the parse without changing what the user asked for.
             val resultIds = PlaylistIntentEngine.generate(
-                query = description,
+                query = intent.prompt,
                 minLength = minLength,
                 maxLength = maxLength,
                 index = index,
@@ -95,7 +118,10 @@ class NlpPlaylistGenerator @Inject constructor(
                 context = mixContext,
                 concepts = concepts,
             )
-            Timber.tag(TAG).d("NLP playlist: len=%d-%d -> %d songs", minLength, maxLength, resultIds.size)
+            Timber.tag(TAG).d(
+                "NLP playlist: len=%d-%d -> %d songs (parse: %s)",
+                minLength, maxLength, resultIds.size, intent.source,
+            )
 
             if (resultIds.isNotEmpty()) {
                 recentMixes.addLast(now to resultIds)

@@ -5,6 +5,7 @@ All notable changes to MaterialMusic will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Smart Mix can now restate a request into the words its engine understands before parsing it. The library is never sent and no song is ever named by that service: it returns a short line of text, and which songs match and in what order they play is still decided on the device. If the call cannot be made — no connection, a timeout, or a reply that does not hold up — the request is parsed exactly as before, so Smart Mix behaves identically offline.
 - Animated Lyrics (Settings → Experimental) now uses PixelPlayer's spring-based motion: the line being sung springs to 1.10× with animated spacing, and each word pops in at 1.10× as it starts. The karaoke sweep, background vocals, and duet layout are unchanged.
 
 ### Removed

@@ -33,6 +33,27 @@ val enableAbiSplits = providers.gradleProperty("pixelplayer.enableAbiSplits")
     .getOrElse("true")
     .toBoolean()
 
+// The assist key is a CI secret (OPENROUTER_API_KEY), injected at build time and never
+// committed. A local build with no secret gets no key, which is simply the offline behaviour:
+// the composer's request is parsed locally, exactly as it was before this feature. Override it
+// in `local.properties` (gitignored) or with `-PopenrouterApiKey=...` to use a key locally.
+val localProperties = Properties().apply {
+    val propFile = rootProject.file("local.properties")
+    if (propFile.exists()) propFile.inputStream().use { load(it) }
+}
+
+fun apiKey(property: String): String =
+    (localProperties.getProperty(property) ?: providers.gradleProperty(property).orNull)
+        ?.trim()
+        // Blank on purpose: the feature treats an empty key as "no key", which is the offline
+        // path. Falling back to a placeholder would compile but silently never work.
+        .orEmpty()
+
+val openRouterApiKey = apiKey("openrouterApiKey")
+// The model is not a secret, so it has a default and the feature works as soon as a key exists.
+val openRouterModel = apiKey("openrouterModel")
+    .ifBlank { "baidu/ernie-5.5-flash-preview:free" }
+
 val enableComposeCompilerReports = providers.gradleProperty("pixelplayer.enableComposeCompilerReports")
     .getOrElse("false")
     .toBoolean()
@@ -85,6 +106,12 @@ android {
         versionName = (project.findProperty("APP_VERSION_NAME") as? String) ?: "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // The online assist's credentials. Both are blank unless supplied (CI secret or
+        // local.properties); a blank key means the request is parsed locally, which is the
+        // offline behaviour rather than a broken feature.
+        buildConfigField("String", "OPENROUTER_API_KEY", "\"$openRouterApiKey\"")
+        buildConfigField("String", "OPENROUTER_MODEL", "\"$openRouterModel\"")
     }
 
     signingConfigs {
