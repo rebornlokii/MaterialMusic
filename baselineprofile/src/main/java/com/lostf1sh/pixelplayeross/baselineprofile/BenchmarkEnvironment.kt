@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.baselineprofile
+package com.material.music.baselineprofile
 
 import android.Manifest
 import android.os.Build
@@ -8,7 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
 
-internal const val TARGET_APP_ID = "com.lostf1sh.pixelplayeross"
+internal const val TARGET_APP_ID = "com.material.music"
 internal const val BENCHMARK_EXTRA = "is_benchmark"
 
 private const val TAG = "BenchmarkEnvironment"

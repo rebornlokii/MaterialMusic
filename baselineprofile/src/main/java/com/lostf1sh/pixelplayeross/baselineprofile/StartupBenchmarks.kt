@@ -1,4 +1,4 @@
-package com.lostf1sh.pixelplayeross.baselineprofile
+package com.material.music.baselineprofile
 
 import androidx.benchmark.macro.BaselineProfileMode
 import androidx.benchmark.macro.CompilationMode
