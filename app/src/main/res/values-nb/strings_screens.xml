@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d bidrag.</string>
-    <string name="about_link_github_subtitle">Tilgjengelig i github-katalogen</string>
+    <string name="about_link_fdroid_subtitle">Tilgjengelig i F-Droid-katalogen</string>
     <string name="about_licenses_title">Lisenser og kreditering</string>
     <string name="about_licenses_subtitle">Biblioteker med åpen kildekode, skrifttyper og medfølgende data</string>
     <string name="about_licenses_sheet_subtitle">Tredjepartsprogramvare, skrifttyper og data som følger med denne appen.</string>
     <string name="licenses_tab_all">Alle</string>
     <string name="licenses_tab_libraries">Biblioteker</string>
     <string name="licenses_tab_fonts">Skrifttyper</string>
+    <string name="licenses_tab_contributors">Bidragsytere</string>
+    <string name="navigation_rail_expand">Vis navigasjon</string>
+    <string name="navigation_rail_collapse">Skjul navigasjon</string>
     <string name="licenses_tab_data">Data</string>
     <string name="licenses_tab_raw_notice">Rå merknad</string>
     <string name="licenses_search_placeholder">Søk i biblioteker eller lisenser…</string>
@@ -19,7 +22,7 @@
     <string name="licenses_toast_copied">Lisensteksten er kopiert til utklippstavlen</string>
     <string name="licenses_cd_close">Lukk</string>
     <string name="licenses_cd_copy">Kopier lisenstekst</string>
-    <string name="about_link_github_title">github</string>
+    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_title">Kildekode</string>
     <string name="about_maintainer_subtitle">Vedlikehold av FOSS-utgaven og den opprinnelige, ikke-FOSS-utgaven.</string>
     <string name="about_maintainer_title">Vedlikeholdere</string>
@@ -28,6 +31,12 @@
     <string name="about_signal_community_first">Samfunnet først</string>
     <string name="about_signal_material3">Material 3 ekspressiv</string>
     <string name="about_signal_open_source">Åpen kildekode</string>
+    <string name="about_support_body">Bidra til at FOSS-utgaven blir vedlikeholdt, gjennomgått og testet på ekte Android-enheter.</string>
+    <string name="about_support_chip_ci">CI og utgivelser</string>
+    <string name="about_support_chip_foss">FOSS-vedlikehold</string>
+    <string name="about_support_chip_streaming">Selvhostet musikk</string>
+    <string name="about_support_cta">Støtt på GitHub</string>
+    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">Lokal musikk først, selvhostet strømming og Material 3-håndverk i én FOSS-spiller.</string>
     <string name="about_version_format">Versjon v%1$s</string>
     <string name="accounts_unable_open_screen">Kan ikke åpne denne skjermen akkurat nå.</string>
@@ -278,4 +287,11 @@
     <string name="setup_theme_dark_description">Standard mørkt Material 3-utseende for MaterialMusic.</string>
     <string name="home_empty_placeholder_subtitle">Miksen din vises her når MaterialMusic finner sanger eller synkroniserer en kilde.</string>
     <string name="crash_report_share_subject">Krasjrapport for MaterialMusic</string>
+    <string name="about_support_title">Støtt MaterialMusic</string>
+    <string name="dash_jellyfin_sync_favorites_title">Synkroniser favoritter</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">Toveis synkronisering av likte sanger med Jellyfin-favoritter</string>
+    <string name="dash_jellyfin_sync_favorites_synced">Favoritter synkronisert med Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_failed">Kunne ikke synkronisere favoritter med Jellyfin</string>
+    <string name="home_recently_added_title">Nylig lagt til</string>
+    <string name="home_recently_added_play_cd">Spill av nylig tillagte sanger</string>
 </resources>

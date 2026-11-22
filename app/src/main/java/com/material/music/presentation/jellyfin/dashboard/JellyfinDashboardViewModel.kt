@@ -1,12 +1,15 @@
 package com.material.music.presentation.jellyfin.dashboard
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.material.music.R
 import com.material.music.data.database.JellyfinPlaylistEntity
 import com.material.music.data.model.Song
 import com.material.music.data.jellyfin.JellyfinRepository
 import com.material.music.data.jellyfin.model.JellyfinLibrary
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +25,8 @@ import kotlinx.coroutines.flow.map
 
 @HiltViewModel
 class JellyfinDashboardViewModel @Inject constructor(
-    private val repository: JellyfinRepository
+    private val repository: JellyfinRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     val playlists: StateFlow<ImmutableList<JellyfinPlaylistEntity>> = repository.getPlaylists()
@@ -47,6 +51,9 @@ class JellyfinDashboardViewModel @Inject constructor(
     val selectedLibraryIds: StateFlow<Set<String>> = repository.selectedLibraryIdsFlow
         .stateIn(viewModelScope, SharingStarted.Lazily, emptySet())
 
+    val syncFavorites: StateFlow<Boolean> = repository.syncFavoritesFlow
+        .stateIn(viewModelScope, SharingStarted.Lazily, false)
+
     private val _librarySelectionNeedsSync = MutableStateFlow(false)
     val librarySelectionNeedsSync: StateFlow<Boolean> = _librarySelectionNeedsSync.asStateFlow()
 
@@ -56,7 +63,9 @@ class JellyfinDashboardViewModel @Inject constructor(
 
     init {
         loadLibraries()
-        syncAllPlaylistsAndSongs()
+        if (repository.isFullSyncDue) {
+            syncAllPlaylistsAndSongs()
+        }
     }
 
     fun loadLibraries() {
@@ -77,6 +86,20 @@ class JellyfinDashboardViewModel @Inject constructor(
         viewModelScope.launch {
             repository.setSelectedLibraryIds(libraryIds)
             _librarySelectionNeedsSync.value = true
+        }
+    }
+
+    fun setSyncFavorites(enabled: Boolean) {
+        viewModelScope.launch {
+            repository.setSyncFavoritesEnabled(enabled)
+            if (enabled) {
+                val result = repository.syncFavorites()
+                _syncMessage.value = if (result.isSuccess) {
+                    context.getString(R.string.dash_jellyfin_sync_favorites_synced)
+                } else {
+                    context.getString(R.string.dash_jellyfin_sync_favorites_failed)
+                }
+            }
         }
     }
 

@@ -226,6 +226,9 @@
     <string name="licenses_tab_all">All</string>
     <string name="licenses_tab_libraries">Libraries</string>
     <string name="licenses_tab_fonts">Fonts</string>
+    <string name="licenses_tab_contributors">Contributors</string>
+    <string name="navigation_rail_expand">Expand navigation</string>
+    <string name="navigation_rail_collapse">Collapse navigation</string>
     <string name="licenses_tab_data">Data</string>
     <string name="licenses_tab_raw_notice">Raw notice</string>
     <string name="licenses_search_placeholder">Search libraries or licenses…</string>
@@ -294,4 +297,10 @@
     <string name="cd_toggle_grid_list">Toggle grid/list view</string>
     <string name="cd_genre_illustration">Genre illustration</string>
     <string name="dash_last_synced_format">Last synced: %1$s</string>
+    <string name="dash_jellyfin_sync_favorites_title">Sync favourites</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">Two-way sync liked songs with Jellyfin favourites</string>
+    <string name="dash_jellyfin_sync_favorites_synced">Favourites synced with Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_failed">Could not sync favourites with Jellyfin</string>
+    <string name="home_recently_added_title">Recently added</string>
+    <string name="home_recently_added_play_cd">Play recently added songs</string>
 </resources>

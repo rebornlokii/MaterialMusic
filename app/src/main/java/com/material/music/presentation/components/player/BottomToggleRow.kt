@@ -3,8 +3,8 @@ package com.material.music.presentation.components.player
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
@@ -29,7 +29,7 @@ import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 fun BottomToggleRow(
     modifier: Modifier,
     isShuffleEnabled: Boolean,
-    isShuffleTransitionInProgress: Boolean,
+    isShuffleTransitionInProgress: Boolean = false,
     repeatMode: Int,
     isFavoriteProvider: () -> Boolean,
     onShuffleToggle: () -> Unit,
@@ -100,6 +100,7 @@ fun BottomToggleRow(
                 ToggleSegmentButton(
                     modifier = commonModifier,
                     active = isShuffleEnabled,
+                    enabled = !isShuffleTransitionInProgress,
                     activeColor = activeColorMain,
                     activeCornerRadius = rowCorners,
                     activeContentColor = onActiveColorMain,

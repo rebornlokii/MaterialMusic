@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d вклад.</string>
-    <string name="about_link_github_subtitle">Доступно в каталоге github</string>
+    <string name="about_link_fdroid_subtitle">Доступно в каталоге F-Droid</string>
     <string name="about_licenses_title">Лицензии и авторство</string>
     <string name="about_licenses_subtitle">Библиотеки с открытым исходным кодом, шрифты и встроенные данные</string>
     <string name="about_licenses_sheet_subtitle">Стороннее ПО, шрифты и данные, входящие в состав приложения.</string>
     <string name="licenses_tab_all">Все</string>
     <string name="licenses_tab_libraries">Библиотеки</string>
     <string name="licenses_tab_fonts">Шрифты</string>
+    <string name="licenses_tab_contributors">Участники</string>
+    <string name="navigation_rail_expand">Развернуть навигацию</string>
+    <string name="navigation_rail_collapse">Свернуть навигацию</string>
     <string name="licenses_tab_data">Данные</string>
     <string name="licenses_tab_raw_notice">Текст уведомления</string>
     <string name="licenses_search_placeholder">Поиск библиотек или лицензий…</string>
@@ -19,7 +22,7 @@
     <string name="licenses_toast_copied">Текст лицензии скопирован в буфер обмена</string>
     <string name="licenses_cd_close">Закрыть</string>
     <string name="licenses_cd_copy">Копировать текст лицензии</string>
-    <string name="about_link_github_title">github</string>
+    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_title">Исходный код</string>
     <string name="about_maintainer_subtitle">Сопровождение FOSS-версии и оригинальной (не-FOSS) версии.</string>
     <string name="about_maintainer_title">Сопровождающие</string>
@@ -28,6 +31,12 @@
     <string name="about_signal_community_first">Ориентирован на сообщество</string>
     <string name="about_signal_material3">Material 3 Expressive</string>
     <string name="about_signal_open_source">Открытый исходный код</string>
+    <string name="about_support_body">Помогите поддерживать, проверять и тестировать FOSS-версию на реальных Android-устройствах.</string>
+    <string name="about_support_chip_ci">CI и выпуски</string>
+    <string name="about_support_chip_foss">Сопровождение FOSS</string>
+    <string name="about_support_chip_streaming">Музыка на своём сервере</string>
+    <string name="about_support_cta">Поддержать на GitHub</string>
+    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">Локальная музыка, стриминг со своего сервера и Material 3 в одном FOSS-плеере.</string>
     <string name="about_version_format">Версия v%1$s</string>
     <string name="accounts_unable_open_screen">Сейчас невозможно открыть этот экран.</string>
@@ -284,4 +293,11 @@
     <string name="setup_theme_dark_description">Стандартная тёмная тема Material 3 для MaterialMusic.</string>
     <string name="home_empty_placeholder_subtitle">Ваш микс появится здесь, когда MaterialMusic найдёт треки или синхронизирует источник.</string>
     <string name="crash_report_share_subject">Отчёт о сбое MaterialMusic</string>
+    <string name="about_support_title">Поддержите MaterialMusic</string>
+    <string name="dash_jellyfin_sync_favorites_title">Синхронизация избранного</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">Двусторонняя синхронизация понравившихся треков с избранным Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_synced">Избранное синхронизировано с Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_failed">Не удалось синхронизировать избранное с Jellyfin</string>
+    <string name="home_recently_added_title">Недавно добавленные</string>
+    <string name="home_recently_added_play_cd">Воспроизвести недавно добавленные треки</string>
 </resources>

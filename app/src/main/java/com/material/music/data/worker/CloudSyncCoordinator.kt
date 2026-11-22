@@ -56,7 +56,8 @@ class CloudSyncCoordinator @Inject constructor(
         if (!jellyfinRepository.isLoggedIn) return
 
         try {
-            jellyfinRepository.syncUnifiedLibrarySongsFromJellyfin()
+            jellyfinRepository.syncUnifiedLibrarySongsFromJellyfinIfChanged()
+            jellyfinRepository.syncFavorites()
         } catch (error: Exception) {
             Timber.tag(TAG).e(error, "Failed to sync Jellyfin cached data")
         }

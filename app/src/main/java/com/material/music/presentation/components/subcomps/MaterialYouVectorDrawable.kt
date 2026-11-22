@@ -22,7 +22,8 @@ import com.material.music.ui.theme.LocalMaterialMusicDarkTheme
 @Composable
 fun MaterialYouVectorDrawable(
     modifier: Modifier = Modifier,
-    @DrawableRes drawableResId: Int
+    @DrawableRes drawableResId: Int,
+    contentScale: ContentScale = ContentScale.Fit
 ) {
     val context = LocalContext.current
     val isDarkTheme = LocalMaterialMusicDarkTheme.current
@@ -37,7 +38,7 @@ fun MaterialYouVectorDrawable(
         Image(
             painter = rememberDrawablePainter(it),
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
+            contentScale = contentScale,
             modifier = modifier
         )
     }

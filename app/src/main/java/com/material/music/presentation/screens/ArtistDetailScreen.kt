@@ -2,6 +2,8 @@
 
 package com.material.music.presentation.screens
 
+import com.material.music.presentation.components.albumTitleMarquee
+import com.material.music.presentation.components.rememberSwipeToQueue
 import com.material.music.presentation.navigation.navigateSafely
 import com.material.music.presentation.navigation.navigateSafelyReplacing
 import com.material.music.presentation.components.DetailHeroFloatingLayer
@@ -9,6 +11,8 @@ import com.material.music.presentation.components.DetailHeroPinnedActionsHeight
 import com.material.music.presentation.components.DetailSongsSummary
 import com.material.music.presentation.components.HeroPlayState
 import com.material.music.presentation.components.MediaDetailHero
+import com.material.music.presentation.components.DetailHeroMenuAction
+import com.material.music.presentation.components.ExpressiveDropdownMenu
 import com.material.music.presentation.components.rememberDetailHeroDock
 import com.material.music.presentation.components.rememberSongCollectionMenuActions
 import com.material.music.presentation.utils.getSegmentedItemShape
@@ -55,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -66,6 +71,8 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -83,14 +90,20 @@ import androidx.navigation.NavController
 import com.material.music.data.model.Artist
 import com.material.music.data.model.Song
 import com.material.music.presentation.components.CollapsibleCommonTopBar
+import com.material.music.presentation.components.DetailSongSelectionControls
+import com.material.music.presentation.components.DetailSongSelectionControlsHeight
 import com.material.music.presentation.components.ExpressiveScrollBar
 import com.material.music.presentation.components.MiniPlayerHeight
 import com.material.music.presentation.components.PlaylistBottomSheet
+import com.material.music.presentation.components.PlayerSheetAwareBackHandler
 import com.material.music.presentation.components.SmartImageCompactListTargetSize
 import com.material.music.presentation.components.SmartImage
 import com.material.music.presentation.components.SongInfoBottomSheet
 import com.material.music.presentation.components.resolveNavBarOccupiedHeight
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.window.core.layout.WindowSizeClass
 import com.material.music.presentation.navigation.Screen
+import com.material.music.presentation.selection.DetailSongSelection
 import com.material.music.presentation.viewmodel.ArtistDetailViewModel
 import com.material.music.presentation.viewmodel.ArtistAlbumSection
 import com.material.music.presentation.viewmodel.PlayerViewModel
@@ -117,6 +130,7 @@ import androidx.compose.ui.res.stringResource
 import com.material.music.R
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.ImmutableList
 
 private const val UseSharedCollapsibleTopBarProbe = true
 
@@ -135,6 +149,17 @@ fun ArtistDetailScreen(
     // does not recompose the whole screen.
     val albumExpansionOverrides = viewModel.albumExpansionOverrides.collectAsStateWithLifecycle()
     val stablePlayerState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
+    val selection = remember(artistId) { DetailSongSelection<String>() }
+    val isSelectionMode = selection.isActive
+    val haptic = LocalHapticFeedback.current
+    val onBack: () -> Unit = {
+        if (selection.isActive) selection.clear() else navController.popBackStack()
+    }
+    PlayerSheetAwareBackHandler(
+        coordinator = playerViewModel.playerSheetBackCoordinator,
+        enabled = isSelectionMode,
+        onBack = selection::clear
+    )
     
     var isTransitionFinished by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
@@ -145,10 +170,19 @@ fun ArtistDetailScreen(
     val lazyListState = rememberLazyListState()
     val favoriteIds by playerViewModel.favoriteSongIds.collectAsStateWithLifecycle()
     val navBarCompactMode by playerViewModel.navBarCompactMode.collectAsStateWithLifecycle()
+    val swipeToQueue = rememberSwipeToQueue(playerViewModel)
     var showSongInfoBottomSheet by remember { mutableStateOf(false) }
     val selectedSongForInfo by playerViewModel.selectedSongForInfo.collectAsStateWithLifecycle()
     val systemNavBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val bottomBarHeightDp = resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode)
+    val listBottomPadding = MiniPlayerHeight + systemNavBarInset + 8.dp
+    val selectionBottomPadding = if (stablePlayerState.currentSong != null) {
+        listBottomPadding
+    } else {
+        systemNavBarInset + 8.dp
+    }
+    val useNavigationRail = currentWindowAdaptiveInfo().windowSizeClass
+        .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+    val bottomBarHeightDp = resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode, useNavigationRail)
     var showPlaylistBottomSheet by remember { mutableStateOf(false) }
     var showArtistPlaylistSheet by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
@@ -368,13 +402,33 @@ fun ArtistDetailScreen(
                         stringResource(R.string.detail_hero_album_count_many, albumCount)
                     }
                     val albumsCollapsedByDefault = uiState.albumsCollapsedByDefault
-                    val isSectionExpanded: (String) -> Boolean = { sectionKey ->
-                        isAlbumSectionExpanded(
-                            key = sectionKey,
-                            overrides = albumExpansionOverrides.value,
-                            collapsedByDefault = albumsCollapsedByDefault,
-                            sectionCount = albumCount
-                        )
+                    val isSectionExpanded: (String) -> Boolean = remember(
+                        albumExpansionOverrides, albumsCollapsedByDefault, albumCount
+                    ) {
+                        { sectionKey ->
+                            isAlbumSectionExpanded(
+                                key = sectionKey,
+                                overrides = albumExpansionOverrides.value,
+                                collapsedByDefault = albumsCollapsedByDefault,
+                                sectionCount = albumCount
+                            )
+                        }
+                    }
+                    val displayedSongs = remember(isTransitionFinished) {
+                        { section: ArtistAlbumSection ->
+                            if (isTransitionFinished) section.songs else section.songs.take(5)
+                        }
+                    }
+                    val visibleSongs = remember(visibleSections, visibleSectionKeys, isSectionExpanded, displayedSongs) {
+                        derivedStateOf {
+                            buildMap {
+                                visibleSections.forEachIndexed { index, section ->
+                                    if (isSectionExpanded(visibleSectionKeys[index])) {
+                                        displayedSongs(section).forEach { song -> put(song.id, song) }
+                                    }
+                                }
+                            }
+                        }
                     }
                     // Derived and read only by the summary row: this scope recomposes on every
                     // frame of the header collapse, which should not re-check every album.
@@ -427,7 +481,8 @@ fun ArtistDetailScreen(
                             // Fixed, so the hero never shifts; only album cards make room for
                             // the scrollbar (scrollbarInset).
                             end = 16.dp,
-                            bottom = MiniPlayerHeight + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 8.dp
+                            bottom = listBottomPadding +
+                                if (isSelectionMode) DetailSongSelectionControlsHeight else 0.dp
                         )
                     ) {
                         item(key = "artist_hero", contentType = "artist_hero") {
@@ -473,7 +528,7 @@ fun ArtistDetailScreen(
                             val isFirstSection = index == 0
                             val isLastSection = index == visibleSections.lastIndex
                             val isExpanded = isSectionExpanded(sectionKey)
-                            val sectionSongs = if (isTransitionFinished) section.songs else section.songs.take(5)
+                            val sectionSongs = displayedSongs(section)
 
                             item(
                                 key = "${sectionKey}_header",
@@ -487,6 +542,13 @@ fun ArtistDetailScreen(
                                     isLastSection = isLastSection,
                                     onToggleExpanded = {
                                         viewModel.setAlbumSectionExpanded(sectionKey, !isExpanded)
+                                    },
+                                    onOpenAlbum = {
+                                        if (section.albumId != 0L && section.albumId != -1L) {
+                                            navController.navigateSafely(
+                                                Screen.AlbumDetail.createRoute(section.albumId)
+                                            )
+                                        }
                                     },
                                     onPlayAlbum = {
                                         section.songs.firstOrNull()?.let { firstSong ->
@@ -534,9 +596,16 @@ fun ArtistDetailScreen(
                                         isLastSection = isLastSection,
                                         isCurrentSong = stablePlayerState.currentSong?.id == song.id,
                                         isPlaying = stablePlayerState.isPlaying,
+                                        isSelected = song.id in selection.keys,
+                                        isSelectionMode = isSelectionMode,
+                                        onSelectSong = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            selection.toggle(song.id)
+                                        },
                                         onSongClick = {
                                             playerViewModel.showAndPlaySong(song, section.songs)
                                         },
+                                        onSwipeToQueue = swipeToQueue?.let { { it(song) } },
                                         onMoreOptionsClick = {
                                             playerViewModel.selectSongForInfo(song)
                                             showSongInfoBottomSheet = true
@@ -562,7 +631,8 @@ fun ArtistDetailScreen(
                                 .align(Alignment.CenterEnd)
                                 .padding(
                                     top = minTopBarHeight + DetailHeroPinnedActionsHeight + 4.dp,
-                                    bottom = MiniPlayerHeight + systemNavBarInset + 8.dp
+                                    bottom = listBottomPadding +
+                                        if (isSelectionMode) DetailSongSelectionControlsHeight else 0.dp
                                 )
                         )
                     }
@@ -577,7 +647,7 @@ fun ArtistDetailScreen(
                             containerAlpha = maxOf(barContainerAlpha, heroDock.barContainerAlpha),
                             headerHeight = currentTopBarHeightDp,
                             hasCustomImage = !artist.customImageUri.isNullOrBlank(),
-                            onBackPressed = { navController.popBackStack() },
+                            onBackPressed = onBack,
                             onChangeImage = { imagePickerLauncher.launch("image/*") },
                             onClearCustomImage = { viewModel.clearCustomImage() }
                         )
@@ -590,7 +660,7 @@ fun ArtistDetailScreen(
                             collapseFraction = collapseFraction,
                             headerHeight = currentTopBarHeightDp,
                             headerImageRequestSize = headerImageRequestSize,
-                            onBackPressed = { navController.popBackStack() },
+                            onBackPressed = onBack,
                             onPlayClick = {
                                 if (songs.isNotEmpty()) {
                                     playerViewModel.playSongsShuffled(
@@ -615,6 +685,17 @@ fun ArtistDetailScreen(
                         playState = heroPlayState,
                         enabled = songs.isNotEmpty(),
                         metaLine = albumCountLabel.takeIf { albumCount > 0 }
+                    )
+                    DetailSongSelectionControls(
+                        selection = selection,
+                        visibleSongs = { visibleSongs.value },
+                        favoriteSongIds = favoriteIds,
+                        playerViewModel = playerViewModel,
+                        playlistViewModel = playlistViewModel,
+                        bottomBarHeight = bottomBarHeightDp,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = selectionBottomPadding)
                     )
                 }
             }
@@ -773,6 +854,7 @@ private fun CollapsibleAlbumSectionHeader(
     isFirstSection: Boolean,
     isLastSection: Boolean,
     onToggleExpanded: () -> Unit,
+    onOpenAlbum: () -> Unit,
     modifier: Modifier = Modifier,
     onPlayAlbum: () -> Unit
 ) {
@@ -822,13 +904,29 @@ private fun CollapsibleAlbumSectionHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            val canOpenAlbum = section.albumId != 0L && section.albumId != -1L
+            val openAlbumLabel = stringResource(
+                R.string.presentation_batch_d_cd_open_album_title,
+                section.title
+            )
             SmartImage(
                 model = section.albumArtUriString,
-                contentDescription = section.title,
+                contentDescription = if (canOpenAlbum) openAlbumLabel else section.title,
                 targetSize = SmartImageCompactListTargetSize,
                 modifier = Modifier
                     .size(52.dp)
                     .clip(RoundedCornerShape(10.dp))
+                    .then(
+                        if (canOpenAlbum) {
+                            Modifier.clickable(
+                                role = Role.Button,
+                                onClickLabel = openAlbumLabel,
+                                onClick = onOpenAlbum
+                            )
+                        } else {
+                            Modifier
+                        }
+                    )
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -836,8 +934,9 @@ private fun CollapsibleAlbumSectionHeader(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.albumTitleMarquee(),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    softWrap = false
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -882,7 +981,11 @@ private fun ArtistAlbumSectionSongItem(
     isLastSection: Boolean,
     isCurrentSong: Boolean,
     isPlaying: Boolean,
+    isSelected: Boolean,
+    isSelectionMode: Boolean,
+    onSelectSong: () -> Unit,
     onSongClick: () -> Unit,
+    onSwipeToQueue: (() -> Unit)?,
     onMoreOptionsClick: () -> Unit
 ) {
     val isLastSong = songIndex == songCount - 1
@@ -923,8 +1026,12 @@ private fun ArtistAlbumSectionSongItem(
                 song = song,
                 isCurrentSong = isCurrentSong,
                 isPlaying = isPlaying,
+                isSelected = isSelected,
+                isSelectionMode = isSelectionMode,
+                onLongPress = onSelectSong,
                 showAlbumArt = false,
                 customShape = songItemShape,
+                onSwipeToQueue = onSwipeToQueue,
                 onMoreOptionsClick = { onMoreOptionsClick() },
                 onClick = onSongClick
             )
@@ -1084,33 +1191,15 @@ private fun SharedArtistTopBarProbe(
                         )
                     }
 
-                    DropdownMenu(
+                    ExpressiveDropdownMenu(
                         expanded = showImageMenu,
-                        onDismissRequest = { showImageMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.presentation_batch_d_change_photo)) },
-                            leadingIcon = {
-                                Icon(Icons.Rounded.AddAPhoto, contentDescription = null)
-                            },
-                            onClick = {
-                                showImageMenu = false
-                                onChangeImage()
-                            }
+                        onDismissRequest = { showImageMenu = false },
+                        actions = artistImageMenuActions(
+                            hasCustomImage = hasCustomImage,
+                            onChangeImage = onChangeImage,
+                            onClearCustomImage = onClearCustomImage
                         )
-                        if (hasCustomImage) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.presentation_batch_d_reset_to_default)) },
-                                leadingIcon = {
-                                    Icon(Icons.Rounded.Delete, contentDescription = null)
-                                },
-                                onClick = {
-                                    showImageMenu = false
-                                    onClearCustomImage()
-                                }
-                            )
-                        }
-                    }
+                    )
                 }
             }
         )
@@ -1251,29 +1340,15 @@ private fun CustomCollapsingTopBar(
                         ) {
                             Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.presentation_batch_d_edit_artist_image_cd))
                         }
-                        DropdownMenu(
+                        ExpressiveDropdownMenu(
                             expanded = showImageMenu,
-                            onDismissRequest = { showImageMenu = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.presentation_batch_d_change_photo)) },
-                                leadingIcon = { Icon(Icons.Rounded.AddAPhoto, contentDescription = null) },
-                                onClick = {
-                                    showImageMenu = false
-                                    onChangeImage()
-                                }
+                            onDismissRequest = { showImageMenu = false },
+                            actions = artistImageMenuActions(
+                                hasCustomImage = hasCustomImage,
+                                onChangeImage = onChangeImage,
+                                onClearCustomImage = onClearCustomImage
                             )
-                            if (hasCustomImage) {
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.presentation_batch_d_reset_to_default)) },
-                                    leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
-                                    onClick = {
-                                        showImageMenu = false
-                                        onClearCustomImage()
-                                    }
-                                )
-                            }
-                        }
+                        )
                     }
                 }
 
@@ -1404,5 +1479,26 @@ private fun MusicIconPattern(modifier: Modifier = Modifier) {
                 .size(45.dp)
                 .graphicsLayer { rotationZ = -8f }
         )
+    }
+}
+
+@Composable
+private fun artistImageMenuActions(
+    hasCustomImage: Boolean,
+    onChangeImage: () -> Unit,
+    onClearCustomImage: () -> Unit
+): ImmutableList<DetailHeroMenuAction> {
+    val changePhoto = stringResource(R.string.presentation_batch_d_change_photo)
+    val resetToDefault = stringResource(R.string.presentation_batch_d_reset_to_default)
+    return remember(hasCustomImage, changePhoto, resetToDefault, onChangeImage, onClearCustomImage) {
+        val changePhotoAction = DetailHeroMenuAction(changePhoto, Icons.Rounded.AddAPhoto, onChangeImage)
+        if (hasCustomImage) {
+            persistentListOf(
+                changePhotoAction,
+                DetailHeroMenuAction(resetToDefault, Icons.Rounded.Delete, onClearCustomImage)
+            )
+        } else {
+            persistentListOf(changePhotoAction)
+        }
     }
 }

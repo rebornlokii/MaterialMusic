@@ -89,11 +89,11 @@ class PlayerSheetSemanticsTest {
         val english = resourcesFor("values")
 
         assertEquals(
-            "MaterialMusic player sheet collapsed, Bones",
+            "PixelPlayer player sheet collapsed, Bones",
             playerSheetContentDescription(english, PlayerSheetState.COLLAPSED, "Bones"),
         )
         assertEquals(
-            "MaterialMusic player sheet expanded, Bones",
+            "PixelPlayer player sheet expanded, Bones",
             playerSheetContentDescription(english, PlayerSheetState.EXPANDED, "Bones"),
         )
     }
@@ -103,11 +103,11 @@ class PlayerSheetSemanticsTest {
         val english = resourcesFor("values")
 
         assertEquals(
-            "MaterialMusic player sheet collapsed",
+            "PixelPlayer player sheet collapsed",
             playerSheetContentDescription(english, PlayerSheetState.COLLAPSED, null),
         )
         assertEquals(
-            "MaterialMusic player sheet expanded",
+            "PixelPlayer player sheet expanded",
             playerSheetContentDescription(english, PlayerSheetState.EXPANDED, "  "),
         )
     }
@@ -120,7 +120,7 @@ class PlayerSheetSemanticsTest {
             "Bones",
         )
 
-        assertEquals("MaterialMusic 播放器面板已收起，Bones", description)
+        assertEquals("PixelPlayer 播放器面板已收起，Bones", description)
     }
 
     @Test
@@ -207,9 +207,9 @@ class PlayerSheetSemanticsTest {
         val FORMAT_ARG = Regex("""%\d+\$[a-z]""")
         val RESOURCE_ID_SAFE = Regex("[a-z_]+")
 
-        const val COMPONENTS_DIR = "com.material.music/presentation/components"
+        const val COMPONENTS_DIR = "com/material/music/presentation/components"
         const val BENCHMARK_SOURCE =
-            "src/main/java/com.material.music/baselineprofile/PlayerSheetAnimationBenchmarks.kt"
+            "src/main/java/com/material/music/baselineprofile/PlayerSheetAnimationBenchmarks.kt"
 
         /** A label or TalkBack text given as an English literal: `contentDesc = "Shuffle"`, `isX -> "Loading…"`. */
         val HARDCODED_LABEL = Regex(

@@ -50,6 +50,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.window.core.layout.WindowSizeClass
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -69,6 +71,7 @@ import com.material.music.presentation.components.scoped.PlayerSheetPredictiveBa
 import com.material.music.presentation.components.scoped.QueuePredictiveBackHandler
 import com.material.music.presentation.components.scoped.QueueSheetRuntimeEffects
 import com.material.music.presentation.components.scoped.SheetMotionController
+import com.material.music.presentation.components.scoped.computeShouldRenderQueueHost
 import com.material.music.presentation.components.scoped.miniPlayerHorizontalGesture
 import com.material.music.presentation.components.scoped.playerContentOffsetXPx
 import com.material.music.presentation.components.scoped.playerContentWidthPx
@@ -117,9 +120,12 @@ fun UnifiedPlayerSheetV2(
     sheetCollapsedTargetY: Float,
     containerHeight: Dp,
     collapsedStateHorizontalPadding: Dp = 12.dp,
+    collapsedStateHorizontalPaddingStart: Dp = collapsedStateHorizontalPadding,
+    collapsedStateHorizontalPaddingEnd: Dp = collapsedStateHorizontalPadding,
     navController: NavHostController,
     hideMiniPlayer: Boolean = false,
-    isNavBarHidden: Boolean = false
+    isNavBarHidden: Boolean = false,
+    containerWidth: Dp = Dp.Unspecified
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -207,8 +213,12 @@ fun UnifiedPlayerSheetV2(
     val scope = rememberCoroutineScope()
 
     val offsetAnimatable = remember { Animatable(0f) }
-    val screenWidthPx = remember(configuration, density) {
-        with(density) { configuration.screenWidthDp.dp.toPx() }
+    val screenWidthPx = remember(containerWidth, configuration, density) {
+        if (containerWidth != Dp.Unspecified && containerWidth > 0.dp) {
+            with(density) { containerWidth.toPx() }
+        } else {
+            with(density) { configuration.screenWidthDp.dp.toPx() }
+        }
     }
     val dismissThresholdPx = remember(screenWidthPx) { screenWidthPx * 0.4f }
 
@@ -375,6 +385,8 @@ fun UnifiedPlayerSheetV2(
     val sheetVisualState = rememberSheetVisualState(
         showPlayerContentArea = showPlayerContentArea,
         collapsedStateHorizontalPadding = collapsedStateHorizontalPadding,
+        collapsedStateHorizontalPaddingStart = collapsedStateHorizontalPaddingStart,
+        collapsedStateHorizontalPaddingEnd = collapsedStateHorizontalPaddingEnd,
         predictiveBackCollapseProgress = predictiveBackCollapseProgress,
         predictiveBackSwipeEdge = predictiveBackSwipeEdge,
         currentSheetContentState = currentSheetContentState,
@@ -398,6 +410,16 @@ fun UnifiedPlayerSheetV2(
     val currentHorizontalPaddingStartPxProvider = sheetVisualState.currentHorizontalPaddingStartPxProvider
     val currentHorizontalPaddingEndPxProvider = sheetVisualState.currentHorizontalPaddingEndPxProvider
 
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val isMediumOrExpandedWidth =
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+    val isCompactHeight =
+        !windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
+    val canFitTwoPanes = screenWidthDp >= 660.dp
+    val isFoldableTwoPane = isMediumOrExpandedWidth && !isCompactHeight && canFitTwoPanes
+
+
     val queueSheetState = rememberQueueSheetState(
         scope = scope,
         screenHeightPx = screenHeightPx,
@@ -412,6 +434,12 @@ fun UnifiedPlayerSheetV2(
     val queueSheetHeightPx = queueSheetState.queueSheetHeightPx
     val queueHiddenOffsetPx = queueSheetState.queueHiddenOffsetPx
     val queueSheetController = queueSheetState.queueSheetController
+
+    LaunchedEffect(isFoldableTwoPane) {
+        if (isFoldableTwoPane && showQueueSheet) {
+            queueSheetController.animateTo(false)
+        }
+    }
     val onQueueSheetHeightPxChange = queueSheetState.onQueueSheetHeightPxChange
 
     val sheetBackAndDragState = rememberSheetBackAndDragState(
@@ -420,11 +448,12 @@ fun UnifiedPlayerSheetV2(
     )
     val canHandlePlayerBack by remember(
         sheetBackAndDragState.predictiveBackEnabled,
-        showQueueSheet
+        showQueueSheet,
+        isFoldableTwoPane
     ) {
         derivedStateOf {
             sheetBackAndDragState.predictiveBackEnabled &&
-                !showQueueSheet
+                (!showQueueSheet || isFoldableTwoPane)
         }
     }
     val velocityTracker = remember { VelocityTracker() }
@@ -510,11 +539,11 @@ fun UnifiedPlayerSheetV2(
     val queueScrimAlphaProvider = sheetOverlayState.queueScrimAlphaProvider
     val showQueueScrim = sheetOverlayState.showQueueScrim
     val isQueueOccludingPlayer = sheetOverlayState.isQueueOccludingPlayer
-    val shouldRenderQueueHost by remember(internalIsKeyboardVisible, selectedSongForInfo) {
-        derivedStateOf {
-            !internalIsKeyboardVisible || selectedSongForInfo != null
-        }
-    }
+    val shouldRenderQueueHost = computeShouldRenderQueueHost(
+        isKeyboardVisible = internalIsKeyboardVisible,
+        isQueueShown = showQueueSheet,
+        isSongInfoShown = selectedSongForInfo != null
+    )
     val isQueueTelemetryActive = showQueueSheet
 
     LaunchedEffect(showQueueSheet) {
@@ -522,7 +551,7 @@ fun UnifiedPlayerSheetV2(
     }
     // Update underlying callbacks in the same composition commit as the sheet handlers. A Flow
     // handoff would leave folder back disabled until LibraryScreen's next recomposition.
-    val isPlayerSheetHandlingBack = canHandlePlayerBack || (isQueueVisible && !internalIsKeyboardVisible)
+    val isPlayerSheetHandlingBack = canHandlePlayerBack || (!isFoldableTwoPane && isQueueVisible && !internalIsKeyboardVisible)
     SideEffect {
         playerViewModel.playerSheetBackCoordinator.updatePlayerSheetHandlingBack(isPlayerSheetHandlingBack)
     }
@@ -761,7 +790,7 @@ fun UnifiedPlayerSheetV2(
                                 onShowQueueClicked = sheetActionHandlers.openQueueSheet,
                                 onQueueDragStart = sheetActionHandlers.beginQueueDrag,
                                 onQueueDrag = sheetActionHandlers.dragQueueBy,
-                                onQueueRelease = sheetActionHandlers.endQueueDrag,
+                                onQueueRelease = sheetActionHandlers.endQueueDrag
                             )
                         }
                     }
@@ -789,7 +818,7 @@ fun UnifiedPlayerSheetV2(
             }
 
             QueuePredictiveBackHandler(
-                enabled = isQueueVisible && !internalIsKeyboardVisible,
+                enabled = !isFoldableTwoPane && isQueueVisible && !internalIsKeyboardVisible,
                 progress = queuePredictiveBackProgress,
                 animationDurationMs = ANIMATION_DURATION_MS,
                 scope = scope
@@ -804,8 +833,8 @@ fun UnifiedPlayerSheetV2(
                 isQueueTelemetryActive = isQueueTelemetryActive,
                 albumColorScheme = albumColorScheme,
                 queueScrimAlphaProvider = queueScrimAlphaProvider,
-                showQueueScrim = showQueueScrim,
-                showQueueSheet = showQueueSheet,
+                showQueueScrim = showQueueScrim && !isFoldableTwoPane,
+                showQueueSheet = showQueueSheet && !isFoldableTwoPane,
                 queueHiddenOffsetPx = queueHiddenOffsetPx,
                 queueSheetOffset = queueSheetOffset,
                 queuePredictiveBackProgress = queuePredictiveBackProgress,

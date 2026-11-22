@@ -174,15 +174,17 @@ fun PlaybackSpeedControls(
                 )
             }
             Slider(
-                value = draft,
+                state = rememberSyncedSliderState(
+                    value = draft,
+                    // One stop per 0.05×, so TalkBack and keyboard increments move exactly one step.
+                    steps = PlaybackSpeedUtils.SLIDER_STEPS,
+                    valueRange = PlaybackSpeedUtils.MIN_SPEED..PlaybackSpeedUtils.MAX_SPEED
+                ),
                 onValueChange = { dragValue = PlaybackSpeedUtils.snapToFineStep(it) },
                 onValueChangeFinished = {
                     dragValue?.let(commit)
                     dragValue = null
                 },
-                valueRange = PlaybackSpeedUtils.MIN_SPEED..PlaybackSpeedUtils.MAX_SPEED,
-                // One stop per 0.05×, so TalkBack and keyboard increments move exactly one step.
-                steps = PlaybackSpeedUtils.SLIDER_STEPS,
                 // 54 tick dots would only add noise to the track.
                 track = { sliderState ->
                     SliderDefaults.Track(

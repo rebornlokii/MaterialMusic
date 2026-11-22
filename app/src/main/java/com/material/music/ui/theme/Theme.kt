@@ -22,8 +22,13 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.core.view.WindowCompat
+import com.material.music.data.preferences.InterfaceAppearance
 import com.material.music.data.preferences.ThemePreset
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import androidx.core.graphics.ColorUtils
@@ -31,6 +36,7 @@ import androidx.core.graphics.ColorUtils
 val LocalMaterialMusicDarkTheme = staticCompositionLocalOf { false }
 val LocalMaterialMusicAmoledTheme = staticCompositionLocalOf { false }
 val LocalShowScrollbar = staticCompositionLocalOf { true }
+internal val LocalUseSystemFont = staticCompositionLocalOf { false }
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
@@ -159,6 +165,7 @@ fun MaterialMusicTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     colorSchemePairOverride: ColorSchemePair? = null,
     themePreset: String = ThemePreset.DEFAULT,
+    interfaceAppearance: InterfaceAppearance = InterfaceAppearance(),
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
@@ -186,14 +193,31 @@ fun MaterialMusicTheme(
         navigationColor = finalColorScheme.background
     )
 
+    val systemDensity = LocalDensity.current
+    val scalePercent = interfaceAppearance.scalePercent
+    val interfaceDensity = remember(systemDensity, scalePercent) {
+        if (scalePercent == InterfaceAppearance.DEFAULT_SCALE) {
+            systemDensity
+        } else {
+            object : Density {
+                override val density = systemDensity.density * scalePercent / 100f
+                override val fontScale = systemDensity.fontScale
+                override fun Dp.toSp(): TextUnit = with(systemDensity) { this@toSp.toSp() }
+                override fun TextUnit.toDp(): Dp = with(systemDensity) { this@toDp.toDp() }
+            }
+        }
+    }
+
     CompositionLocalProvider(
+        LocalDensity provides interfaceDensity,
+        LocalUseSystemFont provides interfaceAppearance.useSystemFont,
         LocalMaterialMusicDarkTheme provides (darkTheme || isAmoled),
         LocalMaterialMusicAmoledTheme provides isAmoled
     ) {
         MaterialTheme(
             colorScheme = finalColorScheme,
             motionScheme = MotionScheme.expressive(),
-            typography = Typography,
+            typography = if (interfaceAppearance.useSystemFont) SystemTypography else Typography,
             shapes = Shapes,
             content = content
         )

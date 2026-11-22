@@ -141,6 +141,7 @@ import com.material.music.presentation.components.CustomPresetsSheet
 import com.material.music.presentation.components.ReorderPresetsSheet
 import com.material.music.presentation.components.SavePresetDialog
 import com.material.music.presentation.components.RenamePresetDialog
+import com.material.music.presentation.components.rememberSyncedSliderState
 import com.material.music.data.preferences.UserPreferencesRepository.EqualizerViewMode
 import androidx.compose.material.icons.rounded.ViewQuilt
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -321,6 +322,7 @@ fun EqualizerScreen(
                     isEnabled = uiState.isEnabled,
                     currentPreset = uiState.currentPreset,
                     editingPresetName = uiState.editingPresetName,
+                    onEnableEqualizer = { equalizerViewModel.setEnabled(true) },
                     onBandLevelChanged = { bandId, level ->
                         equalizerViewModel.setBandLevel(bandId, level)
                     },
@@ -517,6 +519,7 @@ private fun BandSlidersSection(
     isEnabled: Boolean,
     currentPreset: EqualizerPreset,
     editingPresetName: String?,
+    onEnableEqualizer: () -> Unit,
     onBandLevelChanged: (Int, Int) -> Unit,
     viewMode: EqualizerViewMode,
     onSaveClick: () -> Unit,
@@ -655,6 +658,12 @@ private fun BandSlidersSection(
             }
             
             Spacer(modifier = Modifier.height(10.dp))
+
+            if (!isEnabled) {
+                TextButton(onClick = onEnableEqualizer) {
+                    Text(stringResource(R.string.presentation_batch_d_eq_enable_cd))
+                }
+            }
 
             when (viewMode) {
                 EqualizerViewMode.GRAPH -> {
@@ -1439,9 +1448,11 @@ private fun IndividualEffectRow(
         Spacer(modifier = Modifier.height(8.dp))
         
         Slider(
-            value = strength.toFloat(),
+            state = rememberSyncedSliderState(
+                value = strength.toFloat(),
+                valueRange = 0f..maxStrength.toFloat()
+            ),
             onValueChange = { onStrengthChange(it.roundToInt()) },
-            valueRange = 0f..maxStrength.toFloat(),
             enabled = isEnabled,
             modifier = Modifier.fillMaxWidth(),
             track = { sliderState ->
@@ -1495,7 +1506,7 @@ private fun VolumeControlCard(
                 
                 Column(modifier = Modifier.weight(1f)) {
                     Slider(
-                        value = volume,
+                        state = rememberSyncedSliderState(value = volume),
                         onValueChange = { newValue ->
                             val currentPercent = (newValue * 100).roundToInt()
                             val lastPercent = (lastHapticValue * 100).roundToInt()
@@ -1705,8 +1716,12 @@ private fun HybridHorizontalSlider(
         }
 
         Box(modifier = Modifier.weight(1f)) {
-            androidx.compose.material3.Slider(
-                value = level.toFloat(),
+            Slider(
+                state = rememberSyncedSliderState(
+                    value = level.toFloat(),
+                    steps = 0,
+                    valueRange = -15f..15f
+                ),
                 onValueChange = { 
                     val intVal = it.roundToInt()
                     if (intVal != lastHapticValue) {
@@ -1715,8 +1730,6 @@ private fun HybridHorizontalSlider(
                     }
                     onLevelChanged(intVal) 
                 },
-                valueRange = -15f..15f,
-                steps = 0,
                 enabled = isEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 track = { sliderState ->

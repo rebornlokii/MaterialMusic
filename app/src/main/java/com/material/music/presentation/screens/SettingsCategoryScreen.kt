@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.material.music.presentation.screens
 
 import com.material.music.presentation.navigation.navigateSafely
@@ -63,6 +65,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Image
@@ -77,6 +80,7 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.ExpandMore
@@ -91,7 +95,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -172,8 +176,10 @@ import com.material.music.data.preferences.LaunchTab
 import com.material.music.data.preferences.LibraryNavigationMode
 import com.material.music.data.preferences.NavBarStyle
 import com.material.music.data.preferences.PreviousButtonBehavior
+import com.material.music.data.preferences.SwipeToQueueAction
 import com.material.music.data.preferences.ThemePreference
 import com.material.music.data.preferences.ThemePreset
+import com.material.music.data.preferences.InterfaceAppearance
 import com.material.music.utils.isIgnoringBatteryOptimizations
 import com.material.music.utils.openBatteryOptimizationSettings
 import com.material.music.data.model.Song
@@ -240,6 +246,9 @@ fun SettingsCategoryScreen(
     }
     var minTracksPerAlbumDraft by remember(uiState.minTracksPerAlbum) {
         mutableStateOf(uiState.minTracksPerAlbum.toFloat())
+    }
+    var minTracksPerArtistDraft by remember(uiState.minTracksPerArtist) {
+        mutableStateOf(uiState.minTracksPerArtist.toFloat())
     }
     var albumArtCacheLimitDraft by remember(uiState.albumArtCacheLimitMb) {
         mutableStateOf(uiState.albumArtCacheLimitMb.toFloat())
@@ -471,6 +480,14 @@ fun SettingsCategoryScreen(
                                     modifier = Modifier.settingHighlight("item_library_artists", highlightKey),
                                     onClick = { navController.navigateSafely(Screen.ArtistSettings.createRoute()) }
                                 )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.setcat_group_local_albums_by_title),
+                                    subtitle = stringResource(R.string.setcat_group_local_albums_by_title_subtitle),
+                                    checked = uiState.groupLocalAlbumsByTitle,
+                                    onCheckedChange = settingsViewModel::setGroupLocalAlbumsByTitle,
+                                    leadingIcon = { Icon(Icons.Outlined.Album, null, tint = MaterialTheme.colorScheme.secondary) },
+                                    modifier = Modifier.settingHighlight("item_library_group_local_albums_by_title", highlightKey)
+                                )
                             }
 
                             SettingsSubsection(title = stringResource(R.string.setcat_filtering)) {
@@ -503,6 +520,21 @@ fun SettingsCategoryScreen(
                                     },
                                     valueText = { value -> "${value.toInt()}" },
                                     modifier = Modifier.settingHighlight("item_library_min_tracks", highlightKey)
+                                )
+                                SliderSettingsItem(
+                                    label = stringResource(R.string.setcat_min_tracks_per_artist),
+                                    value = minTracksPerArtistDraft,
+                                    valueRange = 1f..5f,
+                                    steps = 3,
+                                    onValueChange = { minTracksPerArtistDraft = it },
+                                    onValueChangeFinished = {
+                                        val selectedTracks = minTracksPerArtistDraft.roundToInt()
+                                        if (selectedTracks != uiState.minTracksPerArtist) {
+                                            settingsViewModel.setMinTracksPerArtist(selectedTracks)
+                                        }
+                                    },
+                                    valueText = { value -> "${value.roundToInt()}" },
+                                    modifier = Modifier.settingHighlight("item_library_min_artist_tracks", highlightKey)
                                 )
                                 SliderSettingsItem(
                                     label = stringResource(R.string.setcat_album_art_cache_limit),
@@ -623,7 +655,7 @@ fun SettingsCategoryScreen(
                                         },
                                         trailingIcon = {
                                             if (m3uSyncState.isSyncing) {
-                                                CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                                                LoadingIndicator(modifier = Modifier.size(20.dp))
                                             }
                                         },
                                         modifier = Modifier.settingHighlight(
@@ -716,6 +748,25 @@ fun SettingsCategoryScreen(
                                     onSelectionChanged = { settingsViewModel.setThemePreset(it) },
                                     leadingIcon = { Icon(Icons.Outlined.Contrast, null, tint = MaterialTheme.colorScheme.secondary) },
                                     modifier = Modifier.settingHighlight("item_appearance_theme_preset", highlightKey)
+                                )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.setcat_system_font_title),
+                                    subtitle = stringResource(R.string.setcat_system_font_subtitle),
+                                    checked = uiState.interfaceAppearance.useSystemFont,
+                                    onCheckedChange = settingsViewModel::setUseSystemFont,
+                                    leadingIcon = { Icon(Icons.Outlined.Style, null, tint = MaterialTheme.colorScheme.secondary) },
+                                    modifier = Modifier.settingHighlight("item_appearance_system_font", highlightKey)
+                                )
+                                ThemeSelectorItem(
+                                    label = stringResource(R.string.setcat_interface_scale_title),
+                                    description = stringResource(R.string.setcat_interface_scale_subtitle),
+                                    options = InterfaceAppearance.scaleOptions.associate {
+                                        it.toString() to stringResource(R.string.setcat_interface_scale_percent, it)
+                                    },
+                                    selectedKey = uiState.interfaceAppearance.scalePercent.toString(),
+                                    onSelectionChanged = { it.toIntOrNull()?.let(settingsViewModel::setInterfaceScale) },
+                                    leadingIcon = { Icon(Icons.Rounded.UnfoldMore, null, tint = MaterialTheme.colorScheme.secondary) },
+                                    modifier = Modifier.settingHighlight("item_appearance_interface_scale", highlightKey)
                                 )
                                 SwitchSettingItem(
                                     title = stringResource(R.string.setcat_global_now_playing_theme_title),
@@ -1042,7 +1093,9 @@ fun SettingsCategoryScreen(
                                         AudioOutputMode.DIRECT.storageKey to
                                             stringResource(R.string.setcat_audio_output_mode_direct),
                                         AudioOutputMode.PCM_FLOAT.storageKey to
-                                            stringResource(R.string.setcat_audio_output_mode_pcm_float)
+                                            stringResource(R.string.setcat_audio_output_mode_pcm_float),
+                                        AudioOutputMode.BIT_PERFECT_USB.storageKey to
+                                            stringResource(R.string.setcat_audio_output_mode_bit_perfect_usb)
                                     ),
                                     optionDescriptions = mapOf(
                                         AudioOutputMode.SYSTEM_DEFAULT.storageKey to
@@ -1053,12 +1106,18 @@ fun SettingsCategoryScreen(
                                             stringResource(R.string.setcat_audio_output_mode_pcm_float_description)
                                         } else {
                                             stringResource(R.string.setcat_audio_output_mode_pcm_float_unsupported)
+                                        },
+                                        AudioOutputMode.BIT_PERFECT_USB.storageKey to if (uiState.bitPerfectUsbOutputSupported) {
+                                            stringResource(R.string.setcat_audio_output_mode_bit_perfect_usb_description)
+                                        } else {
+                                            stringResource(R.string.setcat_audio_output_mode_bit_perfect_usb_unsupported)
                                         }
                                     ),
-                                    disabledOptionKeys = if (uiState.pcmFloatOutputSupported) {
-                                        emptySet()
-                                    } else {
-                                        setOf(AudioOutputMode.PCM_FLOAT.storageKey)
+                                    disabledOptionKeys = buildSet {
+                                        if (!uiState.pcmFloatOutputSupported) add(AudioOutputMode.PCM_FLOAT.storageKey)
+                                        if (!uiState.bitPerfectUsbOutputSupported) {
+                                            add(AudioOutputMode.BIT_PERFECT_USB.storageKey)
+                                        }
                                     },
                                     selectedKey = uiState.audioOutputMode.storageKey,
                                     onSelectionChanged = { key ->
@@ -1125,6 +1184,38 @@ fun SettingsCategoryScreen(
                                     onCheckedChange = { settingsViewModel.setMiniPlayerSwipeToSkip(it) },
                                     leadingIcon = { Icon(painterResource(R.drawable.rounded_skip_next_24), null, tint = MaterialTheme.colorScheme.secondary) },
                                     modifier = Modifier.settingHighlight("item_behavior_mini_swipe_skip", highlightKey)
+                                )
+                            }
+                            SettingsSubsection(
+                                title = stringResource(R.string.setcat_song_lists)
+                            ) {
+                                ThemeSelectorItem(
+                                    label = stringResource(R.string.setcat_swipe_to_queue_title),
+                                    description = stringResource(R.string.setcat_swipe_to_queue_description),
+                                    options = linkedMapOf(
+                                        SwipeToQueueAction.ADD_TO_QUEUE.storageKey to
+                                            stringResource(R.string.setcat_swipe_to_queue_add),
+                                        SwipeToQueueAction.PLAY_NEXT.storageKey to
+                                            stringResource(R.string.setcat_swipe_to_queue_next),
+                                        SwipeToQueueAction.OFF.storageKey to
+                                            stringResource(R.string.setcat_swipe_to_queue_off)
+                                    ),
+                                    optionDescriptions = mapOf(
+                                        SwipeToQueueAction.ADD_TO_QUEUE.storageKey to
+                                            stringResource(R.string.setcat_swipe_to_queue_add_description),
+                                        SwipeToQueueAction.PLAY_NEXT.storageKey to
+                                            stringResource(R.string.setcat_swipe_to_queue_next_description),
+                                        SwipeToQueueAction.OFF.storageKey to
+                                            stringResource(R.string.setcat_swipe_to_queue_off_description)
+                                    ),
+                                    selectedKey = uiState.swipeToQueueAction.storageKey,
+                                    onSelectionChanged = { key ->
+                                        settingsViewModel.setSwipeToQueueAction(
+                                            SwipeToQueueAction.fromStorageKey(key)
+                                        )
+                                    },
+                                    leadingIcon = { Icon(painterResource(R.drawable.rounded_queue_music_24), null, tint = MaterialTheme.colorScheme.secondary) },
+                                    modifier = Modifier.settingHighlight("item_behavior_swipe_to_queue", highlightKey)
                                 )
                             }
                             SettingsSubsection(
@@ -2911,7 +3002,7 @@ private fun BackupPasswordPromptDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        LoadingIndicator(modifier = Modifier.size(24.dp))
                     }
                 }
             }

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d katkı</string>
-    <string name="about_link_github_subtitle">github kataloğunda mevcut</string>
+    <string name="about_link_fdroid_subtitle">F-Droid kataloğunda mevcut</string>
     <string name="about_licenses_title">Lisanslar ve atıflar</string>
     <string name="about_licenses_subtitle">Açık kaynak kütüphaneler, yazı tipleri ve paketlenmiş veriler</string>
     <string name="about_licenses_sheet_subtitle">Bu uygulamayla birlikte gelen üçüncü taraf yazılımlar, yazı tipleri ve veriler.</string>
     <string name="licenses_tab_all">Tümü</string>
     <string name="licenses_tab_libraries">Kütüphaneler</string>
     <string name="licenses_tab_fonts">Yazı tipleri</string>
+    <string name="licenses_tab_contributors">Katkıda bulunanlar</string>
+    <string name="navigation_rail_expand">Gezinmeyi genişlet</string>
+    <string name="navigation_rail_collapse">Gezinmeyi daralt</string>
     <string name="licenses_tab_data">Veriler</string>
     <string name="licenses_tab_raw_notice">Ham bildirim</string>
     <string name="licenses_search_placeholder">Kütüphane veya lisans ara…</string>
@@ -19,7 +22,7 @@
     <string name="licenses_toast_copied">Lisans metni panoya kopyalandı</string>
     <string name="licenses_cd_close">Kapat</string>
     <string name="licenses_cd_copy">Lisans metnini kopyala</string>
-    <string name="about_link_github_title">github</string>
+    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_title">Kaynak kodu</string>
     <string name="about_maintainer_subtitle">FOSS ve orijinal/FOSS olmayan sürümlerin bakımı.</string>
     <string name="about_maintainer_title">Bakımcılar</string>
@@ -28,6 +31,12 @@
     <string name="about_signal_community_first">Önce topluluk</string>
     <string name="about_signal_material3">Etkileyici Material 3</string>
     <string name="about_signal_open_source">Açık kaynak</string>
+    <string name="about_support_body">FOSS sürümünün bakımının yapılmasına, gözden geçirilmesine ve gerçek Android cihazlarda test edilmesine destek olun.</string>
+    <string name="about_support_chip_ci">CI ve sürümler</string>
+    <string name="about_support_chip_foss">FOSS bakımı</string>
+    <string name="about_support_chip_streaming">Kendi barındırdığınız müzik</string>
+    <string name="about_support_cta">GitHub\'da sponsor ol</string>
+    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">Yerel öncelikli müzik, kendi barındırdığınız akış ve Material 3 işçiliği tek bir FOSS oynatıcıda.</string>
     <string name="about_version_format">Sürüm v%1$s</string>
     <string name="accounts_unable_open_screen">Bu ekran şu anda açılamıyor.</string>
@@ -278,4 +287,11 @@
     <string name="setup_theme_dark_description">MaterialMusic için varsayılan Material 3 koyu görünümü.</string>
     <string name="home_empty_placeholder_subtitle">MaterialMusic şarkı bulduğunda veya bir kaynağı senkronize ettiğinde miksiniz burada görünecek.</string>
     <string name="crash_report_share_subject">MaterialMusic çökme raporu</string>
+    <string name="about_support_title">MaterialMusic\'e destek ol</string>
+    <string name="dash_jellyfin_sync_favorites_title">Favorileri eşitle</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">Beğenilen şarkıları Jellyfin favorileriyle çift yönlü eşitle</string>
+    <string name="dash_jellyfin_sync_favorites_synced">Favoriler Jellyfin ile eşitlendi</string>
+    <string name="dash_jellyfin_sync_favorites_failed">Favoriler Jellyfin ile eşitlenemedi</string>
+    <string name="home_recently_added_title">Son eklenenler</string>
+    <string name="home_recently_added_play_cd">Son eklenen şarkıları çal</string>
 </resources>

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.material.music.presentation.components
 
 import android.app.Activity
@@ -38,15 +40,18 @@ import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.CloudDone
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Schedule
-import androidx.compose.material.icons.rounded.IosShare
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.TravelExplore
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -71,6 +76,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import com.material.music.R
 import com.material.music.data.model.Song
 import com.material.music.data.offline.CloudOfflineRepository
@@ -79,6 +85,7 @@ import com.material.music.presentation.components.subcomps.AutoSizingTextToFill
 import com.material.music.utils.formatDuration
 import com.material.music.utils.shapes.RoundedStarShape
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.material.music.data.media.CoverArtUpdate
 import com.material.music.data.media.CustomMetadataChanges
@@ -129,7 +136,6 @@ fun SongInfoBottomSheet(
 ) {
     val context = LocalContext.current
     var showEditSheet by remember { mutableStateOf(false) }
-    var showShareCardSheet by remember { mutableStateOf(false) }
     var showArtistPicker by remember { mutableStateOf(false) }
     var showTonePickerDialog by remember { mutableStateOf(false) }
     var toneConfirmationTarget by remember { mutableStateOf<ToneTarget?>(null) }
@@ -140,6 +146,15 @@ fun SongInfoBottomSheet(
     val offlineDownload by songInfoViewModel.offlineDownload.collectAsStateWithLifecycle()
     val musicBrainzState by songInfoViewModel.musicBrainzState.collectAsStateWithLifecycle()
     val isCloudSong = remember(song.contentUriString) { CloudOfflineRepository.isCloudSong(song) }
+    val offlineFilePath = offlineDownload?.takeIf {
+        it.sourceUri == song.contentUriString && it.status == OfflineDownloadStatus.COMPLETE
+    }?.localPath
+    var sourceUrl by remember(song.id, song.path, song.contentUriString, offlineFilePath) {
+        mutableStateOf<String?>(null)
+    }
+    LaunchedEffect(song.id, song.path, song.contentUriString, offlineFilePath) {
+        sourceUrl = songInfoViewModel.readSourceUrl(song, offlineFilePath)
+    }
     val ringtonePermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -439,23 +454,20 @@ fun SongInfoBottomSheet(
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
                                             ) {
-                                                MediumExtendedFloatingActionButton(
+                                                MediumFloatingActionButton(
                                                     modifier = Modifier
                                                         .weight(0.5f)
                                                         .fillMaxHeight(),
                                                     onClick = onPlaySong,
                                                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
                                                     shape = playButtonShape,
-                                                    icon = {
-                                                        Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.cd_play_song_action))
-                                                    },
-                                                    text = {
-                                                        Text(
-                                                            modifier = Modifier.padding(end = 10.dp),
-                                                            text = stringResource(R.string.play_playback)
-                                                        )
-                                                    }
-                                                )
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.PlayArrow,
+                                                        contentDescription = stringResource(R.string.cd_play_song_action),
+                                                        modifier = Modifier.size(FloatingActionButtonDefaults.LargeIconSize)
+                                                    )
+                                                }
 
                                                 FilledIconButton(
                                                     modifier = Modifier
@@ -481,13 +493,33 @@ fun SongInfoBottomSheet(
                                                     modifier = Modifier
                                                         .weight(0.25f)
                                                         .fillMaxHeight(),
-                                                    onClick = { showShareCardSheet = true },
+                                                    onClick = {
+                                                        try {
+                                                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                                                type = "audio/*"
+                                                                putExtra(Intent.EXTRA_STREAM, song.contentUriString.toUri())
+                                                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                            }
+                                                            context.startActivity(
+                                                                Intent.createChooser(
+                                                                    shareIntent,
+                                                                    context.getString(R.string.song_info_share_chooser_title)
+                                                                )
+                                                            )
+                                                        } catch (e: Exception) {
+                                                            Toast.makeText(
+                                                            context,
+                                                            context.getString(R.string.error_share_song_format, e.localizedMessage ?: ""),
+                                                            Toast.LENGTH_LONG
+                                                        ).show()
+                                                        }
+                                                    },
                                                     shape = CircleShape
                                                 ) {
                                                     Icon(
                                                         modifier = Modifier.size(FloatingActionButtonDefaults.LargeIconSize),
-                                                        imageVector = Icons.Rounded.IosShare,
-                                                        contentDescription = stringResource(R.string.cd_share_song_card)
+                                                        imageVector = Icons.Rounded.Share,
+                                                        contentDescription = stringResource(R.string.cd_share_song_file)
                                                     )
                                                 }
                                             }
@@ -630,6 +662,22 @@ fun SongInfoBottomSheet(
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
                                                     )
+                                                }
+                                            }
+                                        }
+
+                                        sourceUrl?.let { url ->
+                                            item {
+                                                FilledTonalButton(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .heightIn(min = 66.dp),
+                                                    shape = CircleShape,
+                                                    onClick = { openSongSourceUrl(context, url) },
+                                                ) {
+                                                    Icon(Icons.Rounded.Link, contentDescription = null)
+                                                    Spacer(Modifier.width(8.dp))
+                                                    Text(stringResource(R.string.song_info_open_source))
                                                 }
                                             }
                                         }
@@ -830,14 +878,6 @@ fun SongInfoBottomSheet(
         }
     }
 
-    if (showShareCardSheet) {
-        SongShareCardBottomSheet(
-            song = song,
-            onDismiss = { showShareCardSheet = false },
-            dimBackground = false,
-        )
-    }
-
     EditSongSheet(
         visible = showEditSheet,
         song = song,
@@ -876,7 +916,7 @@ fun SongInfoBottomSheet(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(28.dp))
+                        LoadingIndicator(modifier = Modifier.size(28.dp))
                         Text(stringResource(R.string.musicbrainz_searching))
                     }
                 }
@@ -988,6 +1028,16 @@ fun SongInfoBottomSheet(
             }
         )
     }
+}
+
+private fun openSongSourceUrl(context: Context, url: String) {
+    try {
+        context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addCategory(Intent.CATEGORY_BROWSABLE))
+        return
+    } catch (_: ActivityNotFoundException) {
+    } catch (_: SecurityException) {
+    }
+    Toast.makeText(context, R.string.song_info_open_source_failed, Toast.LENGTH_SHORT).show()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

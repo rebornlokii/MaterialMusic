@@ -83,6 +83,7 @@ import com.material.music.data.model.Curve
 import com.material.music.data.model.TransitionMode
 import com.material.music.data.model.TransitionSettings
 import com.material.music.presentation.viewmodel.TransitionViewModel
+import com.material.music.presentation.components.rememberSyncedSliderState
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import java.util.concurrent.TimeUnit
 import androidx.compose.ui.res.stringResource
@@ -466,10 +467,12 @@ private fun TransitionDurationSection(
         CrossfadeVisualizer(durationMs = settings.durationMs)
 
         Slider(
-            value = settings.durationMs.toFloat(),
+            state = rememberSyncedSliderState(
+                value = settings.durationMs.toFloat(),
+                steps = 11,
+                valueRange = 0f..12000f
+            ),
             onValueChange = { onDurationChange(it.toInt()) },
-            valueRange = 0f..12000f,
-            steps = 11,
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
                 activeTrackColor = MaterialTheme.colorScheme.primary,

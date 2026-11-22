@@ -119,8 +119,8 @@ class RecapFormatsTest {
     private fun recapSources(): List<File> {
         val workingDirectory = File(System.getProperty("user.dir") ?: ".")
         val directory = sequenceOf(
-            File(workingDirectory, "src/main/java/com.material.music/presentation/recap"),
-            File(workingDirectory, "app/src/main/java/com.material.music/presentation/recap"),
+            File(workingDirectory, "src/main/java/com/material/music/presentation/recap"),
+            File(workingDirectory, "app/src/main/java/com/material/music/presentation/recap"),
         ).firstOrNull(File::isDirectory)
             ?: error("Could not locate the recap sources from $workingDirectory")
         return directory.listFiles { file -> file.extension == "kt" }.orEmpty().sortedBy { it.name }.also {

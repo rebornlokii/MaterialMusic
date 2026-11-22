@@ -7,14 +7,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import coil.size.Size
+import com.material.music.data.image.withNavidromeCoverSize
 import com.material.music.data.model.Song
 import com.material.music.data.preferences.CarouselStyle
 import com.material.music.presentation.components.scoped.PrefetchAlbumNeighbors
@@ -26,14 +31,6 @@ import kotlin.math.abs
 
 private const val SETTLED_PAGE_OFFSET_EPSILON = 0.001f
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun rememberRoundedParallaxCarouselState(
-    initialPage: Int,
-    pageCount: () -> Int
-): CarouselState = rememberCarouselState(initialItem = initialPage, itemCount = pageCount)
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumCarouselSection(
     currentSong: Song?,
@@ -58,10 +55,7 @@ fun AlbumCarouselSection(
         )
     }
 
-    val carouselState = rememberRoundedParallaxCarouselState(
-        initialPage = initialIndex,
-        pageCount = { queue.size }
-    )
+    val pagerState = rememberPagerState(initialPage = initialIndex) { queue.size }
 
     val targetSize = remember(albumArtQuality) {
         if (albumArtQuality.maxSize == 0) SafeOriginalAlbumArtSize
@@ -85,11 +79,12 @@ fun AlbumCarouselSection(
 
     PrefetchAlbumNeighbors(
         isActive = expansionFraction > 0.08f,
-        pagerState = carouselState.pagerState,
+        pagerState = pagerState,
         queue = queue,
         radius = 1,
         targetSize = targetSize,
-        anchorIndex = effectiveTargetIndex
+        anchorIndex = effectiveTargetIndex,
+        navidromeCoverSizePx = albumArtQuality.maxSize
     )
     // Scrolls this section runs itself: skips, and the snap when the queue shifts around the
     // playing song. A counter rather than a flag, because a cancelled scroll's cleanup can run
@@ -100,11 +95,10 @@ fun AlbumCarouselSection(
     // A settle only picks a song after a scroll this section didn't start. User drags come
     // through the pager's interaction source. Accessibility page actions, keyboard and mouse-wheel
     // scrolls emit no DragInteraction, so any scroll that runs while none of ours does counts too.
-    // The NO_PEEK settle correction snaps synchronously, so it never shows up as a scroll here.
     var isUserDragging by remember { mutableStateOf(false) }
     var userScrollSettlePending by remember { mutableStateOf(false) }
-    LaunchedEffect(carouselState) {
-        carouselState.pagerState.interactionSource.interactions.collect { interaction ->
+    LaunchedEffect(pagerState) {
+        pagerState.interactionSource.interactions.collect { interaction ->
             when (interaction) {
                 is DragInteraction.Start -> {
                     isUserDragging = true
@@ -114,8 +108,8 @@ fun AlbumCarouselSection(
             }
         }
     }
-    LaunchedEffect(carouselState) {
-        snapshotFlow { carouselState.pagerState.isScrollInProgress && ownScrollsInFlight == 0 }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.isScrollInProgress && ownScrollsInFlight == 0 }
             .filter { it }
             .collect { userScrollSettlePending = true }
     }
@@ -129,11 +123,11 @@ fun AlbumCarouselSection(
             snapshotFlow { isUserDragging }.first { !it }
         }
 
-        val currentPage = carouselState.pagerState.currentPage
+        val currentPage = pagerState.currentPage
         // A scroll cancelled past the halfway point already reports the target as its current
         // page, so also finish it when it was left between pages.
         val isBetweenPages =
-            abs(carouselState.pagerState.currentPageOffsetFraction) > SETTLED_PAGE_OFFSET_EPSILON
+            abs(pagerState.currentPageOffsetFraction) > SETTLED_PAGE_OFFSET_EPSILON
         if (currentPage != effectiveTargetIndex || isBetweenPages) {
             val isShiftOnly = currentSong?.id != null &&
                               currentSong.id == lastSettledSongId &&
@@ -142,9 +136,9 @@ fun AlbumCarouselSection(
             ownScrollsInFlight++
             try {
                 if (isShiftOnly) {
-                    carouselState.pagerState.scrollToPage(effectiveTargetIndex)
+                    pagerState.scrollToPage(effectiveTargetIndex)
                 } else {
-                    carouselState.animateScrollToItem(effectiveTargetIndex)
+                    pagerState.animateScrollToPage(effectiveTargetIndex, animationSpec = spring())
                 }
             } finally {
                 ownScrollsInFlight--
@@ -154,8 +148,8 @@ fun AlbumCarouselSection(
     }
 
     val hapticFeedback = LocalHapticFeedback.current
-    LaunchedEffect(carouselState, currentSongIndex, queue) {
-        snapshotFlow { carouselState.pagerState.isScrollInProgress }
+    LaunchedEffect(pagerState, currentSongIndex, queue) {
+        snapshotFlow { pagerState.isScrollInProgress }
             .distinctUntilChanged()
             .filter { !it }
             .collect {
@@ -163,7 +157,7 @@ fun AlbumCarouselSection(
                 // this section's own scrolls, and a skip burst cancels them on intermediate pages.
                 if (!userScrollSettlePending) return@collect
                 userScrollSettlePending = false
-                val settled = carouselState.pagerState.currentPage
+                val settled = pagerState.currentPage
                 if (settled != currentSongIndex) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     queue.getOrNull(settled)?.let { onSongSelected(it, settled) }
@@ -171,40 +165,47 @@ fun AlbumCarouselSection(
             }
     }
 
-    val corner = 18.dp
+    val corner = 24.dp
 
     BoxWithConstraints(modifier = modifier) {
         val availableWidth = this.maxWidth
 
-        RoundedHorizontalMultiBrowseCarousel(
-            state = carouselState,
+        ParallaxAlbumPager(
+            state = pagerState,
             modifier = Modifier.fillMaxSize(),
             itemSpacing = itemSpacing,
             itemCornerRadius = corner,
-            suppressNoPeekSettleCorrection = requestedTargetIndex != null || ownScrollsInFlight > 0,
-            carouselStyle = if (carouselState.pagerState.pageCount == 1) CarouselStyle.NO_PEEK else carouselStyle,
+            carouselStyle = if (pagerState.pageCount == 1) CarouselStyle.NO_PEEK else carouselStyle,
             carouselWidth = availableWidth,
             itemKey = { index -> carouselItemKeys.getOrNull(index) ?: "queue_item_$index" },
             content = { index ->
                 val song = queue[index]
-                val isFocusedItem = carouselState.pagerState.currentPage == index
+                val coverUri = remember(song.albumArtUriString, albumArtQuality) {
+                    song.albumArtUriString?.withNavidromeCoverSize(albumArtQuality.maxSize)
+                }
+                val isFocusedItem = pagerState.currentPage == index
                 Box(
-                    Modifier
-                        .fillMaxSize()
-                        .aspectRatio(1f)
-                        .clickable(
-                            enabled = isFocusedItem && song.albumId != -1L,
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { onAlbumClick(song) }
-                        )
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    OptimizedAlbumArt(
-                        uri = song.albumArtUriString,
-                        title = song.title,
-                        modifier = Modifier.fillMaxSize(),
-                        targetSize = targetSize
-                    )
+                    Box(
+                        Modifier
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(corner))
+                            .clickable(
+                                enabled = isFocusedItem && song.albumId != -1L,
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { onAlbumClick(song) }
+                            )
+                    ) {
+                        OptimizedAlbumArt(
+                            uri = coverUri,
+                            title = song.title,
+                            modifier = Modifier.fillMaxSize(),
+                            targetSize = targetSize
+                        )
+                    }
                 }
             }
         )

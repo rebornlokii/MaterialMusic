@@ -237,7 +237,7 @@ fun SongShareCardBottomSheet(
                                 } else {
                                     ButtonGroupDefaults.connectedTrailingButtonShapes()
                                 },
-                                colors = ToggleButtonDefaults.toggleButtonColors(
+                                colors = ToggleButtonDefaults.colors(
                                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                                     contentColor = MaterialTheme.colorScheme.onSurface,
                                     checkedContainerColor = MaterialTheme.colorScheme.primary,

@@ -52,6 +52,20 @@ class MusicServiceTemporaryForegroundSourceTest {
     }
 
     @Test
+    fun `media3 start command foreground refusal stops the service instead of crashing`() {
+        val source = sourceFile("data/service/MusicService.kt").readText()
+        val onStartCommandBody = kotlinFunction(source, "override fun onStartCommand(")
+        val superCall = onStartCommandBody.substring(
+            onStartCommandBody.indexOf("val startCommandResult = try {"),
+            onStartCommandBody.indexOf("return START_NOT_STICKY"),
+        )
+
+        assertThat(superCall).contains("super.onStartCommand(intent, flags, startId)")
+        assertThat(superCall).contains("e !is ForegroundServiceStartNotAllowedException")
+        assertThat(superCall).contains("stopSelf()")
+    }
+
+    @Test
     fun `temporary foreground notification does not show processing playback action copy`() {
         val source = sourceFile("data/service/MusicService.kt").readText()
         val notificationBody = kotlinFunction(source, "private fun startTemporaryForegroundForCommand()")
@@ -84,8 +98,8 @@ class MusicServiceTemporaryForegroundSourceTest {
     private fun sourceFile(relativePath: String): File {
         val workingDirectory = File(System.getProperty("user.dir") ?: ".")
         return sequenceOf(
-            File(workingDirectory, "src/main/java/com.material.music/$relativePath"),
-            File(workingDirectory, "app/src/main/java/com.material.music/$relativePath"),
+            File(workingDirectory, "src/main/java/com/material/music/$relativePath"),
+            File(workingDirectory, "app/src/main/java/com/material/music/$relativePath"),
         ).firstOrNull(File::isFile)
             ?: error("Could not locate source $relativePath from $workingDirectory")
     }

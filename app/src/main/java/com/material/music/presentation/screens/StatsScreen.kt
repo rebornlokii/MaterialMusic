@@ -2,6 +2,9 @@
 
 package com.material.music.presentation.screens
 
+import com.material.music.ui.theme.rememberDisplayFont
+import com.material.music.ui.theme.withInterfaceFont
+
 import android.text.format.DateFormat as AndroidDateFormat
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
@@ -492,7 +495,7 @@ fun StatsScreen(
 @OptIn(ExperimentalTextApi::class)
 @Composable
 private fun rememberStatsFlexFont(weight: Int, width: Float, rond: Float = 100f): FontFamily =
-    remember(weight, width, rond) {
+    rememberDisplayFont(weight, width, rond) {
         FontFamily(
             Font(
                 resId = R.font.gflex_variable,
@@ -1141,7 +1144,7 @@ private fun rememberStatsSectionTitleStyle(): TextStyle {
             lineHeight = 28.sp,
             letterSpacing = (-0.2).sp
         )
-    }
+    }.withInterfaceFont()
 }
 
 @OptIn(ExperimentalTextApi::class)
@@ -1167,7 +1170,7 @@ private fun rememberStatsAxisLabelStyle(range: StatsTimeRange): TextStyle {
             lineHeight = if (range == StatsTimeRange.YEAR) 12.sp else 11.sp,
             letterSpacing = 0.sp
         )
-    }
+    }.withInterfaceFont()
 }
 
 @OptIn(ExperimentalTextApi::class)
@@ -1190,7 +1193,7 @@ private fun rememberStatsMetricValueStyle(compact: Boolean): TextStyle {
             lineHeight = if (compact) 12.sp else 14.sp,
             letterSpacing = 0.sp
         )
-    }
+    }.withInterfaceFont()
 }
 
 @Composable
@@ -1236,7 +1239,7 @@ private fun ListeningTimelineSection(
                 ToggleButton(
                     checked = isSelected,
                     onCheckedChange = { onMetricSelected(metric) },
-                    colors = ToggleButtonDefaults.toggleButtonColors(
+                    colors = ToggleButtonDefaults.colors(
                         checkedContainerColor = MaterialTheme.colorScheme.primary,
                         checkedContentColor = MaterialTheme.colorScheme.onPrimary,
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -1996,7 +1999,7 @@ private fun RotationTabSelector(
                             tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                             else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                         },
-                        colors = ToggleButtonDefaults.toggleButtonColors(
+                        colors = ToggleButtonDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                             contentColor = MaterialTheme.colorScheme.onSurface,
                             checkedContainerColor = MaterialTheme.colorScheme.primary,

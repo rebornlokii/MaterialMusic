@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d contrib.</string>
-    <string name="about_link_github_subtitle">Disponibile nel catalogo github</string>
+    <string name="about_link_fdroid_subtitle">Disponibile nel catalogo F-Droid</string>
     <string name="about_licenses_title">Licenze e attribuzioni</string>
     <string name="about_licenses_subtitle">Librerie open source, font e dati inclusi</string>
     <string name="about_licenses_sheet_subtitle">Software di terze parti, font e dati inclusi in questa app.</string>
     <string name="licenses_tab_all">Tutti</string>
     <string name="licenses_tab_libraries">Librerie</string>
     <string name="licenses_tab_fonts">Font</string>
+    <string name="licenses_tab_contributors">Collaboratori</string>
+    <string name="navigation_rail_expand">Espandi navigazione</string>
+    <string name="navigation_rail_collapse">Comprimi navigazione</string>
     <string name="licenses_tab_data">Dati</string>
     <string name="licenses_tab_raw_notice">Testo originale</string>
     <string name="licenses_search_placeholder">Cerca librerie o licenze…</string>
@@ -19,7 +22,7 @@
     <string name="licenses_toast_copied">Testo della licenza copiato negli appunti</string>
     <string name="licenses_cd_close">Chiudi</string>
     <string name="licenses_cd_copy">Copia testo della licenza</string>
-    <string name="about_link_github_title">github</string>
+    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_title">Codice sorgente</string>
     <string name="about_maintainer_subtitle">Manutenzione della versione FOSS e di quella originale/non FOSS.</string>
     <string name="about_maintainer_title">Manutentori</string>
@@ -28,6 +31,12 @@
     <string name="about_signal_community_first">Community-first</string>
     <string name="about_signal_material3">Material 3 expressive</string>
     <string name="about_signal_open_source">Open source</string>
+    <string name="about_support_body">Aiutaci a mantenere, revisionare e testare l\'edizione FOSS su dispositivi Android reali.</string>
+    <string name="about_support_chip_ci">CI e release</string>
+    <string name="about_support_chip_foss">Manutenzione FOSS</string>
+    <string name="about_support_chip_streaming">Musica self-hosted</string>
+    <string name="about_support_cta">Sostienici su GitHub</string>
+    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">Musica local-first, streaming self-hosted e cura Material 3 in un unico player FOSS.</string>
     <string name="about_version_format">Versione v%1$s</string>
     <string name="accounts_unable_open_screen">Impossibile aprire questa schermata al momento.</string>
@@ -278,4 +287,11 @@
     <string name="setup_theme_dark_description">L\'aspetto scuro Material 3 predefinito per MaterialMusic.</string>
     <string name="home_empty_placeholder_subtitle">Il tuo mix apparirà qui quando MaterialMusic troverà dei brani o sincronizzerà una sorgente.</string>
     <string name="crash_report_share_subject">Report crash di MaterialMusic</string>
+    <string name="about_support_title">Sostieni MaterialMusic</string>
+    <string name="dash_jellyfin_sync_favorites_title">Sincronizza preferiti</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">Sincronizzazione bidirezionale dei brani preferiti con Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_synced">Preferiti sincronizzati con Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_failed">Impossibile sincronizzare i preferiti con Jellyfin</string>
+    <string name="home_recently_added_title">Aggiunti di recente</string>
+    <string name="home_recently_added_play_cd">Riproduci brani aggiunti di recente</string>
 </resources>

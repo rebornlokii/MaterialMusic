@@ -34,10 +34,10 @@ import androidx.compose.material.icons.rounded.FormatSize
 import androidx.compose.material.icons.rounded.Gradient
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material3.Slider
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -72,6 +72,7 @@ import com.material.music.data.preferences.MAX_LYRICS_FONT_SIZE_SP
 import com.material.music.data.preferences.MIN_LYRICS_FONT_SIZE_SP
 import com.material.music.presentation.components.CollapsibleCommonTopBar
 import com.material.music.presentation.components.MiniPlayerHeight
+import com.material.music.presentation.components.rememberSyncedSliderState
 import com.material.music.presentation.settings.search.LocalSettingsHighlightTarget
 import com.material.music.presentation.settings.search.settingHighlight
 import com.material.music.presentation.viewmodel.PlayerViewModel
@@ -448,12 +449,13 @@ private fun LyricsSliderItem(
                 }
             }
             Slider(
-                value = value,
+                state = rememberSyncedSliderState(
+                    value = value,
+                    steps = steps,
+                    valueRange = valueRange
+                ),
                 onValueChange = onValueChange,
-                onValueChangeFinished = onValueChangeFinished,
-                valueRange = valueRange,
-                steps = steps
-            )
+                onValueChangeFinished = onValueChangeFinished,)
         }
     }
 }
