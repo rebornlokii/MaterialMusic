@@ -48,7 +48,7 @@ fun apiKey(property: String): String =
 val openRouterApiKey = apiKey("openrouterApiKey")
 val openRouterModel = (localProperties.getProperty("openrouterModel")
     ?: providers.gradleProperty("openrouterModel").orNull)
-    ?.trim().orEmpty().ifBlank { "deepseek/deepseek-chat" }
+    ?.trim().orEmpty().ifBlank { "baidu/ernie-5.5-flash-preview:free" }
 
 val enableComposeCompilerReports = providers.gradleProperty("pixelplayer.enableComposeCompilerReports")
     .getOrElse("false")
