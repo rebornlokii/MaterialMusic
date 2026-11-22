@@ -95,16 +95,22 @@ object MixRequestRefinement {
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .firstOrNull()
-            ?.trim('"', '\'')
             ?.trim()
             ?: return null
+        // Markup is checked on the line as it arrived, before any trimming: a model wrapping its
+        // answer in JSON, markdown or a code fence is answering in the wrong shape entirely.
         if (text.isEmpty() || text.length > MAX_RESTATEMENT_LENGTH) return null
         if (text.any { it in MARKUP_CHARACTERS }) return null
-        // A line with no words left is not a restatement of anything.
-        if (NlpText.tokenize(text).isEmpty()) return null
+        // Models like to bullet a single line ("- chill -"). The marker carries no meaning, so
+        // drop it rather than discard an otherwise good restatement. '>' is deliberately absent:
+        // it is blockquote markup, and the markup check above has already rejected it.
+        val unbulleted = text.trim('-', '*', '•').trim('"', '\'').trim()
+        if (unbulleted.isEmpty()) return null
+        // A line with no actual word is not a restatement of anything: "42", "...", "---".
+        if (NlpText.tokenize(unbulleted).none { token -> token.any { it.isLetter() } }) return null
         // Flipping a negation flips the request's meaning.
-        if (NEGATION.containsMatchIn(text) != NEGATION.containsMatchIn(original)) return null
-        return text
+        if (NEGATION.containsMatchIn(unbulleted) != NEGATION.containsMatchIn(original)) return null
+        return unbulleted
     }
 
     /**

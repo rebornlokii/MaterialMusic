@@ -1,5 +1,6 @@
 package com.material.music.data.playlist
 
+import com.material.music.BuildConfig
 import com.material.music.data.DailyMixManager
 import com.material.music.data.media.TagBpmReader
 import com.material.music.data.model.Song
@@ -89,6 +90,16 @@ class NlpPlaylistGenerator @Inject constructor(
             // the request is not already simple. Selection still happens below, offline, against
             // this library only.
             val intent = requestRefiner.refine(description)
+            if (BuildConfig.DEBUG) {
+                // TEMPORARY: confirms on a real device which path ran. A restatement is only
+                // visible as a better mix, and every failure falls back silently, so without
+                // this a broken integration looks identical to a working one. Remove once the
+                // online path has been seen working.
+                Timber.tag(TAG).d(
+                    "Mix parse: %s | request=%s | scored=%s",
+                    intent.source, description, intent.prompt,
+                )
+            }
             val parsed = PlaylistIntentEngine.parse(intent.prompt, index, concepts)
             // Tag BPM is only worth the file reads when the query cares about tempo/energy at all.
             val bpmBySongId = if (parsed.hasEnergySignal) readTagBpms(songs, fileSignatureOf(songs)) else emptyMap()

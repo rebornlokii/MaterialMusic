@@ -104,10 +104,16 @@ class MixRequestRefinementTest {
 
     @Test
     fun `a reply that runs long is dropped`() {
-        val rambling = "a song about the way the light falls through the window in the afternoon " +
-            "while the rain is coming down outside and everything feels quiet and far away from " +
-            "the rest of the world and nobody needs anything from you any more"
+        // Longer than MAX_RESTATEMENT_LENGTH, which is the guard against a model answering with
+        // a paragraph the parser would read as a pile of extra requirements.
+        val rambling = (
+            "a song about the way the light falls through the window in the afternoon " +
+                "while the rain is coming down outside and everything feels quiet and far away " +
+                "from the rest of the world and nobody needs anything from you any more today " +
+                "and you can finally sit still and breathe out slowly"
+            )
 
+        assertThat(rambling.length).isGreaterThan(MixRequestRefinement.MAX_RESTATEMENT_LENGTH)
         assertThat(MixRequestRefinement.sanitize(rambling, "chill")).isNull()
     }
 
@@ -115,13 +121,35 @@ class MixRequestRefinementTest {
     fun `a reply carrying markup is dropped`() {
         assertThat(MixRequestRefinement.sanitize("{\"request\": \"chill\"}", "chill")).isNull()
         assertThat(MixRequestRefinement.sanitize("**chill**", "chill")).isNull()
-        assertThat(MixRequestRefinement.sanitize("- chill -", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("# chill", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("chill {slow}", "chill")).isNull()
     }
 
     @Test
     fun `a reply with no words is dropped`() {
-        assertThat(MixRequestRefinement.sanitize("42", "chill")).isNull()
+        // No token carries a letter, so there is nothing for the parser to score.
         assertThat(MixRequestRefinement.sanitize("...", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("42", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("---", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("   ", "chill")).isNull()
+    }
+
+    @Test
+    fun `a single bulleted line is unwrapped rather than dropped`() {
+        // A model that answers "- chill -" has still answered the question, so the dashes come
+        // off instead of the whole reply being discarded.
+        assertThat(MixRequestRefinement.sanitize("- chill -", "chill")).isEqualTo("chill")
+        assertThat(MixRequestRefinement.sanitize("- mellow acoustic", "mellow acoustic"))
+            .isEqualTo("mellow acoustic")
+    }
+
+    @Test
+    fun `markup is checked before bullets are unwrapped`() {
+        // "*chill*" is markdown emphasis, not a bullet, and ">" is a blockquote. Stripping
+        // first would have accepted both as ordinary restatements.
+        assertThat(MixRequestRefinement.sanitize("**chill**", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("*chill*", "chill")).isNull()
+        assertThat(MixRequestRefinement.sanitize("> chill", "chill")).isNull()
     }
 
     @Test
@@ -150,8 +178,10 @@ class MixRequestRefinementTest {
 
         assertThat(prompt).contains("Never add")
         assertThat(prompt).contains("Never name a song")
-        assertThat(prompt).contains("rock")
-        assertThat(prompt).contains("chill")
+        // The vocabulary the engine actually matches on: families are enum names, not genres.
+        assertThat(prompt).contains("guitar")
+        assertThat(prompt).contains("chill ambient")
+        assertThat(prompt).contains("workout")
     }
 
     @Test
@@ -170,11 +200,13 @@ class MixRequestRefinementTest {
     }
 
     @Test
-    fun `the prompt is a single system message of instructions`() {
-        // A prompt that grew a second role or a conversation would be a sign the contract had
-        // been spread across several messages, which is what makes it hard to reason about.
+    fun `the prompt is one system message with no user text in it`() {
+        // The user's request travels as a separate user message. If the prompt ever quoted it,
+        // the two could drift apart and the contract would no longer be readable in one place.
+        val prompt = MixRequestRefinement.SYSTEM_PROMPT
+
         assertThat(MixRequestRefinement.ROLE_SYSTEM).isEqualTo("system")
         assertThat(MixRequestRefinement.ROLE_USER).isEqualTo("user")
-        assertThat(MixRequestRefinement.SYSTEM_PROMPT).doesNotContain(MixRequestRefinement.ROLE_USER)
+        assertThat(prompt).doesNotContain("ROLE_USER")
     }
 }
