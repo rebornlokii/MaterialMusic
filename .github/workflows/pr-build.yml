@@ -75,10 +75,15 @@ jobs:
           } > keystore.properties
 
       - name: Build PR release APKs
+        env:
+          # Injected at build time, never committed. Pull requests from forks get no secrets,
+          # so those builds simply have no key and Smart Mix parses requests locally.
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: >
           ./gradlew :app:assembleRelease
           -Ppixelplayer.enableAbiSplits=true
           -PAPP_VERSION_NAME=${{ steps.version.outputs.name }}
+          -PopenrouterApiKey=${OPENROUTER_API_KEY}
 
       - name: Verify and rename split APKs
         run: |

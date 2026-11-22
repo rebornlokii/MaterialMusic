@@ -21,8 +21,13 @@ import com.material.music.data.playlist.nlp.NlpText
  */
 object MixRequestRefinement {
 
-    /** Long enough for a slow model, short enough that the composer never looks stuck. */
-    const val TIMEOUT_MS = 6_000L
+    /**
+     * Long enough for a slow or queued model, short enough that the composer never looks stuck.
+     * A free-tier endpoint can queue behind other users, so this is deliberately generous: the
+     * composer shows its thinking state throughout, and a timeout is just a silent fall back to
+     * the local parser rather than a visible failure.
+     */
+    const val TIMEOUT_MS = 10_000L
 
     /** A restatement is one short line; anything longer is a paragraph the parser will misread. */
     const val MAX_RESTATEMENT_LENGTH = 240

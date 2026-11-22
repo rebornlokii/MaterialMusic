@@ -33,9 +33,10 @@ val enableAbiSplits = providers.gradleProperty("pixelplayer.enableAbiSplits")
     .getOrElse("true")
     .toBoolean()
 
-// Optional online assistance for Smart Mix. Neither value ships: without a key the feature is
-// simply the offline parser, which is the default build. Provide them in `local.properties`
-// (gitignored) or as `-PopenrouterApiKey=...` when building.
+// The assist key is a CI secret (OPENROUTER_API_KEY), injected at build time and never
+// committed. A local build with no secret gets no key, which is simply the offline behaviour:
+// the composer's request is parsed locally, exactly as it was before this feature. Override it
+// in `local.properties` (gitignored) or with `-PopenrouterApiKey=...` to use a key locally.
 val localProperties = Properties().apply {
     val propFile = rootProject.file("local.properties")
     if (propFile.exists()) propFile.inputStream().use { load(it) }
@@ -43,12 +44,15 @@ val localProperties = Properties().apply {
 
 fun apiKey(property: String): String =
     (localProperties.getProperty(property) ?: providers.gradleProperty(property).orNull)
-        ?.trim().orEmpty()
+        ?.trim()
+        // Blank on purpose: the feature treats an empty key as "no key", which is the offline
+        // path. Falling back to a placeholder would compile but silently never work.
+        .orEmpty()
 
 val openRouterApiKey = apiKey("openrouterApiKey")
-val openRouterModel = (localProperties.getProperty("openrouterModel")
-    ?: providers.gradleProperty("openrouterModel").orNull)
-    ?.trim().orEmpty().ifBlank { "baidu/ernie-5.5-flash-preview:free" }
+// The model is not a secret, so it has a default and the feature works as soon as a key exists.
+val openRouterModel = apiKey("openrouterModel")
+    .ifBlank { "baidu/ernie-5.5-flash-preview:free" }
 
 val enableComposeCompilerReports = providers.gradleProperty("pixelplayer.enableComposeCompilerReports")
     .getOrElse("false")
@@ -103,8 +107,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Built only when a key is supplied; both stay empty in a default build, which is
-        // exactly the offline-only configuration the feature falls back to.
+        // The online assist's credentials. Both are blank unless supplied (CI secret or
+        // local.properties); a blank key means the request is parsed locally, which is the
+        // offline behaviour rather than a broken feature.
         buildConfigField("String", "OPENROUTER_API_KEY", "\"$openRouterApiKey\"")
         buildConfigField("String", "OPENROUTER_MODEL", "\"$openRouterModel\"")
     }

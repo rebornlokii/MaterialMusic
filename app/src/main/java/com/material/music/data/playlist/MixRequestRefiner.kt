@@ -30,9 +30,9 @@ import javax.inject.Singleton
  *    not ask for, the local engine would treat that as one, so the reply is validated by
  *    [MixRequestRefinement] and anything doubtful is dropped.
  *
- * Every failure degrades silently: no key compiled in, no connection, a timeout, a malformed or
- * unhelpful reply, a cancelled request — each returns the prompt untouched. Nothing here throws,
- * so callers never need a fallback path of their own.
+ * Every failure degrades silently: no connection, a timeout, a malformed or unhelpful reply, a
+ * cancelled request — each returns the prompt untouched. Nothing here throws, so callers never
+ * need a fallback path of their own.
  */
 @Singleton
 class MixRequestRefiner @Inject constructor(
@@ -45,6 +45,9 @@ class MixRequestRefiner @Inject constructor(
      * The composer's structured directives (length, energy) are stripped before the request is
      * restated and re-attached verbatim afterwards: those are constraints the user set on a
      * control, not prose for a model to interpret.
+     *
+     * Returns [MixIntentSource.Local] untouched when there is no free text, no key compiled in,
+     * or no usable connection — which is also the whole offline behaviour.
      */
     suspend fun refine(prompt: String): MixIntent {
         val directive = MixDirective.of(prompt)
@@ -74,7 +77,12 @@ class MixRequestRefiner @Inject constructor(
                 }.onFailure { error ->
                     // Cancellation must keep unwinding; anything else is just a failed assist.
                     if (error is CancellationException) throw error
-                    Timber.tag(TAG).w(error, "Request refinement failed; using local parsing")
+                    // The message and type only: a network exception's detail can carry the
+                    // request, and the request carries the Authorization header.
+                    Timber.tag(TAG).w(
+                        "Request refinement failed (%s); using local parsing",
+                        error.javaClass.simpleName,
+                    )
                 }.getOrNull()
             }
         } ?: return MixIntent(prompt, MixIntentSource.Local)
