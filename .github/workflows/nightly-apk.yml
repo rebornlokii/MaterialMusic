@@ -128,7 +128,7 @@ jobs:
         run: >
           ./gradlew :app:assembleRelease
           -Ppixelplayer.enableAbiSplits=true
-          -PopenrouterApiKey=${OPENROUTER_API_KEY}
+          -PopenrouterApiKey="${OPENROUTER_API_KEY}"
 
       - name: Verify Phone nightly split APKs
         run: |

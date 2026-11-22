@@ -83,7 +83,7 @@ jobs:
           ./gradlew :app:assembleRelease
           -Ppixelplayer.enableAbiSplits=true
           -PAPP_VERSION_NAME=${{ steps.version.outputs.name }}
-          -PopenrouterApiKey=${OPENROUTER_API_KEY}
+          -PopenrouterApiKey="${OPENROUTER_API_KEY}"
 
       - name: Verify and rename split APKs
         run: |
