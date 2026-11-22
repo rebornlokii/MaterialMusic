@@ -37,10 +37,19 @@ object MixRequestRefinement {
         "(?i)\\b(?:no|not|without|except|excluding|avoid|skip|sin|menos|excepto|salvo|nada)\\b",
     )
 
+    /** Genre families, spelled the way a person would write them. Declared before
+     *  [SYSTEM_PROMPT] because object properties initialize in declaration order. */
+    private val GENRE_VOCABULARY: String = GenreFamily.entries
+        .joinToString(", ") { it.name.lowercase().replace('_', ' ') }
+
+    /** Mood profiles, likewise. */
+    private val MOOD_VOCABULARY: String = MoodProfile.entries
+        .joinToString(", ") { it.name.lowercase().replace('_', ' ') }
+
     /**
      * The system prompt: restate the request, invent nothing, name no songs.
      *
-     * The vocabulary lists are generated from the enums the engine actually parses, so this
+     * The vocabulary lists above are generated from the enums the engine actually parses, so this
      * prompt cannot drift away from the parser it feeds.
      */
     val SYSTEM_PROMPT: String = buildString {
@@ -64,14 +73,6 @@ object MixRequestRefinement {
         appendLine("- Never name a song, an album or an artist. Only the user's own words may name one.")
         appendLine("- Answer with the rewritten line only. No quotes, no labels, no explanation.")
     }
-
-    /** Genre families, spelled the way a person would write them. */
-    private val GENRE_VOCABULARY: String = GenreFamily.entries
-        .joinToString(", ") { it.name.lowercase().replace('_', ' ') }
-
-    /** Mood profiles, likewise. */
-    private val MOOD_VOCABULARY: String = MoodProfile.entries
-        .joinToString(", ") { it.name.lowercase().replace('_', ' ') }
 
     /** The role names the service expects. */
     const val ROLE_SYSTEM = "system"
