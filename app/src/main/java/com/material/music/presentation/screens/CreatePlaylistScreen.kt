@@ -9,7 +9,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -84,9 +83,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Button
@@ -124,8 +120,9 @@ import com.material.music.presentation.components.ImageCropView
 import com.material.music.data.model.PlaylistShapeType
 import com.material.music.data.model.SmartPlaylistRule
 import com.material.music.presentation.components.SongPickerSelectionPane
+import com.material.music.presentation.components.ConnectedToggleButtonRow
+import com.material.music.presentation.components.rememberSyncedSliderState
 import com.material.music.ui.theme.RoundedSans
-import androidx.compose.material3.Slider
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import com.material.music.utils.shapes.RoundedStarShape
@@ -156,6 +153,7 @@ import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.sharedPlayerViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.compose.material3.MediumExtendedFloatingActionButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 
 
@@ -170,7 +168,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.material.music.R
 import com.material.music.presentation.screens.TabAnimation
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
@@ -1242,26 +1239,22 @@ private fun PlaylistFormContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             if (showCreationModeSelector) {
-                SingleChoiceSegmentedButtonRow(
+                val creationModes = persistentListOf(
+                    stringResource(R.string.presentation_batch_f_creation_mode_manual),
+                    stringResource(R.string.presentation_batch_f_creation_mode_smart)
+                )
+                ConnectedToggleButtonRow(
+                    labels = creationModes,
+                    selectedIndex = if (creationMode == PlaylistCreationMode.SMART) 1 else 0,
+                    onSelect = { index ->
+                        onCreationModeChange(
+                            if (index == 1) PlaylistCreationMode.SMART else PlaylistCreationMode.MANUAL
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 22.dp)
-                ) {
-                    SegmentedButton(
-                        selected = creationMode == PlaylistCreationMode.MANUAL,
-                        onClick = { onCreationModeChange(PlaylistCreationMode.MANUAL) },
-                        shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
-                    ) {
-                        Text(stringResource(R.string.presentation_batch_f_creation_mode_manual))
-                    }
-                    SegmentedButton(
-                        selected = creationMode == PlaylistCreationMode.SMART,
-                        onClick = { onCreationModeChange(PlaylistCreationMode.SMART) },
-                        shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
-                    ) {
-                        Text(stringResource(R.string.presentation_batch_f_creation_mode_smart))
-                    }
-                }
+                )
             }
 
             AnimatedVisibility(visible = creationMode == PlaylistCreationMode.SMART) {
@@ -1304,10 +1297,10 @@ private fun PlaylistFormContent(
                 stringResource(R.string.presentation_batch_f_tab_image),
                 stringResource(R.string.presentation_batch_f_tab_icon)
             )
-            ExpressiveButtonGroup(
-                items = tabs,
+            ConnectedToggleButtonRow(
+                labels = tabs,
                 selectedIndex = selectedTab,
-                onItemClick = onTabChange,
+                onSelect = onTabChange,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 22.dp)
@@ -1518,61 +1511,6 @@ fun getIconByName(name: String?): ImageVector? {
     }
 }
 
-@Composable
-fun ExpressiveButtonGroup(
-    items: ImmutableList<String>,
-    selectedIndex: Int,
-    onItemClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(Color.Transparent, CircleShape),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items.forEachIndexed { index, title ->
-            val isSelected = selectedIndex == index
-            val shape = if (isSelected) CircleShape else RoundedCornerShape(10.dp)
-            val containerColor by animateColorAsState(
-                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-                label = "ButtonColor"
-            )
-            val contentColor by animateColorAsState(
-                if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                label = "ContentColor"
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-                    .clip(shape)
-                    .background(containerColor)
-                    .clickable { onItemClick(index) },
-                contentAlignment = Alignment.Center
-            ) {
-                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                     AnimatedVisibility(visible = isSelected) {
-                         Icon(
-                             Icons.Rounded.Check, 
-                             contentDescription = null, 
-                             modifier = Modifier.padding(end = 8.dp).size(18.dp),
-                             tint = contentColor
-                         )
-                     }
-                     Text(
-                         text = title,
-                         style = MaterialTheme.typography.labelLarge,
-                         color = contentColor,
-                         fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Medium
-                     )
-                 }
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShapeParameterCard(
@@ -1630,10 +1568,8 @@ fun ThickSlider(
     steps: Int = 0
 ) {
     Slider(
-        value = value,
+        state = rememberSyncedSliderState(value = value, steps = steps, valueRange = valueRange),
         onValueChange = onValueChange,
-        valueRange = valueRange,
-        steps = steps,
         colors = SliderDefaults.colors(
              thumbColor = MaterialTheme.colorScheme.primary,
              activeTrackColor = MaterialTheme.colorScheme.primary,

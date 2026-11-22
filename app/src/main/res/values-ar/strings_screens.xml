@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">%1$d مساهمة</string>
-    <string name="about_link_github_subtitle">متوفر في كتالوج github</string>
+    <string name="about_link_fdroid_subtitle">متوفر في كتالوج F-Droid</string>
     <string name="about_licenses_title">التراخيص والإسناد</string>
     <string name="about_licenses_subtitle">المكتبات مفتوحة المصدر والخطوط والبيانات المضمّنة</string>
     <string name="about_licenses_sheet_subtitle">برامج الجهات الخارجية والخطوط والبيانات المضمّنة في هذا التطبيق.</string>
     <string name="licenses_tab_all">الكل</string>
     <string name="licenses_tab_libraries">المكتبات</string>
     <string name="licenses_tab_fonts">الخطوط</string>
+    <string name="licenses_tab_contributors">المساهمون</string>
+    <string name="navigation_rail_expand">توسيع التنقل</string>
+    <string name="navigation_rail_collapse">طي التنقل</string>
     <string name="licenses_tab_data">البيانات</string>
     <string name="licenses_tab_raw_notice">الإشعار الأصلي</string>
     <string name="licenses_search_placeholder">البحث في المكتبات أو التراخيص…</string>
@@ -19,15 +22,21 @@
     <string name="licenses_toast_copied">تم نسخ نص الترخيص إلى الحافظة</string>
     <string name="licenses_cd_close">إغلاق</string>
     <string name="licenses_cd_copy">نسخ نص الترخيص</string>
-    <string name="about_link_github_title">github</string>
+    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_title">الكود المصدري</string>
-    <string name="about_maintainer_subtitle">الشخص الذي يقف وراء MaterialMusic.</string>
+    <string name="about_maintainer_subtitle">الشخص الذي يقف وراء PixelPlayer.</string>
     <string name="about_maintainer_title">المشرف الرئيسي</string>
     <string name="about_project_subtitle">الكود المصدري والإصدارات ونقاط الدخول إلى المجتمع.</string>
     <string name="about_project_title">المشروع</string>
     <string name="about_signal_community_first">المجتمع أولاً</string>
     <string name="about_signal_material3">تصميم Material 3 معبر</string>
     <string name="about_signal_open_source">مفتوح المصدر</string>
+    <string name="about_support_body">ساعد في استمرار صيانة نسخة FOSS ومراجعتها واختبارها على أجهزة أندرويد حقيقية.</string>
+    <string name="about_support_chip_ci">التكامل المستمر والإصدارات</string>
+    <string name="about_support_chip_foss">صيانة نسخة FOSS</string>
+    <string name="about_support_chip_streaming">موسيقى مستضافة ذاتياً</string>
+    <string name="about_support_cta">ادعمنا على GitHub</string>
+    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">مشغل موسيقى مفتوح المصدر تم بناؤه مع مجتمعه.</string>
     <string name="about_version_format">الإصدار v%1$s</string>
     <string name="accounts_unable_open_screen">تعذر فتح هذه الشاشة في الوقت الحالي.</string>
@@ -290,4 +299,11 @@
     <string name="setup_theme_dark_description">مظهر Material 3 الداكن الافتراضي لتطبيق MaterialMusic.</string>
     <string name="home_empty_placeholder_subtitle">سيظهر مزيجك الموسيقي هنا عندما يعثر MaterialMusic على أغانٍ أو يزامن مصدراً.</string>
     <string name="crash_report_share_subject">تقرير تعطل MaterialMusic</string>
+    <string name="about_support_title">ادعم MaterialMusic</string>
+    <string name="dash_jellyfin_sync_favorites_title">مزامنة المفضلة</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">مزامنة ثنائية الاتجاه للأغاني المعجب بها مع مفضلة Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_synced">تمت مزامنة المفضلة مع Jellyfin</string>
+    <string name="dash_jellyfin_sync_favorites_failed">تعذرت مزامنة المفضلة مع Jellyfin</string>
+    <string name="home_recently_added_title">أُضيف مؤخراً</string>
+    <string name="home_recently_added_play_cd">تشغيل الأغاني المضافة مؤخراً</string>
 </resources>

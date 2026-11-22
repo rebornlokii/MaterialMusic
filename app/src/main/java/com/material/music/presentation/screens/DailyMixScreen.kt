@@ -1,5 +1,8 @@
 package com.material.music.presentation.screens
 
+import com.material.music.ui.theme.withInterfaceFont
+
+import com.material.music.presentation.components.rememberSwipeToQueue
 import com.material.music.presentation.navigation.navigateSafely
 
 import androidx.compose.foundation.background
@@ -77,6 +80,8 @@ import com.material.music.presentation.components.SmartImage
 import com.material.music.presentation.components.SongInfoBottomSheet
 import com.material.music.presentation.components.threeShapeSwitch
 import com.material.music.presentation.components.resolveNavBarOccupiedHeight
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.window.core.layout.WindowSizeClass
 import com.material.music.presentation.navigation.Screen
 import com.material.music.presentation.viewmodel.MainViewModel
 import com.material.music.presentation.viewmodel.PlayerViewModel
@@ -112,8 +117,11 @@ fun DailyMixScreen(
     val isPlaying by remember { playerViewModel.stablePlayerState.map { it.isPlaying }.distinctUntilChanged() }.collectAsStateWithLifecycle(initialValue = false)
     val isShuffleEnabled by remember { playerViewModel.stablePlayerState.map { it.isShuffleEnabled }.distinctUntilChanged() }.collectAsStateWithLifecycle(initialValue = false)
     val navBarCompactMode by playerViewModel.navBarCompactMode.collectAsStateWithLifecycle()
+    val swipeToQueue = rememberSwipeToQueue(playerViewModel)
     val systemNavBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val bottomBarHeightDp = resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode)
+    val useNavigationRail = currentWindowAdaptiveInfo().windowSizeClass
+        .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+    val bottomBarHeightDp = resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode, useNavigationRail)
     var showPlaylistBottomSheet by remember { mutableStateOf(false) }
     val favoriteSongIds by playerViewModel.favoriteSongIds.collectAsStateWithLifecycle()
     val selectedSongForInfo by playerViewModel.selectedSongForInfo.collectAsStateWithLifecycle()
@@ -316,6 +324,7 @@ fun DailyMixScreen(
                         isCurrentSong = currentSongId == song.id,
                         isPlaying = currentSongId == song.id && isPlaying,
                         onClick = { playerViewModel.showAndPlaySong(song, dailyMixSongs, dailyMixTitle, isVoluntaryPlay = false) },
+                        onSwipeToQueue = swipeToQueue?.let { { it(song) } },
                         onMoreOptionsClick = {
                             playerViewModel.selectSongForInfo(song)
                             showSongInfoSheet = true
@@ -563,5 +572,5 @@ private fun rememberDailyMixTitleStyle(): TextStyle {
             fontWeight = FontWeight(760),
             fontSize = 44.sp,
         )
-    }
+    }.withInterfaceFont()
 }

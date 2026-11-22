@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_contributions_format">기여 %1$d회</string>
-    <string name="about_link_github_subtitle">github 카탈로그에서 이용 가능</string>
+    <string name="about_link_fdroid_subtitle">F-Droid 카탈로그에서 이용 가능</string>
     <string name="about_licenses_title">라이선스 및 저작자 표시</string>
     <string name="about_licenses_subtitle">오픈 소스 라이브러리, 글꼴 및 포함된 데이터</string>
     <string name="about_licenses_sheet_subtitle">이 앱에 포함된 서드파티 소프트웨어, 글꼴 및 데이터입니다.</string>
     <string name="licenses_tab_all">전체</string>
     <string name="licenses_tab_libraries">라이브러리</string>
     <string name="licenses_tab_fonts">글꼴</string>
+    <string name="licenses_tab_contributors">기여자</string>
+    <string name="navigation_rail_expand">탐색 펼치기</string>
+    <string name="navigation_rail_collapse">탐색 접기</string>
     <string name="licenses_tab_data">데이터</string>
     <string name="licenses_tab_raw_notice">원문 고지</string>
     <string name="licenses_search_placeholder">라이브러리 또는 라이선스 검색…</string>
@@ -19,7 +22,7 @@
     <string name="licenses_toast_copied">라이선스 텍스트가 클립보드에 복사되었습니다</string>
     <string name="licenses_cd_close">닫기</string>
     <string name="licenses_cd_copy">라이선스 텍스트 복사</string>
-    <string name="about_link_github_title">github</string>
+    <string name="about_link_fdroid_title">F-Droid</string>
     <string name="about_link_source_title">소스 코드</string>
     <string name="about_maintainer_subtitle">FOSS 버전과 원본/비FOSS 버전의 메인테이너입니다.</string>
     <string name="about_maintainer_title">메인테이너</string>
@@ -28,6 +31,12 @@
     <string name="about_signal_community_first">커뮤니티 중심</string>
     <string name="about_signal_material3">Material 3 디자인</string>
     <string name="about_signal_open_source">오픈 소스</string>
+    <string name="about_support_body">FOSS 버전이 계속 관리되고, 검토되고, 실제 Android 기기에서 테스트될 수 있도록 도와주세요.</string>
+    <string name="about_support_chip_ci">CI 및 릴리스</string>
+    <string name="about_support_chip_foss">FOSS 유지 관리</string>
+    <string name="about_support_chip_streaming">자체 호스팅 음악</string>
+    <string name="about_support_cta">GitHub에서 후원하기</string>
+    <string name="about_support_eyebrow">GitHub Sponsors</string>
     <string name="about_tagline">로컬 우선 음악, 자체 호스팅 스트리밍, Material 3 감성을 하나에 담은 FOSS 플레이어입니다.</string>
     <string name="about_version_format">버전 v%1$s</string>
     <string name="accounts_unable_open_screen">현재 이 화면을 열 수 없습니다.</string>
@@ -275,4 +284,11 @@
     <string name="setup_theme_dark_description">MaterialMusic의 기본 Material 3 다크 룩입니다.</string>
     <string name="home_empty_placeholder_subtitle">MaterialMusic가 곡을 찾거나 소스를 동기화하면 여기에 믹스가 표시됩니다.</string>
     <string name="crash_report_share_subject">MaterialMusic 크래시 보고서</string>
+    <string name="about_support_title">MaterialMusic 후원하기</string>
+    <string name="dash_jellyfin_sync_favorites_title">즐겨찾기 동기화</string>
+    <string name="dash_jellyfin_sync_favorites_subtitle">좋아요한 곡을 Jellyfin 즐겨찾기와 양방향 동기화</string>
+    <string name="dash_jellyfin_sync_favorites_synced">Jellyfin과 즐겨찾기를 동기화했습니다</string>
+    <string name="dash_jellyfin_sync_favorites_failed">Jellyfin과 즐겨찾기를 동기화하지 못했습니다</string>
+    <string name="home_recently_added_title">최근 추가된 음악</string>
+    <string name="home_recently_added_play_cd">최근 추가된 곡 재생</string>
 </resources>

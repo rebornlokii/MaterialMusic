@@ -84,12 +84,17 @@ import com.material.music.presentation.components.CloudLibraryPickerItem
 import com.material.music.presentation.components.CloudLibraryPickerSheet
 import com.material.music.ui.theme.RoundedSans
 import com.material.music.ui.theme.MaterialMusicTheme
+import com.material.music.data.preferences.InterfaceAppearance
+import com.material.music.data.preferences.ThemePreferencesRepository
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 
 @AndroidEntryPoint
 class NavidromeLoginActivity : ComponentActivity() {
+    @Inject
+    lateinit var themePreferencesRepository: ThemePreferencesRepository
 
     override fun attachBaseContext(newBase: android.content.Context) {
         super.attachBaseContext(com.material.music.utils.AppLocaleManager.wrapContext(newBase))
@@ -99,7 +104,8 @@ class NavidromeLoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MaterialMusicTheme {
+            val appearance by themePreferencesRepository.interfaceAppearanceFlow.collectAsStateWithLifecycle(initialValue = InterfaceAppearance())
+            MaterialMusicTheme(interfaceAppearance = appearance) {
                 NavidromeLoginScreen(onClose = { finish() })
             }
         }

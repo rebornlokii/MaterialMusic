@@ -45,10 +45,10 @@ import com.material.music.MainActivity
 import com.material.music.R
 import com.material.music.data.diagnostics.AdvancedPerformanceDiagnostics
 import com.material.music.data.model.PlayerInfo
+import com.material.music.data.navidrome.NavidromeSongUri
 import com.material.music.data.model.PlaybackQueueItemSnapshot
 import com.material.music.data.model.PlaybackQueueSnapshot
 import com.material.music.data.model.Song
-import com.material.music.data.preferences.EqualizerPreferencesRepository
 import com.material.music.data.preferences.PreviousButtonBehavior
 import com.material.music.data.preferences.ThemePreferencesRepository
 import com.material.music.data.preferences.UserPreferencesRepository
@@ -171,7 +171,7 @@ suspend fun loadArtworkBytesViaCoil(context: Context, uri: Uri): ByteArray? {
             config = ArtworkTransportSanitizer.WIDGET_CONFIG,
         )
     }.getOrElse { error ->
-        Timber.tag("MusicService_MaterialMusic").w(error, "Artwork read failed via Coil for uri=%s", uri)
+        Timber.tag("MusicService_PixelPlayer").w(error, "Artwork read failed via Coil for uri=%s", uri)
         null
     }
 }
@@ -189,8 +189,6 @@ class MusicService : MediaSessionService() {
     lateinit var musicRepository: MusicRepository
     @Inject
     lateinit var userPreferencesRepository: UserPreferencesRepository
-    @Inject
-    lateinit var equalizerPreferencesRepository: EqualizerPreferencesRepository
     @Inject
     lateinit var themePreferencesRepository: ThemePreferencesRepository
     @Inject
@@ -259,7 +257,7 @@ class MusicService : MediaSessionService() {
     private var temporaryForegroundNotificationVisible = false
 
     companion object {
-        private const val TAG = "MusicService_MaterialMusic"
+        private const val TAG = "MusicService_PixelPlayer"
         const val NOTIFICATION_ID = 101
         const val ACTION_SLEEP_TIMER_EXPIRED = "com.material.music.ACTION_SLEEP_TIMER_EXPIRED"
         const val EXTRA_FORCE_FOREGROUND_ON_START =
@@ -358,6 +356,7 @@ class MusicService : MediaSessionService() {
         val unwrappedOld = oldPlayer.unwrapSessionPlayer()
         if (unwrappedOld !== player) {
             oldPlayer.removeListener(playerListener)
+            unwrappedOld.removeListener(playerListener)
             val wrappedPlayer = wrapSessionPlayer(player)
             session.player = wrappedPlayer
             wrappedPlayer.addListener(playerListener)
@@ -441,8 +440,6 @@ class MusicService : MediaSessionService() {
         replayGainProcessor.captureUserVolume(engine.masterPlayer.volume)
         syncLocalListeningStatsFromPlayer(engine.masterPlayer)
 
-        engine.masterPlayer.addListener(playerListener)
-
         engine.setOnPlayerAboutToBeReleasedListener { oldPlayer ->
             oldPlayer.removeListener(playerListener)
         }
@@ -454,35 +451,7 @@ class MusicService : MediaSessionService() {
         sleepTimerController.attach()
         registerHeadsetReconnectMonitor()
 
-        serviceScope.launch {
-            val eqEnabled = equalizerPreferencesRepository.equalizerEnabledFlow.first()
-            val presetName = equalizerPreferencesRepository.equalizerPresetFlow.first()
-            val customBands = equalizerPreferencesRepository.equalizerCustomBandsFlow.first()
-            val bassBoostEnabled = equalizerPreferencesRepository.bassBoostEnabledFlow.first()
-            val bassBoostStrength = equalizerPreferencesRepository.bassBoostStrengthFlow.first()
-            val virtualizerEnabled = equalizerPreferencesRepository.virtualizerEnabledFlow.first()
-            val virtualizerStrength = equalizerPreferencesRepository.virtualizerStrengthFlow.first()
-            val loudnessEnabled = equalizerPreferencesRepository.loudnessEnhancerEnabledFlow.first()
-            val loudnessStrength = equalizerPreferencesRepository.loudnessEnhancerStrengthFlow.first()
-
-            equalizerManager.restoreState(
-                eqEnabled, presetName, customBands,
-                bassBoostEnabled, bassBoostStrength,
-                virtualizerEnabled, virtualizerStrength,
-                loudnessEnabled, loudnessStrength
-            )
-
-            val sessionId = engine.getAudioSessionId()
-            if (sessionId != 0) {
-                equalizerManager.attachToAudioSessionIfNeeded(sessionId)
-            }
-
-            engine.activeAudioSessionId.collect { newSessionId ->
-                if (newSessionId != 0) {
-                    equalizerManager.attachToAudioSessionIfNeeded(newSessionId)
-                }
-            }
-        }
+        serviceScope.launch { equalizerManager.restoreFromPreferences() }
 
         serviceScope.launch {
             engine.activeAudioSessionId.collect { sessionId ->
@@ -587,14 +556,29 @@ class MusicService : MediaSessionService() {
                     ).map { SessionCommand(it, Bundle.EMPTY) }
                     customCommands.forEach { sessionCommandsBuilder.add(it) }
                 }
-                grantArtworkUriPermissions(
-                    controller.packageName,
-                    listOfNotNull(session.player.currentMediaItem)
-                )
+                val currentItem = session.player.currentMediaItem
+                if (currentItem != null && controller.packageName != packageName) {
+                    val targetPkg = controller.packageName
+                    serviceScope.launch(Dispatchers.IO) {
+                        grantArtworkUriPermissions(targetPkg, listOf(currentItem))
+                    }
+                }
+
+                // Only expose the full timeline to our own in-app MediaController. External/legacy
+                // controllers (including Bluetooth AVRCP via MediaSessionLegacyStub) otherwise
+                // trigger unbounded MediaSessionCompat.setQueue ParceledListSlice IPC storms on
+                // every crossfade swap and large-queue attachment.
+                val availablePlayerCommands = if (controller.packageName == packageName) {
+                    defaultResult.availablePlayerCommands
+                } else {
+                    defaultResult.availablePlayerCommands.buildUpon()
+                        .remove(Player.COMMAND_GET_TIMELINE)
+                        .build()
+                }
 
                 return MediaSession.ConnectionResult.accept(
                     sessionCommandsBuilder.build(),
-                    defaultResult.availablePlayerCommands
+                    availablePlayerCommands
                 )
             }
 
@@ -748,7 +732,10 @@ class MusicService : MediaSessionService() {
             }
         }
 
-        mediaSession = MediaSession.Builder(this, wrapSessionPlayer(engine.masterPlayer))
+        val initialSessionPlayer = wrapSessionPlayer(engine.masterPlayer).also {
+            it.addListener(playerListener)
+        }
+        mediaSession = MediaSession.Builder(this, initialSessionPlayer)
             .setCallback(callback)
             .setSessionActivity(getOpenAppPendingIntent())
             .setBitmapLoader(CoilBitmapLoader(this, serviceScope))
@@ -942,7 +929,19 @@ class MusicService : MediaSessionService() {
                 }
             }
         }
-        val startCommandResult = super.onStartCommand(intent, flags, startId)
+        val startCommandResult = try {
+            super.onStartCommand(intent, flags, startId)
+        } catch (e: IllegalStateException) {
+            // Media3 promotes to foreground before stopping itself on a stale self-start
+            // intent (e.g. after the queue empties); Android may refuse that from background.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                e !is ForegroundServiceStartNotAllowedException
+            ) throw e
+            Timber.tag(TAG).w(e, "Media3 start command could not go foreground; stopping")
+            clearTemporaryForegroundNotification()
+            stopSelf()
+            return START_NOT_STICKY
+        }
         if (needsTemporaryForeground || startedTemporaryForegroundInOnCreate) {
             if (mediaSession?.player?.hasForegroundPlaybackIntent() != true) {
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -1004,7 +1003,6 @@ class MusicService : MediaSessionService() {
             release()
             mediaSession = null
         }
-        equalizerManager.release()
         externalAudioEffectSession.close()
         engine.release()
         controller.release()
@@ -1019,7 +1017,7 @@ class MusicService : MediaSessionService() {
         return mediaItem.mediaMetadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_NAVIDROME_ID)
             ?: mediaItem.mediaId.let { if (it.startsWith("navidrome_")) it.substringAfter("navidrome_") else null }
             ?: mediaItem.mediaMetadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_CONTENT_URI)?.let {
-                if (it.startsWith("navidrome://")) it.substringAfter("navidrome://") else null
+                NavidromeSongUri.parseId(it)
             }
     }
 
@@ -1232,7 +1230,7 @@ class MusicService : MediaSessionService() {
 
         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
             requestWidgetFullUpdate(force = true)
-            mediaSession?.let { refreshMediaSessionUiWithFollowUp(it) }
+            mediaSession?.let { refreshMediaSessionUi(it) }
             val activePlayer = mediaSession?.player ?: engine.masterPlayer
             replayGainProcessor.onMediaMetadataChanged(activePlayer.currentMediaItem)
         }
@@ -2452,12 +2450,16 @@ class MusicService : MediaSessionService() {
      */
     private fun grantArtworkUriPermissionsToConnectedControllers(mediaItem: MediaItem) {
         val session = mediaSession ?: return
-        session.connectedControllers
+        val externalPackages = session.connectedControllers
             .asSequence()
             .map { it.packageName }
             .distinct()
             .filter { it.isNotBlank() && it != packageName }
-            .forEach { grantArtworkUriPermissions(it, listOf(mediaItem)) }
+            .toList()
+        if (externalPackages.isEmpty()) return
+        serviceScope.launch(Dispatchers.IO) {
+            externalPackages.forEach { grantArtworkUriPermissions(it, listOf(mediaItem)) }
+        }
     }
 
     private fun grantArtworkUriPermissions(

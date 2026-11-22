@@ -65,6 +65,7 @@ import androidx.media3.common.util.UnstableApi
 import com.material.music.data.preferences.AlbumArtColorAccuracy
 import com.material.music.data.preferences.AlbumArtPaletteStyle
 import com.material.music.presentation.components.MiniPlayerHeight
+import com.material.music.presentation.components.rememberSyncedSliderState
 import com.material.music.presentation.viewmodel.ColorSchemePair
 import com.material.music.presentation.viewmodel.PlayerViewModel
 import com.material.music.presentation.viewmodel.SettingsViewModel
@@ -675,7 +676,11 @@ private fun PaletteAccuracySlider(
         }
 
         Slider(
-            value = clampedValue.toFloat(),
+            state = rememberSyncedSliderState(
+                value = clampedValue.toFloat(),
+                steps = AlbumArtColorAccuracy.STEPS,
+                valueRange = AlbumArtColorAccuracy.MIN.toFloat()..AlbumArtColorAccuracy.MAX.toFloat()
+            ),
             onValueChange = {
                 val nextValue = AlbumArtColorAccuracy.clamp(it.roundToInt())
                 if (nextValue == lastDispatchedValue) return@Slider
@@ -686,8 +691,6 @@ private fun PaletteAccuracySlider(
                 lastDispatchedValue = nextValue
                 onValueChange(nextValue)
             },
-            valueRange = AlbumArtColorAccuracy.MIN.toFloat()..AlbumArtColorAccuracy.MAX.toFloat(),
-            steps = AlbumArtColorAccuracy.STEPS,
             colors = SliderDefaults.colors(
                 thumbColor = scheme.primary,
                 activeTrackColor = scheme.primary,

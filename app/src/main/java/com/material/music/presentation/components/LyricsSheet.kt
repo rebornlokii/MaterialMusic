@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.material.music.data.model.Song
 import com.material.music.data.model.Lyrics
 import com.material.music.R
+import com.material.music.presentation.utils.ScreenAwakeCoordinator
 import androidx.activity.compose.BackHandler
 import com.material.music.presentation.components.scoped.LyricsPredictiveBackHandler
 import androidx.compose.animation.AnimatedContent
@@ -97,6 +98,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -474,13 +476,11 @@ fun LyricsSheet(
             }
         }
 
-        if (keepScreenOn) {
-            view.keepScreenOn = true
-        }
+        ScreenAwakeCoordinator.request("LyricsSheet", keepScreenOn, view)
 
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            view.keepScreenOn = false
+            ScreenAwakeCoordinator.request("LyricsSheet", false, view)
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
@@ -534,6 +534,7 @@ fun LyricsSheet(
             override fun onReceive(ctx: android.content.Context, intent: Intent) {
                 if (intent.action == Intent.ACTION_SCREEN_OFF) {
                     keepScreenOn = false
+                    ScreenAwakeCoordinator.reset(view)
                     coroutineScope.launch {
                         context.dataStore.edit { prefs ->
                             prefs[booleanPreferencesKey("keep_screen_on_lyrics")] = false
@@ -782,6 +783,10 @@ fun LyricsSheet(
                                 color = backgroundColor,
                                 shape = CircleShape
                             )
+                            // Claim taps so they do not reach (and seek to) the lyric line underneath.
+                            .pointerInput(Unit) {
+                                detectTapGestures { resetImmersiveTimer() }
+                            }
                             .wrapContentWidth()
                             .animateContentSize(),
                         backgroundColor = backgroundColor,
@@ -1359,7 +1364,9 @@ fun SyncedLyricsList(
         LaunchedEffect(currentLineIndex, lines.size, metrics, isPreviewSeeking) {
             if (lines.isEmpty()) return@LaunchedEffect
             if (currentLineIndex !in lines.indices) return@LaunchedEffect
-            if (listState.layoutInfo.totalItemsCount == 0) return@LaunchedEffect
+            if (listState.layoutInfo.totalItemsCount == 0) {
+                snapshotFlow { listState.layoutInfo.totalItemsCount }.first { it > 0 }
+            }
 
             if (!hasAlignedInitialLine) {
                 listState.scrollToItem(currentLineIndex)
@@ -1551,46 +1558,28 @@ fun LyricLineRow(
     }
     val lineColor by animateColorAsState(
         targetValue = if (isCurrentLine) accentColor else unhighlightedColor,
-        animationSpec = if (decorativeMotionEnabled) spring<Color>(
-            stiffness = Spring.StiffnessVeryLow,
-            dampingRatio = Spring.DampingRatioMediumBouncy
-        ) else tween<Color>(durationMillis = 250),
+        animationSpec = tween(
+            durationMillis = if (decorativeMotionEnabled) 90 else 160,
+            easing = FastOutSlowInEasing
+        ),
         label = "lineColor"
     )
 
-    // PixelPlayer's animated mode: springy fisheye focus around the line being sung.
     val targetScale = if (decorativeMotionEnabled) when (focusDistance) {
-        0 -> if (immersiveMode) 1.02f else 1.10f; 1 -> 0.95f; else -> 0.85f
+        0 -> if (immersiveMode) 1.02f else 1.07f; 1 -> 0.97f; else -> 0.92f
     } else 1f
-    val targetPadding = if (decorativeMotionEnabled) when (focusDistance) {
-        0 -> 32.dp; 1 -> 16.dp; else -> 8.dp
-    } else 12.dp
     val targetAlpha = if (decorativeMotionEnabled) when (focusDistance) {
         0 -> 1.0f; 1 -> 0.6f; else -> 0.3f
     } else 1f
 
     val scale by animateFloatAsState(
         targetValue = targetScale,
-        animationSpec = if (decorativeMotionEnabled) spring<Float>(
-            stiffness = Spring.StiffnessVeryLow,
-            dampingRatio = Spring.DampingRatioMediumBouncy
-        ) else tween<Float>(durationMillis = 200),
+        animationSpec = tween(durationMillis = 160, easing = FastOutSlowInEasing),
         label = "lineScale"
-    )
-    val verticalPadding by animateDpAsState(
-        targetValue = targetPadding,
-        animationSpec = if (decorativeMotionEnabled) spring<Dp>(
-            stiffness = Spring.StiffnessVeryLow,
-            dampingRatio = Spring.DampingRatioMediumBouncy
-        ) else tween<Dp>(durationMillis = 200),
-        label = "linePadding"
     )
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
-        animationSpec = if (decorativeMotionEnabled) spring<Float>(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ) else tween<Float>(durationMillis = 200),
+        animationSpec = tween(durationMillis = 140, easing = FastOutSlowInEasing),
         label = "lineAlpha"
     )
 
@@ -1600,14 +1589,14 @@ fun LyricLineRow(
 
     val blurRadius by animateDpAsState(
         targetValue = targetBlur,
-        animationSpec = if (decorativeMotionEnabled) {
-            tween<Dp>(durationMillis = 400)
-        } else {
-            tween<Dp>(durationMillis = 200)
-        },
+        animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing),
         label = "lineBlur"
     )
     val lineBlurEffectCache = remember { BlurEffectCache() }
+
+    // Keep line height stable while the visual focus moves. Scaling happens in a graphics layer,
+    // so neither the word pulse nor the active-line transition can make the lazy list jump.
+    val verticalPadding = if (useAnimatedLyrics) 16.dp else 12.dp
 
     val baseModifier = if (useAnimatedLyrics && !immersiveMode) {
         when (lyricsAlignment) {
@@ -1636,7 +1625,12 @@ fun LyricLineRow(
                 // recompose every visible line each frame. The radius is quantized to whole
                 // pixels and the RenderEffect (API 31+) is cached between frames.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    renderEffect = lineBlurEffectCache.get(blurRadius.toPx().roundToInt().toFloat())
+                    val radiusPx = blurRadius.toPx()
+                    renderEffect = if (radiusPx > 0.5f) {
+                        lineBlurEffectCache.get(radiusPx.roundToInt().toFloat())
+                    } else {
+                        null
+                    }
                 }
             }
     } else baseModifier
@@ -1865,7 +1859,13 @@ fun PlainLyricsLine(
 
     Column(modifier = modifier.then(longClickModifier), horizontalAlignment = horizontalAlignment) {
         if (primaryText.isNotBlank()) {
-            Text(text = primaryText, style = style, color = LocalContentColor.current.copy(alpha = 0.7f), textAlign = textAlign)
+            Text(
+                text = primaryText,
+                style = style,
+                color = LocalContentColor.current.copy(alpha = 0.7f),
+                textAlign = textAlign,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             if (showRomanization && romanizationText.isNotBlank()) {
                 Text(
@@ -1873,7 +1873,9 @@ fun PlainLyricsLine(
                     style = translationStyle,
                     color = translationColor,
                     textAlign = textAlign,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 )
             }
 
@@ -1883,7 +1885,9 @@ fun PlainLyricsLine(
                     style = translationStyle,
                     color = translationColor,
                     textAlign = textAlign,
-                    modifier = Modifier.padding(top = if (showRomanization && romanizationText.isNotBlank()) 2.dp else 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = if (showRomanization && romanizationText.isNotBlank()) 2.dp else 4.dp)
                 )
             }
         }
@@ -1893,7 +1897,7 @@ fun PlainLyricsLine(
 private val KanaRange = '\u3040'..'\u30FF'
 
 /** Romanizes each plain lyric line; null entries mean the line needs no romanization. */
-private fun romanizePlainLyrics(lines: List<String>): List<String?> {
+internal fun romanizePlainLyrics(lines: List<String>): List<String?> {
     val entireLyricsHasKana = lines.any { line -> line.any { it in KanaRange } }
     return lines.map { line ->
         val primary = sanitizeLyricLineText(line.substringBefore('\n'))
@@ -1905,7 +1909,7 @@ private fun romanizePlainLyrics(lines: List<String>): List<String?> {
     }
 }
 
-private fun TextStyle.withLyricsFontSize(fontSizeSp: Float): TextStyle {
+internal fun TextStyle.withLyricsFontSize(fontSizeSp: Float): TextStyle {
     val lineHeightRatio = if (fontSize.isSp && lineHeight.isSp && fontSize.value > 0f) {
         lineHeight.value / fontSize.value
     } else {

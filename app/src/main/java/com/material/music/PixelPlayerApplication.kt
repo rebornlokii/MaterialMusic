@@ -25,6 +25,7 @@ import com.material.music.utils.FolderArtworkSettingsCoordinator
 import com.material.music.utils.AppLocaleManager
 import com.material.music.utils.CrashHandler
 import com.material.music.utils.MediaMetadataRetrieverPool
+import com.material.music.utils.PhoneOrientationPolicy
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -137,6 +138,8 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
         }
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
+
+        registerActivityLifecycleCallbacks(PhoneOrientationPolicy)
 
         syncManager.get().start()
 

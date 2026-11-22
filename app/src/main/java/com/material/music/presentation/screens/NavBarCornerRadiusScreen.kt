@@ -70,6 +70,7 @@ import com.material.music.presentation.viewmodel.SettingsViewModel
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import com.material.music.data.preferences.NavBarStyle
 import com.material.music.presentation.components.resolveNavBarSurfaceHeight
+import com.material.music.presentation.components.rememberSyncedSliderState
 import androidx.compose.ui.res.stringResource
 
 const val DEFAULT_NAV_BAR_CORNER_RADIUS = 28f
@@ -268,7 +269,10 @@ fun NavBarCornerRadiusContent(
 
                             Box(modifier = Modifier.weight(1f)) {
                                 Slider(
-                                    value = sliderValue,
+                                    state = rememberSyncedSliderState(
+                                        value = sliderValue,
+                                        valueRange = MIN_NAV_BAR_CORNER_RADIUS.toFloat()..MAX_NAV_BAR_CORNER_RADIUS.toFloat()
+                                    ),
                                     onValueChange = {
                                         if (sliderValue != it) {
                                             if (it.toInt() != sliderValue.toInt()) {
@@ -277,7 +281,6 @@ fun NavBarCornerRadiusContent(
                                             sliderValue = it.safeRadius()
                                         }
                                     },
-                                    valueRange = MIN_NAV_BAR_CORNER_RADIUS.toFloat()..MAX_NAV_BAR_CORNER_RADIUS.toFloat(),
                                     colors = SliderDefaults.colors(
                                         thumbColor = MaterialTheme.colorScheme.primary,
                                         activeTrackColor = MaterialTheme.colorScheme.primary,
