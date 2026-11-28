@@ -133,6 +133,14 @@ jobs:
           mkdir -p "$OUT/jniLibs" "$OUT/bindings"
           cp -R .mornye-src/rust_backend/target/android/jniLibs/. "$OUT/jniLibs/"
           cp -R .mornye-src/rust_backend/target/bindings/kotlin "$OUT/bindings/kotlin"
+          # The release profile does not strip; do it here so the shipped
+          # libraries carry no local symbols.
+          STRIP="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
+          for so in "$OUT"/jniLibs/*/libmornye_mobile.so; do
+            before=$(stat -c%s "$so")
+            "$STRIP" --strip-unneeded "$so"
+            echo "$so: $before -> $(stat -c%s "$so") bytes"
+          done
           {
             echo "mornye_ref=$MORNYE_REF"
             echo "mornye_sha=$(git -C .mornye-src rev-parse HEAD)"
