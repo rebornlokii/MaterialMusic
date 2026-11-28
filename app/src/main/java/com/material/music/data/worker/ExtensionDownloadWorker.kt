@@ -31,13 +31,13 @@ import java.util.Locale
  */
 @HiltWorker
 class ExtensionDownloadWorker @AssistedInject constructor(
-    @Assisted appContext: Context,
+    @Assisted applicationContext: Context,
     @Assisted params: WorkerParameters,
     private val host: ExtensionHost,
     private val dao: OfflineTrackDao,
     private val settings: ExtensionDownloadSettings,
     private val gson: Gson,
-) : CoroutineWorker(appContext, params) {
+) : CoroutineWorker(applicationContext, params) {
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val downloadId = inputData.getString(KEY_DOWNLOAD_ID) ?: return@withContext Result.failure()
@@ -53,7 +53,7 @@ class ExtensionDownloadWorker @AssistedInject constructor(
 
         gate.withPermit {
             runCatching {
-                val staging = File(File(appContext.cacheDir, "extension_downloads").apply { mkdirs() }, "$downloadId.$attemptId")
+                val staging = File(File(applicationContext.cacheDir, "extension_downloads").apply { mkdirs() }, "$downloadId.$attemptId")
                 staging.deleteRecursively()
                 staging.mkdirs()
                 val startedAt = System.currentTimeMillis()
@@ -105,12 +105,12 @@ class ExtensionDownloadWorker @AssistedInject constructor(
     /** Moves the file into the picked folder, or keeps it in app storage. */
     private fun publish(file: File, displayName: String, treeUri: String?): String? {
         if (treeUri.isNullOrBlank()) {
-            val target = File(File(appContext.filesDir, "downloads").apply { mkdirs() }, displayName)
+            val target = File(File(applicationContext.filesDir, "downloads").apply { mkdirs() }, displayName)
             file.copyTo(target, overwrite = true)
             return target.absolutePath
         }
-        val document = SafFolder.createFile(appContext, treeUri, "audio/*", displayName) ?: return null
-        if (!SafFolder.copy(appContext, file, document)) return null
+        val document = SafFolder.createFile(applicationContext, treeUri, "audio/*", displayName) ?: return null
+        if (!SafFolder.copy(applicationContext, file, document)) return null
         return document.toString()
     }
 

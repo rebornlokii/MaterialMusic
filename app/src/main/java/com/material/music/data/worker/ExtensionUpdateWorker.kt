@@ -28,13 +28,13 @@ import java.security.MessageDigest
  */
 @HiltWorker
 class ExtensionUpdateWorker @AssistedInject constructor(
-    @Assisted appContext: Context,
+    @Assisted applicationContext: Context,
     @Assisted params: WorkerParameters,
     private val host: ExtensionHost,
     private val bootstrap: ExtensionBootstrap,
     private val okHttpClient: OkHttpClient,
     private val gson: Gson,
-) : CoroutineWorker(appContext, params) {
+) : CoroutineWorker(applicationContext, params) {
 
     override suspend fun doWork(): Result = runCatching {
         bootstrap.installBundled()
@@ -81,7 +81,7 @@ class ExtensionUpdateWorker @AssistedInject constructor(
         okHttpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) return null
             val body = response.body?.byteString() ?: return null
-            val file = java.io.File.createTempFile("mornye-ext", ".sflx", appContext.cacheDir)
+            val file = java.io.File.createTempFile("mornye-ext", ".sflx", applicationContext.cacheDir)
             file.writeBytes(body.toByteArray())
             file.absolutePath
         }
