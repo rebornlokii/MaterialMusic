@@ -80,12 +80,18 @@ jobs:
           name: mornye-backend
           path: mornye-backend
 
-      - name: Check backend
+      - name: Install backend
         run: |
           set -euo pipefail
           cat mornye-backend/BUILD_INFO.txt
-          find mornye-backend -name '*.so' -printf '%p  %s bytes\n' | sort
-          test -d mornye-backend/bindings/kotlin
+          # Native libs and generated Kotlin bindings go straight into the
+          # source tree so the Kotlin plugin always sees them.
+          mkdir -p app/src/main/jniLibs app/src/main/java/com/mornye/backend
+          cp -R mornye-backend/jniLibs/. app/src/main/jniLibs/
+          cp mornye-backend/bindings/kotlin/com/mornye/backend/mornye_mobile.kt \
+            app/src/main/java/com/mornye/backend/
+          find app/src/main/jniLibs -name '*.so' -printf '%p  %s bytes\n' | sort
+          test -s app/src/main/java/com/mornye/backend/mornye_mobile.kt
 
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug -Ppixelplayer.enableAbiSplits=false
