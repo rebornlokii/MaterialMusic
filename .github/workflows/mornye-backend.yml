@@ -104,6 +104,15 @@ jobs:
           shared-key: mornye-android-${{ env.MORNYE_REF }}
           cache-targets: false
 
+      # rquickjs-sys runs bindgen, which needs a host libclang with its builtin
+      # headers (stdbool.h). The runner image has no clang, so install it.
+      - name: Install clang for bindgen
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends clang libclang-dev
+          clang --version
+          find /usr/lib/llvm-* -name stdbool.h 2>/dev/null | head
+
       # rquickjs-sys runs bindgen, which needs clang's builtin headers
       # (stdbool.h). Ubuntu 26.04 ships a clang layout without them, so the
       # build is pinned to 24.04; this step makes a regression obvious.
