@@ -1,0 +1,143 @@
+name: Mornye backend (Android)
+
+# Builds the Mornye Rust core (QuickJS extension host, lyrics providers, metadata
+# enrichment, ReplayGain, tag writing) into Android .so files plus the generated
+# Kotlin UniFFI bindings. Consumed by the MaterialMusic app as a native library.
+#
+# This is a reusable workflow: mornye-apk.yml calls it, and it can also be run
+# on its own from the Actions tab to get a downloadable artifact.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mornye_ref:
+        description: "Mornye git ref (tag, branch or sha)"
+        required: false
+        default: "v5.4.5"
+      abis:
+        description: "Comma-separated Android ABIs"
+        required: false
+        default: "arm64-v8a,armeabi-v7a"
+  workflow_call:
+    inputs:
+      mornye_ref:
+        type: string
+        required: false
+        default: "v5.4.5"
+      abis:
+        type: string
+        required: false
+        default: "arm64-v8a,armeabi-v7a"
+    outputs:
+      artifact_name:
+        description: "Name of the uploaded artifact"
+        value: mornye-backend
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mornye-backend-${{ inputs.mornye_ref || 'v5.4.5' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
+    runs-on: ubuntu-latest
+    env:
+      MORNYE_REF: ${{ inputs.mornye_ref || 'v5.4.5' }}
+      MORNYE_ABIS: ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
+      NDK_VERSION: "30.0.16248370"
+
+    steps:
+      - name: Reclaim runner disk
+        uses: jlumbroso/free-disk-space@v1
+        with:
+          tool-cache: false
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: false
+
+      - name: Checkout Mornye
+        uses: actions/checkout@v6
+        with:
+          repository: mornyeapp/Mornye
+          ref: ${{ env.MORNYE_REF }}
+          path: .mornye-src
+          fetch-depth: 1
+
+      - name: Report source revision
+        run: |
+          git -C .mornye-src log -1 --format='source %H %s'
+          test -f .mornye-src/rust_backend/rust-toolchain.toml
+          test -f .mornye-src/scripts/build_rust_backend.sh
+
+      - name: Install Android SDK & NDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "ndk;${NDK_VERSION}" \
+            "platforms;android-37.0" \
+            "build-tools;37.0.0"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
+
+      - name: Cache NDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
+          key: ndk-${{ env.NDK_VERSION }}
+
+      - name: Activate pinned Rust toolchain
+        working-directory: .mornye-src/rust_backend
+        run: |
+          rustup show
+          rustc --version
+          cargo --version
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ".mornye-src/rust_backend -> target"
+          shared-key: mornye-android-${{ env.MORNYE_REF }}
+          cache-targets: false
+
+      - name: Build Android libraries
+        working-directory: .mornye-src
+        run: bash scripts/build_rust_backend.sh android
+
+      - name: Collect artifacts
+        run: |
+          set -euo pipefail
+          OUT=mornye-backend
+          mkdir -p "$OUT/jniLibs" "$OUT/bindings"
+          cp -R .mornye-src/rust_backend/target/android/jniLibs/. "$OUT/jniLibs/"
+          cp -R .mornye-src/rust_backend/target/bindings/kotlin "$OUT/bindings/kotlin"
+          {
+            echo "mornye_ref=$MORNYE_REF"
+            echo "mornye_sha=$(git -C .mornye-src rev-parse HEAD)"
+            echo "abis=$MORNYE_ABIS"
+            echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "runner=${{ runner.os }}"
+          } > "$OUT/BUILD_INFO.txt"
+          find "$OUT" -name '*.so' -printf '%p  %s bytes\n' | sort
+          du -sh "$OUT" "$OUT/jniLibs" "$OUT/bindings"
+
+      - name: Verify expected ABIs
+        run: |
+          set -euo pipefail
+          IFS=',' read -ra ABIS <<< "$MORNYE_ABIS"
+          for abi in "${ABIS[@]}"; do
+            test -s "mornye-backend/jniLibs/$abi/libmornye_mobile.so"
+          done
+          test -d mornye-backend/bindings/kotlin
+
+      - name: Upload backend
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: mornye-backend
+          path: mornye-backend
+          if-no-files-found: error
+          retention-days: 30
