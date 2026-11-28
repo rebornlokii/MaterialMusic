@@ -268,7 +268,8 @@ object AppModule {
             lrcLibApiService = lrcLibApiService,
             lyricsDao = lyricsDao,
             okHttpClient = okHttpClient,
-            userPreferencesRepository = userPreferencesRepository
+            userPreferencesRepository = userPreferencesRepository,
+            extensionHost = extensionHost
         )
     }
 
@@ -286,7 +287,6 @@ object AppModule {
             mediaStoreObserver = mediaStoreObserver,
             favoritesDao = favoritesDao,
             userPreferencesRepository = userPreferencesRepository,
-            extensionHost = extensionHost,
             musicDao = musicDao
         )
     }
