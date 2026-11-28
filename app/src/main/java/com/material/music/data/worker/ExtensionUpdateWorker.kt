@@ -64,7 +64,7 @@ class ExtensionUpdateWorker @AssistedInject constructor(
                 continue
             }
             runCatching {
-                host.install(file.absolutePath)
+                host.install(file)
                 host.setEnabled(entry.id, true)
                 bootstrap.markInstalled(entry.id, entry.version)
                 updated++
