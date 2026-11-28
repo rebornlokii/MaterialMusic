@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.await
@@ -13,6 +14,7 @@ import com.material.music.data.database.OfflineTrackDao
 import com.material.music.data.database.OfflineTrackEntity
 import com.material.music.data.model.Song
 import com.material.music.data.worker.CloudTrackDownloadWorker
+import com.material.music.data.worker.ExtensionDownloadWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.security.MessageDigest
@@ -198,6 +200,8 @@ class CloudOfflineRepository @Inject constructor(
     suspend fun resolveLocalUri(sourceUri: String): Uri? = withContext(Dispatchers.IO) {
         val entity = dao.getBySourceUri(sourceUri) ?: return@withContext null
         if (entity.state != OfflineDownloadStatus.COMPLETE.storageValue) return@withContext null
+        // Downloads published to a user-visible folder are content:// documents.
+        entity.localPath?.takeIf { it.startsWith("content://") }?.let { return@withContext Uri.parse(it) }
         val file = entity.localPath?.let(::File)
         if (file?.isFile == true && file.length() > 0L) {
             Uri.fromFile(file)
@@ -222,6 +226,7 @@ class CloudOfflineRepository @Inject constructor(
         ) {
             "navidrome" -> "navidrome"
             "jellyfin" -> "jellyfin"
+            "mornye" -> "mornye"
             else -> null
         }
 
@@ -265,23 +270,32 @@ class CloudOfflineRepository @Inject constructor(
         downloadId: String,
         attemptId: String,
         sourceUri: String
-    ) = OneTimeWorkRequestBuilder<CloudTrackDownloadWorker>()
-        .setConstraints(
-            Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresStorageNotLow(true)
+    ): OneTimeWorkRequest {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresStorageNotLow(true)
+            .build()
+        val data = workDataOf(
+            "download_id" to downloadId,
+            "attempt_id" to attemptId,
+            "source_uri" to sourceUri
+        )
+        return if (sourceUri.startsWith("mornye://")) {
+            OneTimeWorkRequestBuilder<ExtensionDownloadWorker>()
+                .setConstraints(constraints)
+                .setInputData(data)
+                .addTag(ExtensionDownloadWorker.TAG)
+                .addTag(workName(downloadId))
                 .build()
-        )
-        .setInputData(
-            workDataOf(
-                CloudTrackDownloadWorker.KEY_DOWNLOAD_ID to downloadId,
-                CloudTrackDownloadWorker.KEY_ATTEMPT_ID to attemptId,
-                CloudTrackDownloadWorker.KEY_SOURCE_URI to sourceUri
-            )
-        )
-        .addTag(CloudTrackDownloadWorker.TAG)
-        .addTag(workName(downloadId))
-        .build()
+        } else {
+            OneTimeWorkRequestBuilder<CloudTrackDownloadWorker>()
+                .setConstraints(constraints)
+                .setInputData(data)
+                .addTag(CloudTrackDownloadWorker.TAG)
+                .addTag(workName(downloadId))
+                .build()
+        }
+    }
 }
 
 private fun OfflineTrackEntity.toModel() = OfflineDownload(

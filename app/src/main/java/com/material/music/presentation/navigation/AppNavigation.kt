@@ -174,7 +174,10 @@ fun AppNavigation(
                         paddingValues = paddingValues,
                         playerViewModel = playerViewModel,
                         navController = navController,
-                        onSearchBarActiveChange = onSearchBarActiveChange
+                        onSearchBarActiveChange = onSearchBarActiveChange,
+                        onOpenOnlineSearch = {
+                            navController.navigateSafely(Screen.ExtensionSearch.route)
+                        }
                     )
                 }
             }
@@ -691,6 +694,48 @@ fun AppNavigation(
             ) {
                 ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
                     CloudDownloadsScreen(onBack = { navController.popBackStack() })
+                }
+            }
+            composable(
+                Screen.ExtensionSearch.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) {
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    com.material.music.presentation.extension.ExtensionSearchScreen(
+                        onBack = { navController.popBackStack() },
+                        onOpenAlbum = { provider, albumId, title ->
+                            navController.navigateSafely(
+                                Screen.ExtensionAlbum.createRoute(provider, albumId, title)
+                            )
+                        },
+                    )
+                }
+            }
+            composable(
+                Screen.ExtensionAlbum.route,
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) { backStackEntry ->
+                val provider = backStackEntry.arguments?.getString("provider").orEmpty()
+                val albumId = backStackEntry.arguments?.getString("albumId").orEmpty()
+                val title = backStackEntry.arguments?.getString("title").orEmpty()
+                val downloadViewModel: com.material.music.presentation.extension.ExtensionDownloadViewModel =
+                    hiltViewModel()
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    com.material.music.presentation.extension.ExtensionAlbumScreen(
+                        provider = provider,
+                        albumId = albumId,
+                        title = title,
+                        onBack = { navController.popBackStack() },
+                        onDownload = { track ->
+                            downloadViewModel.enqueue(track, provider)
+                        },
+                    )
                 }
             }
             composable(

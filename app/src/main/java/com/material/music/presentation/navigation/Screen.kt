@@ -87,6 +87,15 @@ sealed class Screen(val route: String) {
     object NavidromeDashboard : Screen("navidrome_dashboard")
     object JellyfinDashboard : Screen("jellyfin_dashboard")
     object CloudDownloads : Screen("cloud_downloads")
+    object ExtensionSearch : Screen("extension_search")
+    object ExtensionAlbum : Screen(
+        "extension_album/{provider}/{albumId}?title={title}"
+    ) {
+        fun createRoute(provider: String, albumId: String, title: String): String {
+            fun enc(value: String) = java.net.URLEncoder.encode(value, "UTF-8")
+            return "extension_album/${enc(provider)}/${enc(albumId)}?title=${enc(title)}"
+        }
+    }
     object Updates : Screen("updates")
 
     object AudioBookmarks : Screen("audio_bookmarks")

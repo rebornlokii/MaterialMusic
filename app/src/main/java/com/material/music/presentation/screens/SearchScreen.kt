@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.CircleShape
 import com.material.music.ui.theme.ShapeCache
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Search
@@ -178,6 +179,7 @@ fun SearchScreen(
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     navController: NavHostController,
     onSearchBarActiveChange: (Boolean) -> Unit = {},
+    onOpenOnlineSearch: () -> Unit = {},
     cloudDownloadsViewModel: CloudDownloadsViewModel = hiltViewModel()
 ) {
     val searchScreenEnteredAt = remember { android.os.SystemClock.elapsedRealtime() }
@@ -446,6 +448,20 @@ fun SearchScreen(
                             inputFieldColors = searchBarInputFieldColors
                         ),
                         content = {}
+                    )
+                }
+
+                FilledIconButton(
+                    modifier = Modifier.padding(bottom = 2.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    onClick = onOpenOnlineSearch
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Public,
+                        contentDescription = "Search online services"
                     )
                 }
 

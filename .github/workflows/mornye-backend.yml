@@ -17,7 +17,7 @@ on:
       abis:
         description: "Comma-separated Android ABIs"
         required: false
-        default: "arm64-v8a,armeabi-v7a"
+        default: "arm64-v8a"
   workflow_call:
     inputs:
       mornye_ref:
@@ -27,7 +27,7 @@ on:
       abis:
         type: string
         required: false
-        default: "arm64-v8a,armeabi-v7a"
+        default: "arm64-v8a"
     outputs:
       artifact_name:
         description: "Name of the uploaded artifact"
