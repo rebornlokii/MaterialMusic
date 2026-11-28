@@ -80,13 +80,12 @@ jobs:
           name: mornye-backend
           path: mornye-backend
 
-      - name: Install native libraries
+      - name: Check backend
         run: |
           set -euo pipefail
           cat mornye-backend/BUILD_INFO.txt
-          mkdir -p app/src/main/jniLibs
-          cp -R mornye-backend/jniLibs/. app/src/main/jniLibs/
-          find app/src/main/jniLibs -name '*.so' -printf '%p  %s bytes\n' | sort
+          find mornye-backend -name '*.so' -printf '%p  %s bytes\n' | sort
+          test -d mornye-backend/bindings/kotlin
 
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug -Ppixelplayer.enableAbiSplits=false

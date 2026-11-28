@@ -125,6 +125,16 @@ android {
         }
     }
 
+    // The Mornye backend (Rust core: extension host, lyrics providers, metadata
+    // enrichment, ReplayGain, tag writers) is built by CI and dropped at
+    // `mornye-backend/` in the repo root. It is not vendored in git; a build
+    // without it still compiles, the host just fails on first use.
+    val mornyeBackendDir = rootProject.file("mornye-backend")
+    sourceSets.getByName("main") {
+        jniLibs.srcDir(mornyeBackendDir.resolve("jniLibs"))
+        java.srcDir(mornyeBackendDir.resolve("bindings/kotlin"))
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
@@ -291,6 +301,10 @@ dependencies {
 
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.security.crypto)
+
+    // JNA is the runtime for the UniFFI-generated Mornye bindings. The @aar
+    // artifact ships the Android native stub; the plain jar does not work here.
+    implementation("net.java.dev.jna:jna:5.16.0@aar")
 
     implementation(libs.timber)
     implementation(libs.smooth.corner.rect.android.compose)
