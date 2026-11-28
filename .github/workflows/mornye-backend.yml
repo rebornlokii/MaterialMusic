@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: Reclaim runner disk
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.3.2
         with:
           tool-cache: false
           android: false

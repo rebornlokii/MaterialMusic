@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Reclaim runner disk
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.3.2
         with:
           tool-cache: false
           android: false
@@ -75,7 +75,7 @@ jobs:
             "build-tools;37.0.0"
 
       - name: Download backend
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: mornye-backend
           path: mornye-backend
