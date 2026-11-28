@@ -223,7 +223,11 @@ class ExtensionHost(
 
     override fun close() {
         synchronized(this) {
-            manager?.close()
+            try {
+                manager?.shutdown()
+            } catch (t: Throwable) {
+                Timber.w(t, "ExtensionManager.shutdown failed")
+            }
             manager = null
         }
     }
@@ -232,11 +236,3 @@ class ExtensionHost(
 }
 
 class ExtensionHostException(message: String) : Exception(message)
-
-private fun ExtensionManager.close() {
-    try {
-        shutdown()
-    } catch (t: Throwable) {
-        Timber.w(t, "ExtensionManager.shutdown failed")
-    }
-}

@@ -72,6 +72,9 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
     lateinit var syncManager: dagger.Lazy<com.material.music.data.worker.SyncManager>
 
     @Inject
+    lateinit var extensionUpdateScheduler: dagger.Lazy<com.material.music.data.worker.ExtensionUpdateScheduler>
+
+    @Inject
     lateinit var advancedPerformanceDiagnosticsController: dagger.Lazy<AdvancedPerformanceDiagnosticsController>
 
     @Inject
@@ -142,6 +145,8 @@ class MaterialMusicApplication : Application(), ImageLoaderFactory, Configuratio
         registerActivityLifecycleCallbacks(PhoneOrientationPolicy)
 
         syncManager.get().start()
+
+        extensionUpdateScheduler.get().start()
 
         m3uSyncCoordinator.get().start()
 

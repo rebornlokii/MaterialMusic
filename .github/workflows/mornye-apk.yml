@@ -98,6 +98,10 @@ jobs:
           ls -lh "$APK"
           unzip -l "$APK" | grep -E 'libmornye_mobile\.so' || {
             echo "libmornye_mobile.so missing from APK" >&2; exit 1; }
+          BUNDLED=$(unzip -l "$APK" | grep -c 'assets/extensions/.*\.sflx' || true)
+          echo "bundled extensions in APK: $BUNDLED"
+          test "$BUNDLED" -ge 14 || {
+            echo "expected 14 bundled .sflx packages" >&2; exit 1; }
           unzip -l "$APK" | grep -E 'libmornye_mobile\.so'
 
       - name: Upload APK
