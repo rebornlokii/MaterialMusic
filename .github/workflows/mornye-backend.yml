@@ -42,11 +42,11 @@ concurrency:
 
 jobs:
   build:
-    name: Build ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
+    name: Build ${{ inputs.abis || 'arm64-v8a' }}
     runs-on: ubuntu-24.04
     env:
       MORNYE_REF: ${{ inputs.mornye_ref || 'v5.4.5' }}
-      MORNYE_ABIS: ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
+      MORNYE_ABIS: ${{ inputs.abis || 'arm64-v8a' }}
       NDK_VERSION: "30.0.16248370"
 
     steps:

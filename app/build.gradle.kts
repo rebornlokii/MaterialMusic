@@ -125,16 +125,6 @@ android {
         }
     }
 
-    // The Mornye backend (Rust core: extension host, lyrics providers, metadata
-    // enrichment, ReplayGain, tag writers) is built by CI and dropped at
-    // `mornye-backend/` in the repo root. It is not vendored in git; a build
-    // without it still compiles, the host just fails on first use.
-    val mornyeBackendDir = rootProject.file("mornye-backend")
-    sourceSets.getByName("main") {
-        jniLibs.srcDir(mornyeBackendDir.resolve("jniLibs"))
-        java.srcDir(mornyeBackendDir.resolve("bindings/kotlin"))
-    }
-
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"

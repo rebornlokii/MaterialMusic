@@ -32,7 +32,7 @@ jobs:
     uses: ./.github/workflows/mornye-backend.yml
     with:
       mornye_ref: ${{ inputs.mornye_ref || 'v5.4.5' }}
-      abis: ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
+      abis: ${{ inputs.abis || 'arm64-v8a' }}
 
   apk:
     name: Debug APK
