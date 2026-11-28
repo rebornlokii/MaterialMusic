@@ -43,7 +43,7 @@ concurrency:
 jobs:
   build:
     name: Build ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       MORNYE_REF: ${{ inputs.mornye_ref || 'v5.4.5' }}
       MORNYE_ABIS: ${{ inputs.abis || 'arm64-v8a,armeabi-v7a' }}
@@ -103,6 +103,15 @@ jobs:
           workspaces: ".mornye-src/rust_backend -> target"
           shared-key: mornye-android-${{ env.MORNYE_REF }}
           cache-targets: false
+
+      # rquickjs-sys runs bindgen, which needs clang's builtin headers
+      # (stdbool.h). Ubuntu 26.04 ships a clang layout without them, so the
+      # build is pinned to 24.04; this step makes a regression obvious.
+      - name: Check clang builtin headers
+        run: |
+          clang --version || true
+          find /usr/lib/llvm-* -name stdbool.h 2>/dev/null | head
+          ls "$ANDROID_NDK_HOME"/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/*/include/stdbool.h 2>/dev/null || true
 
       - name: Build Android libraries
         working-directory: .mornye-src
