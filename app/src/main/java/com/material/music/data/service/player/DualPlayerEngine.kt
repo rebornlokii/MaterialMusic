@@ -273,7 +273,7 @@ class DualPlayerEngine @Inject constructor(
         private const val MAX_AUXILIARY_TIMELINE_ITEMS = QueueWindowPolicy.MAX_AUXILIARY_TIMELINE_ITEMS
         private val LOCAL_MEDIA_SCHEMES = setOf("content", "file", "android.resource")
         private val REMOTE_MEDIA_SCHEMES = setOf("http", "https", "navidrome", "jellyfin")
-        private val CLOUD_PROXY_SCHEMES = setOf("navidrome", "jellyfin")
+        private val CLOUD_PROXY_SCHEMES = setOf("navidrome", "jellyfin", "mornye")
     }
 
     data class TransitionTarget(

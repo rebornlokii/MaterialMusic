@@ -113,6 +113,10 @@ class ExtensionHost(
         parse(native().getProviderMetadataJson(providerId, "artist", artistId, null), "artist")
     }
 
+    suspend fun track(providerId: String, trackId: String): ExtensionTrack = withContext(Dispatchers.IO) {
+        parse(native().getProviderMetadataJson(providerId, "track", trackId, null), "track")
+    }
+
     suspend fun playlist(providerId: String, playlistId: String): ExtensionAlbum = withContext(Dispatchers.IO) {
         parse(native().getProviderMetadataJson(providerId, "playlist", playlistId, null), "playlist")
     }

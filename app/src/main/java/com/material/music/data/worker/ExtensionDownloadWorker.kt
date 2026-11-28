@@ -6,9 +6,11 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.material.music.data.database.MusicDao
 import com.material.music.data.database.OfflineTrackDao
 import com.material.music.data.extension.ExtensionDownloadSettings
 import com.material.music.data.extension.ExtensionHost
+import com.material.music.data.extension.ExtensionLibrary
 import com.material.music.data.extension.ExtensionSongUri
 import com.material.music.data.extension.SafFolder
 import com.material.music.data.offline.OfflineDownloadStatus
@@ -35,6 +37,7 @@ class ExtensionDownloadWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val host: ExtensionHost,
     private val dao: OfflineTrackDao,
+    private val musicDao: MusicDao,
     private val settings: ExtensionDownloadSettings,
     private val gson: Gson,
 ) : CoroutineWorker(applicationContext, params) {
@@ -89,6 +92,12 @@ class ExtensionDownloadWorker @AssistedInject constructor(
                     downloadId, attemptId, OfflineDownloadStatus.COMPLETE.storageValue,
                     produced.length(), produced.length(), localPath, null, System.currentTimeMillis(),
                 )
+
+                // Make the file part of the library so it is playable offline.
+                val metadata = runCatching { host.track(provider, trackId) }.getOrNull()
+                runCatching {
+                    ExtensionLibrary.recordDownloaded(musicDao, entity, metadata, provider, localPath)
+                }.onFailure { Timber.w(it, "Could not add %s to the library", sourceUri) }
                 staging.deleteRecursively()
                 Result.success()
             }.getOrElse {
