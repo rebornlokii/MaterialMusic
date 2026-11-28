@@ -138,7 +138,8 @@ class LyricsRepositoryImpl @Inject constructor(
     private val lrcLibApiService: LrcLibApiService,
     private val lyricsDao: com.material.music.data.database.LyricsDao,
     private val okHttpClient: OkHttpClient,
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val extensionHost: com.material.music.data.extension.ExtensionHost,
 ) : LyricsRepository {
 
 
@@ -425,6 +426,23 @@ class LyricsRepositoryImpl @Inject constructor(
                 Timber.tag(TAG).w("Error fetching from source $sourceName: ${e.message}")
             }
         }
+
+        // The Mornye engine carries the provider chain (Zarz-LRC, Apple Music,
+        // Netease, Musixmatch, Spotify, …). It is the last resort so a local
+        // file or an explicit LRCLIB hit always wins.
+        runCatching {
+            extensionHost.lyrics(
+                track = song.title,
+                artist = song.displayArtist,
+                durationMs = song.duration * 1000,
+            )
+        }.getOrNull()
+            ?.takeIf { !it.lines.isNullOrEmpty() || it.plainLyrics.isNotBlank() }
+            ?.let { found ->
+                val lyrics = found.toLyrics()
+                lyricsCache.put(cacheKey, lyrics)
+                return@withContext lyrics
+            }
 
         Timber.tag(TAG).d("No lyrics found from any source for: ${song.displayArtist} - ${song.title}")
         return@withContext null
@@ -1602,3 +1620,20 @@ data class LyricsSearchResult(val record: LrcLibResponse, val lyrics: Lyrics, va
 data class NoLyricsFoundException(val query: String? = null) : Exception()
 
 class LyricsException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
+private fun com.material.music.data.extension.ExtensionLyricsWithSource.toLyrics(): Lyrics {
+    val synced = lines
+        ?.filter { it.words.isNotBlank() }
+        ?.map { SyncedLine(time = it.startTimeMs.toInt(), line = it.words) }
+        ?.takeIf { it.isNotEmpty() }
+    val plain = plainLyrics
+        .split('\n')
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .takeIf { it.isNotEmpty() }
+    return Lyrics(
+        plain = plain,
+        synced = synced,
+        areFromRemote = true,
+    )
+}

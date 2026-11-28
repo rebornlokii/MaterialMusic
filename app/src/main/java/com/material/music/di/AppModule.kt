@@ -260,7 +260,8 @@ object AppModule {
         lrcLibApiService: LrcLibApiService,
         lyricsDao: LyricsDao,
         okHttpClient: OkHttpClient,
-        userPreferencesRepository: UserPreferencesRepository
+        userPreferencesRepository: UserPreferencesRepository,
+        extensionHost: com.material.music.data.extension.ExtensionHost
     ): LyricsRepository {
         return LyricsRepositoryImpl(
             context = context,
@@ -285,6 +286,7 @@ object AppModule {
             mediaStoreObserver = mediaStoreObserver,
             favoritesDao = favoritesDao,
             userPreferencesRepository = userPreferencesRepository,
+            extensionHost = extensionHost,
             musicDao = musicDao
         )
     }

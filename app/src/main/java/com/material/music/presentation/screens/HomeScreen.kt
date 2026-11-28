@@ -150,7 +150,8 @@ fun HomeScreen(
     paddingValuesParent: PaddingValues,
     playerViewModel: PlayerViewModel = sharedPlayerViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
-    streamingLoginViewModel: StreamingProviderLoginViewModel = hiltViewModel()
+    streamingLoginViewModel: StreamingProviderLoginViewModel = hiltViewModel(),
+    extensionHomeViewModel: com.material.music.presentation.extension.ExtensionHomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val isBenchmarkMode = remember {
@@ -389,6 +390,17 @@ fun HomeScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
+                item(key = "extension_home", contentType = "extension_home") {
+                    com.material.music.presentation.extension.ExtensionHomeShelf(
+                        onOpenAlbum = { provider, albumId, title ->
+                            navController.navigateSafely(
+                                com.material.music.presentation.navigation.Screen.ExtensionAlbum
+                                    .createRoute(provider, albumId, title)
+                            )
+                        },
+                        viewModel = extensionHomeViewModel,
+                    )
+                }
                 if (yourMixSongs.isEmpty()) {
                     item(
                         key = "your_mix_placeholder",
