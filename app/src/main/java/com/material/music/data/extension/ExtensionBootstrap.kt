@@ -54,6 +54,9 @@ class ExtensionBootstrap @Inject constructor(
                 installed++
             }.onFailure { Timber.w(it, "Could not install bundled extension %s", id) }
         }
+        // An empty fallback list means "try every enabled provider", which is
+        // the default the engine ships with.
+        runCatching { host.setFallbackProviders(null) }
         if (installed > 0) {
             runCatching { host.loadAll() }
             Timber.i("Installed %d bundled extensions", installed)

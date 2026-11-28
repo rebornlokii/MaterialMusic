@@ -9,9 +9,11 @@ import com.google.gson.JsonObject
 import com.material.music.data.database.MusicDao
 import com.material.music.data.database.OfflineTrackDao
 import com.material.music.data.extension.ExtensionDownloadSettings
+import com.material.music.data.extension.ExtensionFileName
 import com.material.music.data.extension.ExtensionHost
 import com.material.music.data.extension.ExtensionLibrary
 import com.material.music.data.extension.ExtensionSongUri
+import com.material.music.data.extension.ExtensionVerificationNotifier
 import com.material.music.data.extension.SafFolder
 import com.material.music.data.offline.OfflineDownloadStatus
 import dagger.assisted.Assisted
@@ -66,9 +68,16 @@ class ExtensionDownloadWorker @AssistedInject constructor(
                     0L, null, null, null, System.currentTimeMillis(),
                 )
 
+                // Metadata first: the file name template needs it, and the
+                // library row reuses the same result.
+                val metadata = runCatching { host.track(provider, trackId) }.getOrNull()
+
                 val result = host.download(provider, request(provider, trackId, staging, prefs).toString())
                 if (!result.success) {
                     val message = result.errorMessage ?: result.errorType ?: "Download failed"
+                    if (result.errorType?.contains("verification", ignoreCase = true) == true) {
+                        ExtensionVerificationNotifier.notify(applicationContext, provider, message)
+                    }
                     dao.updateState(
                         downloadId, attemptId, OfflineDownloadStatus.FAILED.storageValue,
                         0L, null, null, message, System.currentTimeMillis(),
@@ -80,8 +89,7 @@ class ExtensionDownloadWorker @AssistedInject constructor(
                     ?: error("Engine reported success but produced no file")
                 val extension = produced.extension
                 val name = SafFolder.displayName(
-                    listOf(entity.title, result.filePath?.let(::File)?.nameWithoutExtension)
-                        .firstOrNull { !it.isNullOrBlank() } ?: "download",
+                    ExtensionFileName.expand(prefs.template, metadata, entity.title, prefs.quality),
                     extension,
                 )
 
@@ -94,7 +102,6 @@ class ExtensionDownloadWorker @AssistedInject constructor(
                 )
 
                 // Make the file part of the library so it is playable offline.
-                val metadata = runCatching { host.track(provider, trackId) }.getOrNull()
                 runCatching {
                     ExtensionLibrary.recordDownloaded(musicDao, entity, metadata, provider, localPath)
                 }.onFailure { Timber.w(it, "Could not add %s to the library", sourceUri) }
